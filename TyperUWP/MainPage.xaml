@@ -16,10 +16,8 @@
 			</Grid.ColumnDefinitions>
 			<StackPanel Name="writtenTextPanel" Orientation="Horizontal" HorizontalAlignment="Right"/>
 			<StackPanel Name="unwrittenTextPanel" Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="1">
-				<Border Name="currentCharBackground" Background="White">
-					<TextBlock Name="currentCharControl" FontSize="50" Foreground="Black"/>
-				</Border>
-				<TextBlock Name="unwrittenTextControl" FontSize="50"  xml:space="preserve"/>
+				<local:TextBlockEx x:Name="currentCharControl" Foreground="Black" Background="White"/>
+				<TextBlock Name="unwrittenTextControl"/>
 			</StackPanel>
 		</Grid>
 	</Grid>

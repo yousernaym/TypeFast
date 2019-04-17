@@ -17,6 +17,7 @@ namespace TyperShared
 				currentCharIndex = 0;
 				theText = theText.Replace("\n", "");
 				theText = theText.Replace("\r", "");
+				theText = theText.Replace((char)160, ' '); //Convert non-breaking space to regular space
 				Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
 				theText = regex.Replace(theText, " ");
 				writtenChars = new LinkedList<Tuple<bool, char>>();

@@ -28,9 +28,9 @@ namespace TyperUWP
        	public MainPage()
 		{
 			this.InitializeComponent();
-			text = new Text(textPanel, writtenTextPanel, currentCharBackground, currentCharControl, unwrittenTextControl);
+			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
-			text.TheText = "En_ missa text";
+			text.TheText = "En  missa text";
 			text.draw();
 		}
 

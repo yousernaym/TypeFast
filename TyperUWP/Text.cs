@@ -14,66 +14,74 @@ namespace TyperUWP
 	class Text : TyperShared.Text
 	{
 		Panel textPanel;
-		TextBlock[] writtenTextControls = new TextBlock[NumCharsFromCenter];
-		TextBlock currentCharControl;
+		TextBlockEx[] writtenTextControls = new TextBlockEx[NumCharsFromCenter];
+		TextBlockEx currentCharControl;
 		TextBlock unwrittenTextControl;
-		Border currentCharBackground;
 		double spaceWidth;
+		Brush backgroundBrush;
+		Brush foregroundBrush;
+		Brush correctBrush;
+		Brush errorBrush;
+		FontFamily fontFamily;
+		double fontSize;
 
-		public Text(Panel _textPanel, StackPanel writtenTextPanel, Border _currentCharBackground, TextBlock _currentCharControl, TextBlock _unwrittenTextControl)
+		public Text(Panel _textPanel, StackPanel writtenTextPanel, TextBlockEx _currentCharControl, TextBlock _unwrittenTextControl)
 		{
 			textPanel = _textPanel;
 			for (int i = writtenTextControls.Length - 1; i >= 0; i--)
 			{
-				writtenTextControls[i] = new TextBlock();
+				writtenTextControls[i] = new TextBlockEx();
 				writtenTextControls[i].Text = i.ToString();
 				writtenTextPanel.Children.Add(writtenTextControls[i]);
-				writtenTextControls[i].FontSize = 50;
 			}
 			
-			currentCharBackground = _currentCharBackground;
 			currentCharControl = _currentCharControl;
 			unwrittenTextControl = _unwrittenTextControl;
-			setStyle("", 50, Colors.White, Colors.Black);
+			setStyle("", 50, new SolidColorBrush(Colors.White), new SolidColorBrush(Colors.Black), new SolidColorBrush(Colors.Green), new SolidColorBrush(Colors.Red));
 		}
 
-		public void setStyle(string fontName, int fontSize, Color foreGround, Color backGround)
+		public void setStyle(string fontName, double _fontSize, Brush foreground, Brush background, Brush correct, Brush error)
 		{
-			//Create local variable containing font family
-			FontFamily fontFamily;
+			//Create font family
 			if (string.IsNullOrEmpty(fontName))
 				fontFamily = currentCharControl.FontFamily;
 			else
 				fontFamily = new FontFamily(fontName);
 
-			//Create local variables containing brushes
-			var foreBrush = new SolidColorBrush(foreGround);
-			var backBrush = new SolidColorBrush(backGround);
+			fontSize = _fontSize;
 
-			//Set background
-			textPanel.Background = backBrush;
+			//Assign brushes
+			foregroundBrush = foreground;
+			backgroundBrush = background;
+			correctBrush = correct;
+			errorBrush = error;
+
+			//Set panel background
+			textPanel.Background = background;
 			
-			//Set color of written text
+			//Written text style
 			foreach (var control in writtenTextControls)
 			{
 				control.FontFamily = fontFamily;
 				control.FontSize = fontSize;
-				control.Foreground = foreBrush;
-
+				control.Foreground = foregroundBrush;
 			}
 
-			//Set color and backgroung of current character
-			currentCharBackground.Background = foreBrush;
-			currentCharControl.Foreground = backBrush;
+			//Current character
+			currentCharControl.Background = foregroundBrush;
+			currentCharControl.Foreground = backgroundBrush;
 			currentCharControl.FontFamily = fontFamily;
+			currentCharControl.FontSize = fontSize;
 
 			//Set color of unwritten text
-			unwrittenTextControl.Foreground = foreBrush;
+			unwrittenTextControl.Foreground = foregroundBrush;
 			unwrittenTextControl.FontFamily = fontFamily;
+			unwrittenTextControl.FontSize = fontSize;
 
 			//Determine width of text blocks with just a space
 			var tb = new TextBlock();
-			
+			tb.FontFamily = fontFamily;
+			tb.FontSize = fontSize;
 			tb.Text = "a a";
 			tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
 			double a_a = tb.DesiredSize.Width;
@@ -96,12 +104,17 @@ namespace TyperUWP
 				}
 				bool isCorrect = currentChar.Value.Item1;
 				char c = currentChar.Value.Item2;
-				control.Foreground = new SolidColorBrush(isCorrect ? Colors.Green : Colors.Red);
-				control.Text = c.ToString();
+				if (c == ' ')
+					control.Background = isCorrect ? backgroundBrush : errorBrush;
+				else
+				{
+					control.Foreground = isCorrect ? correctBrush : errorBrush;
+					control.Background = backgroundBrush;
+				}
+
+					control.Text = c.ToString();
 				control.Width = c == ' ' ? spaceWidth : Double.NaN;
-				
-				//control.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-				//control.Width = control.DesiredSize.Width;
+
 				currentChar = currentChar.Next;
 			}
 			if (!string.IsNullOrEmpty(unwrittenTextToDraw))
@@ -109,9 +122,6 @@ namespace TyperUWP
 				char c = unwrittenTextToDraw[0];
 				currentCharControl.Text = c.ToString();
 				currentCharControl.Width = c == ' ' ? spaceWidth : Double.NaN;
-				
-				//currentCharControl.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-				//currentCharControl.Width = currentCharBackground.Width = currentCharControl.DesiredSize.Width;
 				unwrittenTextControl.Text = unwrittenTextToDraw.Substring(1, unwrittenTextToDraw.Length - 1);
 			}
 		}
