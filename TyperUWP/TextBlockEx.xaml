@@ -11,7 +11,7 @@
 
     <Grid>
 		<Border Name="border" BorderBrush="Black">
-			<TextBlock Name="textBlock"  Text="" />
+			<TextBlock Name="textBlock"  Text=""/>
 		</Border>
 	</Grid>
 </UserControl>

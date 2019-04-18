@@ -117,7 +117,11 @@ namespace TyperUWP
 
 				currentChar = currentChar.Next;
 			}
-			if (!string.IsNullOrEmpty(unwrittenTextToDraw))
+			if (string.IsNullOrEmpty(unwrittenTextToDraw))
+			{
+				unwrittenTextControl.Text = currentCharControl.Text = "";
+			}
+			else
 			{
 				char c = unwrittenTextToDraw[0];
 				currentCharControl.Text = c.ToString();

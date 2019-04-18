@@ -14,8 +14,8 @@
 				<ColumnDefinition />
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
-			<StackPanel Name="writtenTextPanel" Orientation="Horizontal" HorizontalAlignment="Right"/>
-			<StackPanel Name="unwrittenTextPanel" Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="1">
+			<StackPanel Name="writtenTextPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+			<StackPanel Name="unwrittenTextPanel" Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="1" VerticalAlignment="Center">
 				<local:TextBlockEx x:Name="currentCharControl" Foreground="Black" Background="White"/>
 				<TextBlock Name="unwrittenTextControl"/>
 			</StackPanel>
