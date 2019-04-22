@@ -62,13 +62,9 @@ namespace TyperUWP
 
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
-			unwrittenTextControl.Focus(FocusState.Pointer);
-
-			char c = (char)args.KeyCode;
-			if ((int)c == 13 || isKeyPressed(VirtualKey.Control))
+			if (isKeyPressed(VirtualKey.Control))
 				return;
-		
-			text.typeChar(c);
+			text.typeChar(args.KeyCode);
 			text.draw();
 		}
 

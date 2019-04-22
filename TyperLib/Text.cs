@@ -70,9 +70,10 @@ namespace TyperLib
 			TheText = File.ReadAllText(Path.Combine("textToType.txt"));
 		}
 
-		public void typeChar(char c)
+		public void typeChar(uint keyCode)
 		{
-			if (isFinished)
+			char c = (char)keyCode;
+			if (isFinished || keyCode == 13 || c == '\t')
 				return;
 			if (!stopwatch.IsRunning)
 				startTime();
