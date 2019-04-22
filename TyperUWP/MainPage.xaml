@@ -6,19 +6,26 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+	>
 
 	<Grid>
-		<Grid Name ="textPanel">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
-			<StackPanel Name="writtenTextPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-			<StackPanel Name="unwrittenTextPanel" Orientation="Horizontal" HorizontalAlignment="Left" Grid.Column="1" VerticalAlignment="Center">
-				<local:TextBlockEx x:Name="currentCharControl" Foreground="Black" Background="White"/>
-				<TextBlock Name="unwrittenTextControl"/>
+		<StackPanel Orientation="Vertical">
+			<StackPanel x:Name="menu" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,30">
+				<TextBlock x:Name="timeText" FontSize="50"/>
+				<Button x:Name="resetBtn" Content="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False"/>
 			</StackPanel>
-		</Grid>
+			<Grid x:Name ="textPanel">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<StackPanel x:Name="writtenTextPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+				<StackPanel x:Name="unwrittenTextPanel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" >
+					<local:TextBlockEx x:Name="currentCharControl" Foreground="Black" Background="White"/>
+					<TextBlock x:Name="unwrittenTextControl"/>
+				</StackPanel>
+			</Grid>
+		</StackPanel>
 	</Grid>
 </Page>

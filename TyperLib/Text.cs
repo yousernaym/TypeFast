@@ -4,7 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 
-namespace TyperShared
+namespace TyperLib
 {
 	abstract public class Text
 	{
@@ -28,9 +28,9 @@ namespace TyperShared
 		protected const int NumCharsFromCenter = 100;
 		protected int startDrawChar => Math.Max(currentCharIndex - NumCharsFromCenter, 0);
 		protected LinkedList<Tuple<bool, char>> writtenChars;
-		Stopwatch stopwatch;
+		Stopwatch stopwatch = new Stopwatch();
 		public TimeSpan TimeLimit;
-		public TimeSpan RemainingTime => TimeLimit -
+		public TimeSpan RemainingTime => TimeLimit - ElapsedTime;
 		public TimeSpan ElapsedTime => stopwatch.Elapsed;
 
 		protected string writtenTextToDraw => theText == null ? "" : theText.Substring(startDrawChar, currentCharIndex - startDrawChar);

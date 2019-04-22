@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Media;
 
 namespace TyperUWP
 {
-	class Text : TyperShared.Text
+	class Text : TyperLib.Text
 	{
 		Panel textPanel;
 		TextBlockEx[] writtenTextControls = new TextBlockEx[NumCharsFromCenter];
@@ -31,7 +31,6 @@ namespace TyperUWP
 			for (int i = writtenTextControls.Length - 1; i >= 0; i--)
 			{
 				writtenTextControls[i] = new TextBlockEx();
-				writtenTextControls[i].Text = i.ToString();
 				writtenTextPanel.Children.Add(writtenTextControls[i]);
 			}
 			
@@ -89,6 +88,13 @@ namespace TyperUWP
 			tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
 			double a = tb.DesiredSize.Width;
 			spaceWidth = a_a - (a - 1) * 2;
+			reset();
+		}
+
+		new public void reset()
+		{
+			base.reset();
+			draw();
 		}
 
 		public void draw()
