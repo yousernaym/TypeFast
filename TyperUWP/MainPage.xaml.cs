@@ -72,7 +72,7 @@ namespace TyperUWP
 			if (isKeyPressed(VirtualKey.Control))
 			{
 				if (args.VirtualKey == VirtualKey.R)
-					text.reset();
+					reset();
 				else if (args.VirtualKey == VirtualKey.V)
 					pasteText();
 			}
@@ -106,12 +106,23 @@ namespace TyperUWP
 
 		private void ResetBtn_Click(object sender, RoutedEventArgs e)
 		{
+			reset();
+		}
+
+		void reset()
+		{
 			text.reset();
+			updateTypingStats();
 		}
 
 		private void Page_Loaded(object sender, RoutedEventArgs e)
 		{
 
+		}
+
+		private void PasteBtn_Click(object sender, RoutedEventArgs e)
+		{
+			pasteText();
 		}
 	}
 }

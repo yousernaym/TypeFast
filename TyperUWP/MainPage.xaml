@@ -19,7 +19,8 @@
 				<TextBlock x:Name="wpmText" Margin="0,0,40,0" FontSize="20"/>
 				<TextBlock x:Name="accuracyText" Margin="0,0,40,0" FontSize="20"/>
 				<TextBlock x:Name="timeText" Margin="0,0,40,0" FontSize="20"/>
-				<Button x:Name="resetBtn" Content="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False"/>
+				<Button x:Name="resetBtn" CornerRadius="6" Content="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,10,0"/>
+				<Button x:Name="pasteBtn" CornerRadius="6" Content="Paste" Click="PasteBtn_Click"  AllowFocusOnInteraction="False" IsTabStop="False"/>
 			</StackPanel>
 			<Grid x:Name ="textPanel">
 				<Grid.ColumnDefinitions>

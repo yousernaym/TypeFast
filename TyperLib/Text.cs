@@ -53,7 +53,8 @@ namespace TyperLib
 				float totalChars = (float)(writtenChars.Count);
 				if (totalChars == 0)
 					return 0;
-				//Total correct characters can be less than 0
+				
+				//Total correct characters can be less than 0 if there has been multiple incorrect attempts at the same character, so clamp at 0
 				float totalCorrect = Math.Max(totalChars - TotalIncorrectChars, 0);
 				return totalCorrect / totalChars * 100;
 			}
