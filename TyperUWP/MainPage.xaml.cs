@@ -41,7 +41,7 @@ namespace TyperUWP
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.High, ()=> timeText.Text = text.RemainingTime.ToString());
+			await Dispatcher.RunAsync(CoreDispatcherPriority.High, ()=> timeText.Text = text.RemainingTimeString);
 		}
 
 		private void updateTime(object state)

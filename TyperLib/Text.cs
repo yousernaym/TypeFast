@@ -43,6 +43,8 @@ namespace TyperLib
 					return dif;
 			}
 		}
+		public string RemainingTimeString => RemainingTime.Minutes + ":" + RemainingTime.Seconds.ToString("d2");
+			
 		public TimeSpan ElapsedTime => stopwatch.Elapsed;
 		bool isFinished => RemainingTime.Ticks == 0;
 		Timer checkTimeTimer;
