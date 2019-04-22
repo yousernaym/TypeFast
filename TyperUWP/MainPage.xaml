@@ -7,16 +7,18 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+	Loaded="Page_Loaded"
 	>
 
 	<Grid>
 		<StackPanel Orientation="Vertical">
 			<StackPanel x:Name="menu" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,30">
-				<TextBlock x:Name="correctCharsText" Margin="0,0,40,0" FontSize="30"/>
-				<TextBlock x:Name="incorrectCharsText" Margin="0,0,40,0" FontSize="30"/>
-				<TextBlock x:Name="wpmText" Margin="0,0,40,0" FontSize="30"/>
-				<TextBlock x:Name="accuracyText" Margin="0,0,40,0" FontSize="30"/>
-				<TextBlock x:Name="timeText" Margin="0,0,40,0" FontSize="30"/>
+				<TextBlock x:Name="correctCharsText" Margin="0,0,40,0" FontSize="20"/>
+				<TextBlock x:Name="incorrectCharsText" Margin="0,0,40,0" FontSize="20"/>
+				<TextBlock x:Name="fixedCharsText" Margin="0,0,40,0" FontSize="20"/>
+				<TextBlock x:Name="wpmText" Margin="0,0,40,0" FontSize="20"/>
+				<TextBlock x:Name="accuracyText" Margin="0,0,40,0" FontSize="20"/>
+				<TextBlock x:Name="timeText" Margin="0,0,40,0" FontSize="20"/>
 				<Button x:Name="resetBtn" Content="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False"/>
 			</StackPanel>
 			<Grid x:Name ="textPanel">

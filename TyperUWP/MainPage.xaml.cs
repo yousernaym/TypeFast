@@ -17,26 +17,38 @@ using Windows.UI.Xaml.Navigation;
 using System.Diagnostics;
 using Windows.System;
 using System.Threading;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.UI.ViewManagement;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
 namespace TyperUWP
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainPage : Page
-    {
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class MainPage : Page
+	{
 		Text text;
-       	public MainPage()
+		public MainPage()
 		{
 			this.InitializeComponent();
+			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 300));
+
+			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
+			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			text.TimeChecked += Text_TimeChecked;
-			text.TheText = "En massa text.";
+			//text.TheText = "abcdefghijklmnopqrstuvwxyzåäö";
+			text.loadText();
 			text.draw();
+			updateTypingStats();
+
+			//Clipboard.ContentChanged += async (s, e) =>
+			//{
+			//};
 		}
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
@@ -54,25 +66,52 @@ namespace TyperUWP
 			var state = CoreWindow.GetForCurrentThread().GetKeyState(key);
 			return (state & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 		}
+
 		private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
 		{
-			if (isKeyPressed(VirtualKey.Control) && args.VirtualKey == VirtualKey.R)
-				text.reset();
+			if (isKeyPressed(VirtualKey.Control))
+			{
+				if (args.VirtualKey == VirtualKey.R)
+					text.reset();
+				else if (args.VirtualKey == VirtualKey.V)
+					pasteText();
+			}
 		}
 
+		async void pasteText()
+		{
+			DataPackageView dataPackageView = Clipboard.GetContent();
+			if (dataPackageView.Contains(StandardDataFormats.Text))
+			{
+				text.TheText = await dataPackageView.GetTextAsync();
+				text.draw();
+			}
+		}
+	
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
 			if (isKeyPressed(VirtualKey.Control))
 				return;
 			text.typeChar(args.KeyCode);
 			text.draw();
+			updateTypingStats();
+		}
+
+		private void updateTypingStats()
+		{
 			correctCharsText.Text = "Correct\n" + text.CorrectChars;
 			incorrectCharsText.Text = "Incorrect\n" + text.IncorrectChars;
+			fixedCharsText.Text = "Fixed\n" + text.FixedChars;
 		}
 
 		private void ResetBtn_Click(object sender, RoutedEventArgs e)
 		{
 			text.reset();
+		}
+
+		private void Page_Loaded(object sender, RoutedEventArgs e)
+		{
+
 		}
 	}
 }

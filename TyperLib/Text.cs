@@ -19,12 +19,19 @@ namespace TyperLib
 			set
 			{
 				theText = value;
+
+				//Change characters to space
 				theText = theText.Replace('\n', ' ');
 				theText = theText.Replace('\r', ' ');
 				theText = theText.Replace('\t', ' ');
 				theText = theText.Replace((char)160, ' '); //Convert non-breaking space to regular space
+
+				//Replace repeating characters with single character
 				Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
 				theText = regex.Replace(theText, " ");
+				//regex = new Regex("[-]{2,}", RegexOptions.None);
+				//theText = regex.Replace(theText, "-");
+
 				reset();
 			}
 		}
@@ -36,7 +43,8 @@ namespace TyperLib
 		public int CorrectChars { get; private set; } = 0;
 		public int IncorrectChars { get; private set; } = 0;
 		public int TotalIncorrectChars { get; private set; } = 0;
-
+		public int FixedChars => TotalIncorrectChars - IncorrectChars;
+		
 		public int Wpm => Math.Max((int)((CorrectChars - IncorrectChars * 3) / ElapsedTime.TotalMinutes), 0) / 5;
 		public float Accuracy
 		{
@@ -45,11 +53,13 @@ namespace TyperLib
 				float totalChars = (float)(writtenChars.Count);
 				if (totalChars == 0)
 					return 0;
-				return (totalChars - TotalIncorrectChars) / totalChars * 100;
+				//Total correct characters can be less than 0
+				float totalCorrect = Math.Max(totalChars - TotalIncorrectChars, 0);
+				return totalCorrect / totalChars * 100;
 			}
 		}
 		Stopwatch stopwatch = new Stopwatch();
-		public TimeSpan TimeLimit = new TimeSpan(0, 0, 20);
+		public TimeSpan TimeLimit = new TimeSpan(0, 1, 0);
 		public TimeSpan RemainingTime
 		{
 			get
@@ -95,7 +105,7 @@ namespace TyperLib
 
 		public void loadText()
 		{
-			TheText = File.ReadAllText(Path.Combine("textToType.txt"));
+			TheText = File.ReadAllText("textToType.txt");
 		}
 
 		public void typeChar(uint keyCode)
@@ -160,7 +170,7 @@ namespace TyperLib
 		{
 			stopTime(true);
 			writtenChars = new LinkedList<Tuple<bool, char>>();
-			CorrectChars = IncorrectChars = 0;
+			CorrectChars = IncorrectChars = TotalIncorrectChars = 0;
 			currentCharIndex = 0;
 		}
 	}
