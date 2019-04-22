@@ -9,6 +9,9 @@ namespace TyperLib
 {
 	abstract public class Text
 	{
+		const uint KeyCode_Enter = 13;
+		const uint KeyCode_Backspace = 8;
+
 		protected string theText;
 		public string TheText
 		{
@@ -75,11 +78,15 @@ namespace TyperLib
 		public void typeChar(uint keyCode)
 		{
 			char c = (char)keyCode;
-			if (isFinished || keyCode == 13 || c == '\t')
+			if (isFinished || keyCode == KeyCode_Enter || c == '\t')
 				return;
 			if (!stopwatch.IsRunning)
+			{
+				if (keyCode == KeyCode_Backspace)
+					return;
 				startTime();
-			if (c == 8) //Backspace
+			}
+			if (c == KeyCode_Backspace)
 			{
 				if (currentCharIndex == 0)
 					return;

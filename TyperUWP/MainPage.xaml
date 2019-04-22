@@ -12,7 +12,7 @@
 	<Grid>
 		<StackPanel Orientation="Vertical">
 			<StackPanel x:Name="menu" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,30,0,30">
-				<TextBlock x:Name="timeText" FontSize="50"/>
+				<TextBlock x:Name="timeText" Margin="0,0,40,0" FontSize="50"/>
 				<Button x:Name="resetBtn" Content="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False"/>
 			</StackPanel>
 			<Grid x:Name ="textPanel">
