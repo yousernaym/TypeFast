@@ -28,15 +28,28 @@ namespace TyperLib
 				reset();
 			}
 		}
-		
+
 		protected int currentCharIndex;
 		protected const int NumCharsFromCenter = 100;
 		protected int startDrawChar => Math.Max(currentCharIndex - NumCharsFromCenter, 0);
 		protected LinkedList<Tuple<bool, char>> writtenChars;
-		int correctChars = 0;
-		int incorrectChars = 0;
+		public int CorrectChars { get; private set; } = 0;
+		public int IncorrectChars { get; private set; } = 0;
+		public int TotalIncorrectChars { get; private set; } = 0;
+
+		public int Wpm => Math.Max((int)((CorrectChars - IncorrectChars * 3) / ElapsedTime.TotalMinutes), 0) / 5;
+		public float Accuracy
+		{
+			get
+			{
+				float totalChars = (float)(writtenChars.Count);
+				if (totalChars == 0)
+					return 0;
+				return (totalChars - TotalIncorrectChars) / totalChars * 100;
+			}
+		}
 		Stopwatch stopwatch = new Stopwatch();
-		public TimeSpan TimeLimit = new TimeSpan(0, 0, 10);
+		public TimeSpan TimeLimit = new TimeSpan(0, 0, 20);
 		public TimeSpan RemainingTime
 		{
 			get
@@ -68,7 +81,7 @@ namespace TyperLib
 		private void checkTime(object state)
 		{
 			OnTimeChecked();
-			if (ElapsedTime.Ticks == 0)
+			if (RemainingTime.Ticks == 0)
 			{
 				OnFinished();
 			}
@@ -103,6 +116,10 @@ namespace TyperLib
 				if (currentCharIndex == 0)
 					return;
 				currentCharIndex--;
+				if (writtenChars.First.Value.Item1) //if correct
+					CorrectChars--;
+				else
+					IncorrectChars--;
 				writtenChars.RemoveFirst();
 			}
 			else
@@ -110,6 +127,13 @@ namespace TyperLib
 				char currentChar = theText[currentCharIndex++];
 				bool isCorrect = currentChar == c;
 				writtenChars.AddFirst(new Tuple<bool, char>(isCorrect, currentChar));
+				if (isCorrect)
+					CorrectChars++;
+				else
+				{
+					IncorrectChars++;
+					TotalIncorrectChars++;
+				}
 				if (currentCharIndex >= theText.Length)
 					OnFinished();
 			}
@@ -136,7 +160,7 @@ namespace TyperLib
 		{
 			stopTime(true);
 			writtenChars = new LinkedList<Tuple<bool, char>>();
-			correctChars = incorrectChars = 0;
+			CorrectChars = IncorrectChars = 0;
 			currentCharIndex = 0;
 		}
 	}

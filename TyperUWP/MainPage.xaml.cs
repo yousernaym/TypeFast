@@ -35,18 +35,18 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			text.TimeChecked += Text_TimeChecked;
-			text.TheText = "arsiteanrsotieanrsotiearnstoiaersntoiEn  missa text";
+			text.TheText = "En massa text.";
 			text.draw();
 		}
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
 		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.High, ()=> timeText.Text = text.RemainingTimeString);
-		}
-
-		private void updateTime(object state)
-		{
-			throw new NotImplementedException();
+			await Dispatcher.RunAsync(CoreDispatcherPriority.High, delegate
+			{
+				timeText.Text = "Time\n" + text.RemainingTimeString;
+				wpmText.Text = "WPM\n" + text.Wpm;
+				accuracyText.Text = "Accuracy\n" + text.Accuracy.ToString("0.00") + " %";
+			});
 		}
 
 		bool isKeyPressed(VirtualKey key)
@@ -66,6 +66,8 @@ namespace TyperUWP
 				return;
 			text.typeChar(args.KeyCode);
 			text.draw();
+			correctCharsText.Text = "Correct\n" + text.CorrectChars;
+			incorrectCharsText.Text = "Incorrect\n" + text.IncorrectChars;
 		}
 
 		private void ResetBtn_Click(object sender, RoutedEventArgs e)
