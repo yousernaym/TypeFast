@@ -106,6 +106,7 @@ namespace TyperUWP
 				if (currentChar == null)
 				{
 					control.Text = "";
+					control.Background = backgroundBrush;
 					continue;
 				}
 				bool isCorrect = currentChar.Value.Item1;

@@ -33,8 +33,10 @@ namespace TyperLib
 		protected const int NumCharsFromCenter = 100;
 		protected int startDrawChar => Math.Max(currentCharIndex - NumCharsFromCenter, 0);
 		protected LinkedList<Tuple<bool, char>> writtenChars;
+		int correctChars = 0;
+		int incorrectChars = 0;
 		Stopwatch stopwatch = new Stopwatch();
-		public TimeSpan TimeLimit = new TimeSpan(0, 1, 0);
+		public TimeSpan TimeLimit = new TimeSpan(0, 0, 10);
 		public TimeSpan RemainingTime
 		{
 			get
@@ -49,25 +51,33 @@ namespace TyperLib
 		public string RemainingTimeString => RemainingTime.Minutes + ":" + RemainingTime.Seconds.ToString("d2");
 			
 		public TimeSpan ElapsedTime => stopwatch.Elapsed;
-		bool isFinished => RemainingTime.Ticks == 0;
+		bool isFinished => RemainingTime.Ticks == 0 || currentCharIndex >= theText.Length;
 		Timer checkTimeTimer;
 		public event EventHandler TimeChecked;
+		public event EventHandler Finished;
 
 		protected string writtenTextToDraw => theText == null ? "" : theText.Substring(startDrawChar, currentCharIndex - startDrawChar);
 		protected string unwrittenTextToDraw => theText == null ? "" : theText.Substring(currentCharIndex, Math.Min(theText.Length - currentCharIndex, NumCharsFromCenter));
 
-		protected virtual void OnTimeChecked(EventArgs e)
+
+		protected virtual void OnTimeChecked()
 		{
-			TimeChecked?.Invoke(this, e);
+			TimeChecked?.Invoke(this, new EventArgs());
 		}
 
 		private void checkTime(object state)
 		{
-			OnTimeChecked(new EventArgs());
+			OnTimeChecked();
 			if (ElapsedTime.Ticks == 0)
 			{
-				stopTime();
+				OnFinished();
 			}
+		}
+
+		private void OnFinished()
+		{
+			stopTime(false);
+			Finished?.Invoke(this, new EventArgs());
 		}
 
 		public void loadText()
@@ -80,12 +90,14 @@ namespace TyperLib
 			char c = (char)keyCode;
 			if (isFinished || keyCode == KeyCode_Enter || c == '\t')
 				return;
+
 			if (!stopwatch.IsRunning)
 			{
 				if (keyCode == KeyCode_Backspace)
 					return;
 				startTime();
 			}
+
 			if (c == KeyCode_Backspace)
 			{
 				if (currentCharIndex == 0)
@@ -95,32 +107,36 @@ namespace TyperLib
 			}
 			else
 			{
-				if (currentCharIndex >= theText.Length)
-					return;
 				char currentChar = theText[currentCharIndex++];
 				bool isCorrect = currentChar == c;
 				writtenChars.AddFirst(new Tuple<bool, char>(isCorrect, currentChar));
+				if (currentCharIndex >= theText.Length)
+					OnFinished();
 			}
 		}
 
 		void startTime()
 		{
-			stopTime();
+			stopTime(true);
 			stopwatch.Start();
 			checkTimeTimer = new Timer(checkTime, null, 0, 100);
 		}
 
-		void stopTime()
+		void stopTime(bool reset)
 		{
-			stopwatch.Reset();
+			if (reset)
+				stopwatch.Reset();
+			else
+				stopwatch.Stop();
 			checkTimeTimer?.Dispose();
-			OnTimeChecked(new EventArgs());
+			OnTimeChecked();
 		}
 
 		protected void reset()
 		{
-			stopTime();
+			stopTime(true);
 			writtenChars = new LinkedList<Tuple<bool, char>>();
+			correctChars = incorrectChars = 0;
 			currentCharIndex = 0;
 		}
 	}
