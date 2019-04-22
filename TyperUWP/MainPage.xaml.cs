@@ -84,7 +84,7 @@ namespace TyperUWP
 			if (dataPackageView.Contains(StandardDataFormats.Text))
 			{
 				text.TheText = await dataPackageView.GetTextAsync();
-				text.draw();
+				reset();
 			}
 		}
 	
