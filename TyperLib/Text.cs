@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Threading;
 
 namespace TyperLib
 {
@@ -21,6 +22,7 @@ namespace TyperLib
 				theText = theText.Replace((char)160, ' '); //Convert non-breaking space to regular space
 				Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
 				theText = regex.Replace(theText, " ");
+				reset();
 			}
 		}
 		
@@ -29,12 +31,39 @@ namespace TyperLib
 		protected int startDrawChar => Math.Max(currentCharIndex - NumCharsFromCenter, 0);
 		protected LinkedList<Tuple<bool, char>> writtenChars;
 		Stopwatch stopwatch = new Stopwatch();
-		public TimeSpan TimeLimit;
-		public TimeSpan RemainingTime => TimeLimit - ElapsedTime;
+		public TimeSpan TimeLimit = new TimeSpan(0, 1, 0);
+		public TimeSpan RemainingTime
+		{
+			get
+			{
+				var dif = TimeLimit - ElapsedTime;
+				if (dif.Ticks < 0)
+					return new TimeSpan(0);
+				else
+					return dif;
+			}
+		}
 		public TimeSpan ElapsedTime => stopwatch.Elapsed;
+		bool isFinished => RemainingTime.Ticks == 0;
+		Timer checkTimeTimer;
+		public event EventHandler TimeChecked;
 
 		protected string writtenTextToDraw => theText == null ? "" : theText.Substring(startDrawChar, currentCharIndex - startDrawChar);
 		protected string unwrittenTextToDraw => theText == null ? "" : theText.Substring(currentCharIndex, Math.Min(theText.Length - currentCharIndex, NumCharsFromCenter));
+
+		protected virtual void OnTimeChecked(EventArgs e)
+		{
+			TimeChecked?.Invoke(this, e);
+		}
+
+		private void checkTime(object state)
+		{
+			OnTimeChecked(new EventArgs());
+			if (ElapsedTime.Ticks == 0)
+			{
+				stopTime();
+			}
+		}
 
 		public void loadText()
 		{
@@ -43,7 +72,11 @@ namespace TyperLib
 
 		public void typeChar(char c)
 		{
-			if (c == 8)
+			if (isFinished)
+				return;
+			if (!stopwatch.IsRunning)
+				startTime();
+			if (c == 8) //Backspace
 			{
 				if (currentCharIndex == 0)
 					return;
@@ -60,16 +93,25 @@ namespace TyperLib
 			}
 		}
 
-		protected void reset()
+		void startTime()
 		{
-			stopwatch.Reset();
-			writtenChars = new LinkedList<Tuple<bool, char>>();
-			currentCharIndex = 0;
+			stopTime();
+			stopwatch.Start();
+			checkTimeTimer = new Timer(checkTime, null, 0, 100);
 		}
 
-		protected void start()
+		void stopTime()
 		{
-			stopwatch.Start();
+			stopwatch.Reset();
+			checkTimeTimer?.Dispose();
+			OnTimeChecked(new EventArgs());
+		}
+
+		protected void reset()
+		{
+			stopTime();
+			writtenChars = new LinkedList<Tuple<bool, char>>();
+			currentCharIndex = 0;
 		}
 	}
 }

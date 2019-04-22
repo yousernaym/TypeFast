@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Diagnostics;
 using Windows.System;
+using System.Threading;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -30,12 +31,22 @@ namespace TyperUWP
        	public MainPage()
 		{
 			this.InitializeComponent();
-			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
-
+			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
+			text.TimeChecked += Text_TimeChecked;
 			text.TheText = "arsiteanrsotieanrsotiearnstoiaersntoiEn  missa text";
 			text.draw();
+		}
+
+		private async void Text_TimeChecked(object sender, EventArgs e)
+		{
+			await Dispatcher.RunAsync(CoreDispatcherPriority.High, ()=> timeText.Text = text.RemainingTime.ToString());
+		}
+
+		private void updateTime(object state)
+		{
+			throw new NotImplementedException();
 		}
 
 		bool isKeyPressed(VirtualKey key)
