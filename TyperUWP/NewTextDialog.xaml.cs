@@ -62,8 +62,6 @@ namespace TyperUWP
 
 		void displayError(TextBox entry, string error)
 		{
-			//var mb = new ContentDialog { CloseButtonText = "Ok", Content = error};
-			//await mb.ShowAsync();
 			errorText.Text = error;
 			errorFlyout.ShowAt(entry);
 		}

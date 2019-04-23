@@ -6,10 +6,11 @@ using Windows.Storage;
 
 namespace TyperUWP
 {
+	using System.Collections;
 	using ListType = Dictionary<string, string>;
 
 	[Serializable]
-	public class TextList
+	public class TextList : IEnumerable<KeyValuePair<string, string>>
 	{
 		readonly string localFolder = ApplicationData.Current.LocalFolder.Path;
 		ListType presetList = new ListType();
@@ -17,7 +18,7 @@ namespace TyperUWP
 		readonly string presetPath;
 		readonly string userPath;
 
-		public TextList()
+		public TextList() 
 		{
 			presetPath = Path.Combine(localFolder, "presetTexts");
 			userPath = Path.Combine(localFolder, "userTexts");
@@ -41,9 +42,7 @@ namespace TyperUWP
 			using (var stream = File.Open(tempPath, FileMode.Create))
 			{
 				var dcs = new DataContractSerializer(typeof(ListType));
-				var list = new ListType();
-				dcs.WriteObject(stream, list);
-				userList = list;
+				dcs.WriteObject(stream, userList);
 			}
 			File.Delete(userPath);
 			File.Move(tempPath, userPath);
@@ -76,6 +75,28 @@ namespace TyperUWP
 		internal bool containsTitle(string title)
 		{
 			return userList.ContainsKey(title);
+		}
+
+		public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+		{
+			return ((IEnumerable<KeyValuePair<string, string>>)userList).GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return ((IEnumerable<KeyValuePair<string, string>>)userList).GetEnumerator();
+		}
+
+		void resetFactoryTexts()
+		{
+			userList = new ListType();
+			foreach (var text in presetList)
+				userList.Add(text.Key, text.Value);
+		}
+
+		internal string getText(string titLe)
+		{
+			return userList[titLe];
 		}
 	}
 }

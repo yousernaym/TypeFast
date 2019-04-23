@@ -8,9 +8,7 @@
     mc:Ignorable="d"
     Title="Add new text"
     PrimaryButtonText="Save"
-	SecondaryButtonText="Button2"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
-    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
 	CloseButtonText="Cancel"
 	Closing="ContentDialog_Closing"
 	>

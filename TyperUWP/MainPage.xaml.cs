@@ -35,7 +35,6 @@ namespace TyperUWP
 		{
 			this.InitializeComponent();
 			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 300));
-
 			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
@@ -46,7 +45,11 @@ namespace TyperUWP
 			text.loadText();
 			text.draw();
 			updateTypingStats();
-
+			foreach (var text in textList)
+			{
+				textsCombo.Items.Add(text.Key);
+			}
+			textsCombo.SelectedIndex = 0;
 			//Clipboard.ContentChanged += async (s, e) =>
 			//{
 			//};
@@ -130,6 +133,14 @@ namespace TyperUWP
 		{
 			NewTextDialog newTextDialog = new NewTextDialog(textList);
 			await newTextDialog.ShowAsync();
+			textsCombo.Items.Add(newTextDialog.TitleEntry);
+			textsCombo.SelectedIndex = textsCombo.Items.Count - 1;
+		}
+
+		private void TextsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			text.TheText = textList.getText((string)textsCombo.SelectedItem);
+			reset();
 		}
 	}
 }
