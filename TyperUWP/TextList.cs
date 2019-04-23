@@ -10,7 +10,7 @@ namespace TyperUWP
 	using ListType = Dictionary<string, string>;
 
 	[Serializable]
-	public class TextList : IEnumerable<KeyValuePair<string, string>>
+	public class TextList : IEnumerable<TextEntry>
 	{
 		readonly string localFolder = ApplicationData.Current.LocalFolder.Path;
 		ListType presetList = new ListType();
@@ -77,14 +77,16 @@ namespace TyperUWP
 			return userList.ContainsKey(title);
 		}
 
-		public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+		public IEnumerator<TextEntry> GetEnumerator()
 		{
-			return ((IEnumerable<KeyValuePair<string, string>>)userList).GetEnumerator();
+			//return ((IEnumerable<KeyValuePair<string, string>>)userList).GetEnumerator();
+			foreach (var entry in userList)
+				yield return new TextEntry { Title = entry.Key, Text = entry.Value };
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable<KeyValuePair<string, string>>)userList).GetEnumerator();
+			return GetEnumerator();
 		}
 
 		void resetFactoryTexts()
@@ -99,4 +101,11 @@ namespace TyperUWP
 			return userList[titLe];
 		}
 	}
+
+	public class TextEntry
+	{
+		public string Title;
+		public string Text;
+	}
+
 }

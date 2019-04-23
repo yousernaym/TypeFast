@@ -47,7 +47,7 @@ namespace TyperUWP
 			updateTypingStats();
 			foreach (var text in textList)
 			{
-				textsCombo.Items.Add(text.Key);
+				textsCombo.Items.Add(text.Title);
 			}
 			textsCombo.SelectedIndex = 0;
 			//Clipboard.ContentChanged += async (s, e) =>
