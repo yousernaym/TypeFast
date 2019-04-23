@@ -11,6 +11,7 @@ namespace TyperLib
 	{
 		const uint KeyCode_Enter = 13;
 		const uint KeyCode_Backspace = 8;
+		const uint KeyCode_Escape = 27;
 
 		protected string theText;
 		public string TheText
@@ -83,7 +84,6 @@ namespace TyperLib
 		protected string writtenTextToDraw => theText == null ? "" : theText.Substring(startDrawChar, currentCharIndex - startDrawChar);
 		protected string unwrittenTextToDraw => theText == null ? "" : theText.Substring(currentCharIndex, Math.Min(theText.Length - currentCharIndex, NumCharsFromCenter));
 
-
 		protected virtual void OnTimeChecked()
 		{
 			TimeChecked?.Invoke(this, new EventArgs());
@@ -112,7 +112,7 @@ namespace TyperLib
 		public void typeChar(uint keyCode)
 		{
 			char c = (char)keyCode;
-			if (isFinished || keyCode == KeyCode_Enter || c == '\t')
+			if (isFinished || keyCode == KeyCode_Enter || keyCode == KeyCode_Escape || c == '\t')
 				return;
 
 			if (!stopwatch.IsRunning)

@@ -30,6 +30,7 @@ namespace TyperUWP
 	public sealed partial class MainPage : Page
 	{
 		Text text;
+		TextList textList = new TextList();
 		public MainPage()
 		{
 			this.InitializeComponent();
@@ -123,6 +124,12 @@ namespace TyperUWP
 		private void PasteBtn_Click(object sender, RoutedEventArgs e)
 		{
 			pasteText();
+		}
+
+		async private void NewTextBtn_Click(object sender, RoutedEventArgs e)
+		{
+			NewTextDialog newTextDialog = new NewTextDialog(textList);
+			await newTextDialog.ShowAsync();
 		}
 	}
 }
