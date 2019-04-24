@@ -45,6 +45,8 @@ namespace TyperUWP
 			text.loadText();
 			text.draw();
 			updateTypingStats();
+			textsCombo.Items.VectorChanged += textsCombo_Items_VectorChanged;
+
 			foreach (var text in textList)
 			{
 				textsCombo.Items.Add(text.Title);
@@ -53,6 +55,11 @@ namespace TyperUWP
 			//Clipboard.ContentChanged += async (s, e) =>
 			//{
 			//};
+		}
+
+		private void textsCombo_Items_VectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
+		{
+			deleteTextBtn.IsEnabled = textsCombo.Items.Count > 0;
 		}
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
@@ -139,8 +146,26 @@ namespace TyperUWP
 
 		private void TextsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			text.TheText = textList.getText((string)textsCombo.SelectedItem);
+			string title = (string)textsCombo.SelectedItem;
+			if (title == null)
+				return;
+			text.TheText = textList.getText(title);
 			reset();
+		}
+
+		async private void DeleteTextBtn_Click(object sender, RoutedEventArgs e)
+		{
+			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to delete this text? This action cannot be undone." };
+			ContentDialogResult result = await dlg.ShowAsync();
+            if (result == ContentDialogResult.Primary)
+            {
+                textList.remove((string)textsCombo.SelectedItem);
+                int selectedIndex = textsCombo.SelectedIndex;
+                textsCombo.Items.RemoveAt(textsCombo.SelectedIndex);
+                if (selectedIndex >= textsCombo.Items.Count)
+                    selectedIndex--;
+                textsCombo.SelectedIndex = selectedIndex;
+            }
 		}
 	}
 }

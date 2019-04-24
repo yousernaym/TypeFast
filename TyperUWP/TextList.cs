@@ -72,6 +72,12 @@ namespace TyperUWP
 			save();
 		}
 
+		internal void remove(string title)
+		{
+			userList.Remove(title);
+			save();
+		}
+
 		internal bool containsTitle(string title)
 		{
 			return userList.ContainsKey(title);
@@ -100,6 +106,8 @@ namespace TyperUWP
 		{
 			return userList[titLe];
 		}
+
+		
 	}
 
 	public class TextEntry

@@ -21,8 +21,9 @@
 				<TextBlock x:Name="timeText" Margin="0,0,40,0" FontSize="20"/>
 				<Button x:Name="resetBtn" CornerRadius="6" Content="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,10,0"/>
 				<!--<Button x:Name="pasteBtn" CornerRadius="6" Content="Paste text" Click="PasteBtn_Click"  AllowFocusOnInteraction="False" IsTabStop="False"/>-->
-				<ComboBox x:Name="textsCombo" SelectionChanged="TextsCombo_SelectionChanged"/>
+				<ComboBox x:Name="textsCombo" SelectionChanged="TextsCombo_SelectionChanged" />
 				<Button x:Name="newTextBtn" CornerRadius="6" Content="Add text" Click="NewTextBtn_Click" IsTabStop="False" AllowFocusOnInteraction="False"/>
+				<Button x:Name="deleteTextBtn" CornerRadius="6" Content="Remove text" Click="DeleteTextBtn_Click"  IsTabStop="False" AllowFocusOnInteraction="False"/>
 			</StackPanel>
 			<Grid x:Name ="textPanel">
 				<Grid.ColumnDefinitions>
