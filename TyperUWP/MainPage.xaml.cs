@@ -33,6 +33,8 @@ namespace TyperUWP
 	{
 		Text text;
 		TextList textList = new TextList(ApplicationData.Current.LocalFolder.Path);
+		private bool typingDisabled = false;
+
 		public MainPage()
 		{
 			this.InitializeComponent();
@@ -103,7 +105,7 @@ namespace TyperUWP
 	
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
-			if (isKeyPressed(VirtualKey.Control))
+			if (typingDisabled || isKeyPressed(VirtualKey.Control))
 				return;
 			text.typeChar(args.KeyCode);
 			text.draw();
@@ -141,7 +143,10 @@ namespace TyperUWP
 		async private void NewTextBtn_Click(object sender, RoutedEventArgs e)
 		{
 			NewTextDialog newTextDialog = new NewTextDialog(textList);
+			typingDisabled = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
+			typingDisabled = false;
+
 			if (result == ContentDialogResult.Primary)
 			{
 				textsCombo.Items.Add(newTextDialog.TitleEntry);
