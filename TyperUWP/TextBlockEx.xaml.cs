@@ -23,7 +23,7 @@ namespace TyperUWP
 
 		public Brush ForeGround
 		{
-			get { return (Brush)GetValue(ForeGroundProperty); }
+			get { return textBlock.Foreground; }
 			set
 			{
 				SetValue(ForeGroundProperty, value);
@@ -36,7 +36,7 @@ namespace TyperUWP
 
 		new public Brush Background
 		{
-			get { return (Brush)GetValue(BackgroundProperty); }
+			get { return border.Background; }
 			set
 			{
 				SetValue(BackgroundProperty, value);

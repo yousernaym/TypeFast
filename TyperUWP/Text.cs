@@ -40,8 +40,9 @@ namespace TyperUWP
 			unwrittenTextControl = _unwrittenTextControl;
 			setFont("", 50);
 
-			foregroundBrush = _unwrittenTextControl.Foreground;
-			backgroundBrush = currentCharControl.Background;
+			TextBlockEx templateTextBlock = new TextBlockEx();
+			foregroundBrush = templateTextBlock.ForeGround;
+			backgroundBrush = templateTextBlock.Background;
 
 			//var isDark = Application.Current.RequestedTheme == ApplicationTheme.Dark;
 			//var uiSettings = new UISettings();

@@ -80,13 +80,13 @@ namespace TyperUWP
 
 		private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
 		{
-			if (isKeyPressed(VirtualKey.Control))
-			{
-				if (args.VirtualKey == VirtualKey.R)
-					reset();
-				else if (args.VirtualKey == VirtualKey.V)
-					pasteText();
-			}
+			//if (isKeyPressed(VirtualKey.Control))
+			//{
+			//	if (args.VirtualKey == VirtualKey.R)
+			//		reset();
+			//	else if (args.VirtualKey == VirtualKey.V)
+			//		pasteText();
+			//}
 		}
 
 		async void pasteText()
