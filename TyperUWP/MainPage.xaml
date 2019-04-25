@@ -34,7 +34,7 @@
 				</StackPanel>
 			</Grid>
 			<Border>
-			<StackPanel x:Name="sessionInfo" CornerRadius="5" Padding="10,1,1,0" Orientation="Horizontal" Background="#00000000" HorizontalAlignment="Center" Margin="0,30,0,30">
+			<StackPanel x:Name="sessionInfo" CornerRadius="5" Padding="10,1,1,0" Orientation="Horizontal" Background="#ff050a15" HorizontalAlignment="Center" Margin="0,30,0,30">
 				<TextBlock x:Name="correctCharsText" Margin="0,0,40,0" FontSize="20"/>
 				<TextBlock x:Name="incorrectCharsText" Margin="0,0,40,0" FontSize="20"/>
 				<TextBlock x:Name="fixedCharsText" Margin="0,0,40,0" FontSize="20"/>
