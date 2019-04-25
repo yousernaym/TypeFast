@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
@@ -36,10 +38,20 @@ namespace TyperUWP
 			
 			currentCharControl = _currentCharControl;
 			unwrittenTextControl = _unwrittenTextControl;
-			setStyle("", 50, new SolidColorBrush(Colors.White), new SolidColorBrush(Colors.Black), new SolidColorBrush(Colors.Green), new SolidColorBrush(Colors.Red));
+			setFont("", 50);
+
+			foregroundBrush = _unwrittenTextControl.Foreground;
+			backgroundBrush = currentCharControl.Background;
+
+			//var isDark = Application.Current.RequestedTheme == ApplicationTheme.Dark;
+			//var uiSettings = new UISettings();
+			//var themeBackgroundColor = uiSettings.GetColorValue(UIColorType.Background);
+		
+			errorBrush = new SolidColorBrush(Colors.Red);
+			correctBrush = new SolidColorBrush(Colors.Green);
 		}
 
-		public void setStyle(string fontName, double _fontSize, Brush foreground, Brush background, Brush correct, Brush error)
+		public void setFont(string fontName, double _fontSize)
 		{
 			//Create font family
 			if (string.IsNullOrEmpty(fontName))
@@ -50,30 +62,30 @@ namespace TyperUWP
 			fontSize = _fontSize;
 
 			//Assign brushes
-			foregroundBrush = foreground;
-			backgroundBrush = background;
-			correctBrush = correct;
-			errorBrush = error;
+			//foregroundBrush = foreground;
+			//backgroundBrush = background;
+			//correctBrush = correct;
+			//errorBrush = error;
 
 			//Set panel background
-			textPanel.Background = background;
+			//textPanel.Background = background;
 			
 			//Written text style
 			foreach (var control in writtenTextControls)
 			{
 				control.FontFamily = fontFamily;
 				control.FontSize = fontSize;
-				control.Foreground = foregroundBrush;
+				//control.Foreground = foregroundBrush;
 			}
 
 			//Current character
-			currentCharControl.Background = foregroundBrush;
-			currentCharControl.Foreground = backgroundBrush;
+			//currentCharControl.Background = foregroundBrush;
+			//currentCharControl.Foreground = backgroundBrush;
 			currentCharControl.FontFamily = fontFamily;
 			currentCharControl.FontSize = fontSize;
 
 			//Set color of unwritten text
-			unwrittenTextControl.Foreground = foregroundBrush;
+			//unwrittenTextControl.Foreground = foregroundBrush;
 			unwrittenTextControl.FontFamily = fontFamily;
 			unwrittenTextControl.FontSize = fontSize;
 

@@ -139,15 +139,18 @@ namespace TyperUWP
 		async private void NewTextBtn_Click(object sender, RoutedEventArgs e)
 		{
 			NewTextDialog newTextDialog = new NewTextDialog(textList);
-			await newTextDialog.ShowAsync();
-			textsCombo.Items.Add(newTextDialog.TitleEntry);
-			textsCombo.SelectedIndex = textsCombo.Items.Count - 1;
+			ContentDialogResult result = await newTextDialog.ShowAsync();
+			if (result == ContentDialogResult.Primary)
+			{
+				textsCombo.Items.Add(newTextDialog.TitleEntry);
+				textsCombo.SelectedIndex = textsCombo.Items.Count - 1;
+			}
 		}
 
 		private void TextsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			string title = (string)textsCombo.SelectedItem;
-			if (title == null)
+			if (string.IsNullOrEmpty(title))
 				return;
 			text.TheText = textList.getText(title);
 			reset();
