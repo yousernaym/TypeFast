@@ -130,7 +130,6 @@
     <Compile Include="TextBlockEx.xaml.cs">
       <DependentUpon>TextBlockEx.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TextList.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

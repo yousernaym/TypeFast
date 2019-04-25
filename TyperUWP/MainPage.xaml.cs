@@ -19,6 +19,8 @@ using Windows.System;
 using System.Threading;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.ViewManagement;
+using Windows.Storage;
+using TyperLib;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -30,7 +32,7 @@ namespace TyperUWP
 	public sealed partial class MainPage : Page
 	{
 		Text text;
-		TextList textList = new TextList();
+		TextList textList = new TextList(ApplicationData.Current.LocalFolder.Path);
 		public MainPage()
 		{
 			this.InitializeComponent();

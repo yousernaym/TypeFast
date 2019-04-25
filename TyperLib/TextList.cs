@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
-using Windows.Storage;
 
-namespace TyperUWP
+namespace TyperLib
 {
 	using System.Collections;
 	using ListType = Dictionary<string, string>;
@@ -12,57 +11,50 @@ namespace TyperUWP
 	[Serializable]
 	public class TextList : IEnumerable<TextEntry>
 	{
-		readonly string localFolder = ApplicationData.Current.LocalFolder.Path;
 		ListType presetList = new ListType();
 		ListType userList = new ListType();
-		readonly string presetPath;
-		readonly string userPath;
+		readonly string path;
 
-		public TextList() 
+		public TextList(string dir) 
 		{
-			presetPath = Path.Combine(localFolder, "presetTexts");
-			userPath = Path.Combine(localFolder, "userTexts");
+			path = Path.Combine(dir, "textList");
 			//save();
-			if (File.Exists(userPath))
-				userList = load(userPath);
+			if (File.Exists(path))
+				userList = load(path);
 		}
 
-		ListType load(string path)
+		ListType load(string loadPath)
 		{
-			using (var stream = File.Open(path, FileMode.Open))
+			using (var stream = File.Open(loadPath, FileMode.Open))
 			{
 				var dcs = new DataContractSerializer(typeof(ListType));
 				return (ListType)dcs.ReadObject(stream);
 			}
 		}
 
-		void save()
+		void save(string savePath = null)
 		{
-			string tempPath = userPath + "_";
-			using (var stream = File.Open(tempPath, FileMode.Create))
+			if (savePath == null)
+				savePath = path;
+			string tempPath = savePath + "_";
+			try
 			{
-				var dcs = new DataContractSerializer(typeof(ListType));
-				dcs.WriteObject(stream, userList);
+				using (var stream = File.Open(tempPath, FileMode.Create))
+				{
+					var dcs = new DataContractSerializer(typeof(ListType));
+					dcs.WriteObject(stream, userList);
+				}
 			}
-			File.Delete(userPath);
-			File.Move(tempPath, userPath);
+			catch
+			{
+				File.Delete(tempPath);
+				throw;
+			}
+			File.Delete(savePath);
+			File.Move(tempPath, savePath);
 		}
 
-		//public TextList(SerializationInfo info, StreamingContext context)
-		//{
-		//	foreach (var entry in info)
-		//	{
-		//		if (entry.Name == "list")
-		//			list = (Dictionary<string, string>)entry.Value;
-		//	}
-		//}
-
-		//public void GetObjectData(SerializationInfo info, StreamingContext context)
-		//{
-		//	info.AddValue("list", userList);
-		//}
-
-		internal void add(string title, string text)
+		public void add(string title, string text)
 		{
 			if (userList.ContainsKey(title))
 				throw new ArgumentException("There already exists a text with the specified title.");
@@ -72,13 +64,13 @@ namespace TyperUWP
 			save();
 		}
 
-		internal void remove(string title)
+		public void remove(string title)
 		{
 			userList.Remove(title);
 			save();
 		}
 
-		internal bool containsTitle(string title)
+		public bool containsTitle(string title)
 		{
 			return userList.ContainsKey(title);
 		}
@@ -102,7 +94,7 @@ namespace TyperUWP
 				userList.Add(text.Key, text.Value);
 		}
 
-		internal string getText(string titLe)
+		public string getText(string titLe)
 		{
 			return userList[titLe];
 		}
@@ -117,3 +109,8 @@ namespace TyperUWP
 	}
 
 }
+
+
+//var assembly = IntrospectionExtensions.GetTypeInfo(typeof(LoadResourceText)).Assembly;
+//Stream stream = assembly.GetManifestResourceStream("WorkingWithFiles.PCLTextResource.txt");
+//string text = "";
