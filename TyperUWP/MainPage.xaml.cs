@@ -43,6 +43,7 @@ namespace TyperUWP
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
+			text.TimeLimit = TimeSpan.FromSeconds(10);
 			text.TimeChecked += Text_TimeChecked;
 			//text.TheText = "abcdefghijklmnopqrstuvwxyzåäö";
 			text.loadText();
@@ -55,6 +56,7 @@ namespace TyperUWP
 				textsCombo.Items.Add(text.Title);
 			}
 			textsCombo.SelectedIndex = 0;
+			
 			//Clipboard.ContentChanged += async (s, e) =>
 			//{
 			//};
@@ -72,6 +74,14 @@ namespace TyperUWP
 				timeText.Text = "Time\n" + text.RemainingTimeString;
 				wpmText.Text = "WPM\n" + text.Wpm;
 				accuracyText.Text = "Accuracy\n" + text.Accuracy.ToString("0.00") + " %";
+				
+				if (text.IsFinished)
+					timeText.Background = new SolidColorBrush(Colors.DarkRed);
+				else if (text.IsRunning)
+					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
+				else
+					timeText.Background = new SolidColorBrush(Colors.Black);
+
 			});
 		}
 
@@ -116,6 +126,7 @@ namespace TyperUWP
 				return;
 			text.reset();
 			updateTypingStats();
+			//timeBorder.Background = new SolidColorBrush(Colors.Green);
 		}
 
 		private void Page_Loaded(object sender, RoutedEventArgs e)

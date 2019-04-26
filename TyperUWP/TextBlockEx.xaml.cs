@@ -20,7 +20,34 @@ namespace TyperUWP
 {
 	public sealed partial class TextBlockEx : UserControl
 	{
+		new public Thickness Margin
+		{
+			get { return border.Margin; }
+			set
+			{
+				border.Margin = value;
+				SetValue(MarginProperty, value);
+			}
+		}
 
+		// Using a DependencyProperty as the backing store for Margin.  This enables animation, styling, binding, etc...
+		new public static readonly DependencyProperty MarginProperty =
+			DependencyProperty.Register("Margin", typeof(Thickness), typeof(TextBlockEx), new PropertyMetadata(0));
+
+		new public Thickness Padding
+		{
+			get { return border.Padding; }
+			set
+			{
+				border.Padding = value;
+				SetValue(PaddingProperty, value);
+			}
+		}
+
+		// Using a DependencyProperty as the backing store for Padding.  This enables animation, styling, binding, etc...
+		new public static readonly DependencyProperty PaddingProperty =
+			DependencyProperty.Register("Padding", typeof(Thickness), typeof(TextBlockEx), new PropertyMetadata(0));
+				
 		public Brush ForeGround
 		{
 			get { return textBlock.Foreground; }
@@ -60,6 +87,22 @@ namespace TyperUWP
 		// Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty TextProperty =
 			DependencyProperty.Register("Text", typeof(string), typeof(TextBlockEx), new PropertyMetadata(0));
+
+		new public CornerRadius CornerRadius
+		{
+			get { return border.CornerRadius; }
+			set
+			{
+				border.CornerRadius = value;
+				SetValue(CornerRadiusProperty, value);
+			}
+		}
+
+		// Using a DependencyProperty as the backing store for CornerRadius.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty CornerRadiusProperty =
+			DependencyProperty.Register("CornerRadius", typeof(CornerRadius), typeof(TextBlockEx), new PropertyMetadata(0));
+
+
 
 		public TextBlockEx()
 		{

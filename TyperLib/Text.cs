@@ -77,7 +77,8 @@ namespace TyperLib
 		public string RemainingTimeString => RemainingTime.Minutes + ":" + RemainingTime.Seconds.ToString("d2");
 			
 		public TimeSpan ElapsedTime => stopwatch.Elapsed;
-		bool isFinished => RemainingTime.Ticks == 0 || currentCharIndex >= theText.Length;
+		public bool IsFinished => RemainingTime.Ticks == 0 || currentCharIndex >= theText.Length;
+		public bool IsRunning => stopwatch.IsRunning;
 		Timer checkTimeTimer;
 		public event EventHandler TimeChecked;
 		public event EventHandler Finished;
@@ -115,7 +116,7 @@ namespace TyperLib
 			char c = (char)keyCode;
 			//if ((args.KeyCode < ' ') || (args.KeyCode > '~'))       //Exit if its a non displayed character
 				//return;
-			if (isFinished || keyCode == KeyCode_Enter || keyCode == KeyCode_Escape || c == '\t')
+			if (IsFinished || keyCode == KeyCode_Enter || keyCode == KeyCode_Escape || c == '\t')
 				return;
 
 			if (!stopwatch.IsRunning)

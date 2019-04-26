@@ -10,8 +10,8 @@
     d:DesignWidth="400">
 
     <Grid>
-		<Border Name="border" BorderBrush="Black">
-			<TextBlock Name="textBlock"  Text=""/>
+		<Border x:Name="border">
+			<TextBlock x:Name="textBlock"  Text=""/>
 		</Border>
 	</Grid>
 </UserControl>
