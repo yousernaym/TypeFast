@@ -33,7 +33,7 @@ namespace TyperUWP
 	{
 		Text text;
 		TextList textList = new TextList(ApplicationData.Current.LocalFolder.Path);
-		private bool typingDisabled = false;
+		private bool modalDialogOpen = false;
 
 		public MainPage()
 		{
@@ -78,35 +78,23 @@ namespace TyperUWP
 
 		bool isKeyPressed(VirtualKey key)
 		{
-			var state = CoreWindow.GetForCurrentThread().GetKeyState(key);
+			var state = CoreWindow.GetForCurrentThread().GetAsyncKeyState(key);
 			return (state & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 		}
 
-		private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
+		private bool isKeyLocked(VirtualKey key)
 		{
-			//if (isKeyPressed(VirtualKey.Control))
-			//{
-			//	if (args.VirtualKey == VirtualKey.R)
-			//		reset();
-			//	else if (args.VirtualKey == VirtualKey.V)
-			//		pasteText();
-			//}
+			var state = CoreWindow.GetForCurrentThread().GetAsyncKeyState(key);
+			return (state & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Locked;
 		}
 
-		async void pasteText()
-		{
-			DataPackageView dataPackageView = Clipboard.GetContent();
-			if (dataPackageView.Contains(StandardDataFormats.Text))
-			{
-				text.TheText = await dataPackageView.GetTextAsync();
-				reset();
-			}
-		}
-	
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
-			if (typingDisabled || isKeyPressed(VirtualKey.Control))
+
+			if (modalDialogOpen || isKeyPressed(VirtualKey.Control) || isKeyLocked(VirtualKey.Menu))
 				return;
+
+			args.Handled = true; //needed?
 			text.typeChar(args.KeyCode);
 			text.draw();
 			updateTypingStats();
@@ -126,6 +114,8 @@ namespace TyperUWP
 
 		void reset()
 		{
+			if (modalDialogOpen)
+				return;
 			text.reset();
 			updateTypingStats();
 		}
@@ -135,17 +125,27 @@ namespace TyperUWP
 
 		}
 
-		private void PasteBtn_Click(object sender, RoutedEventArgs e)
+		async private void PasteBtn_Click(object sender, RoutedEventArgs e)
 		{
-			pasteText();
+			if (modalDialogOpen)
+				return;
+			DataPackageView dataPackageView = Clipboard.GetContent();
+			if (dataPackageView.Contains(StandardDataFormats.Text))
+			{
+				text.TheText = await dataPackageView.GetTextAsync();
+				reset();
+				textsCombo.SelectedIndex = -1;
+			}
 		}
 
 		async private void NewTextBtn_Click(object sender, RoutedEventArgs e)
 		{
+			if (modalDialogOpen)
+				return;
 			NewTextDialog newTextDialog = new NewTextDialog(textList);
-			typingDisabled = true;
+			modalDialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
-			typingDisabled = false;
+			modalDialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
 			{
@@ -156,6 +156,8 @@ namespace TyperUWP
 
 		private void TextsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (modalDialogOpen)
+				return;
 			string title = (string)textsCombo.SelectedItem;
 			if (string.IsNullOrEmpty(title))
 				return;
@@ -165,6 +167,8 @@ namespace TyperUWP
 
 		async private void DeleteTextBtn_Click(object sender, RoutedEventArgs e)
 		{
+			if (modalDialogOpen)
+				return;
 			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to delete this text? This action cannot be undone." };
 			ContentDialogResult result = await dlg.ShowAsync();
             if (result == ContentDialogResult.Primary)

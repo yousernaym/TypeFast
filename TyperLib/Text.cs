@@ -112,6 +112,8 @@ namespace TyperLib
 		public void typeChar(uint keyCode)
 		{
 			char c = (char)keyCode;
+			//if ((args.KeyCode < ' ') || (args.KeyCode > '~'))       //Exit if its a non displayed character
+				//return;
 			if (isFinished || keyCode == KeyCode_Enter || keyCode == KeyCode_Escape || c == '\t')
 				return;
 
