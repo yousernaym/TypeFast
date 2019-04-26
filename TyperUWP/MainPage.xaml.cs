@@ -42,7 +42,6 @@ namespace TyperUWP
 			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
-			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			text.TimeChecked += Text_TimeChecked;
 			//text.TheText = "abcdefghijklmnopqrstuvwxyzåäö";
@@ -76,7 +75,7 @@ namespace TyperUWP
 			});
 		}
 
-		bool isKeyPressed(VirtualKey key)
+		bool isKeyDown(VirtualKey key)
 		{
 			var state = CoreWindow.GetForCurrentThread().GetAsyncKeyState(key);
 			return (state & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
@@ -90,8 +89,7 @@ namespace TyperUWP
 
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
-
-			if (modalDialogOpen || isKeyPressed(VirtualKey.Control) || isKeyLocked(VirtualKey.Menu))
+			if (modalDialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu))
 				return;
 
 			args.Handled = true; //needed?
