@@ -38,7 +38,7 @@ namespace TyperUWP
 		public MainPage()
 		{
 			this.InitializeComponent();
-			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 300));
+			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 500));
 			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;

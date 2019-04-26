@@ -16,7 +16,7 @@
 			<Border>
 				<StackPanel Background="#ff001144" CornerRadius="5" Padding="10,0,0,0" Margin="0,0,0,30" HorizontalAlignment="Center" Orientation="Horizontal">
 					<TextBlock Text="Texts:" VerticalAlignment="Center"/>
-					<ComboBox x:Name="textsCombo" AccessKey="T" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="11,0,4,0"/>
+					<ComboBox x:Name="textsCombo" AccessKey="T" MinWidth="200" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="11,0,4,0"/>
 					<AppBarButton Icon="Add" x:Name="newTextBtn" Label="New" AccessKey="N" Click="NewTextBtn_Click" IsTabStop="False" AllowFocusOnInteraction="False" VerticalAlignment="Center" LabelPosition="Default"/>
 					<AppBarButton Icon="Delete" x:Name="deleteTextBtn" AccessKey="D" Label="Delete" Click="DeleteTextBtn_Click"  IsTabStop="False" AllowFocusOnInteraction="False" VerticalAlignment="Center"/>
 				</StackPanel>
