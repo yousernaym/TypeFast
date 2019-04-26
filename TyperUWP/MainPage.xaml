@@ -27,6 +27,15 @@
 					<ColumnDefinition />
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
+				<Grid.ContextFlyout>
+					<MenuFlyout>
+						<MenuFlyoutItem x:Name="textCmPaste" Text="Paste" Click="TextCmPaste_Click" >
+							<MenuFlyoutItem.KeyboardAccelerators>
+								<KeyboardAccelerator Modifiers="Control" Key="V" />
+							</MenuFlyoutItem.KeyboardAccelerators>
+						</MenuFlyoutItem>
+					</MenuFlyout>
+				</Grid.ContextFlyout>
 				<StackPanel x:Name="writtenTextPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 				<StackPanel x:Name="unwrittenTextPanel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" >
 					<local:TextBlockEx x:Name="currentCharControl" Foreground="Black" Background="White"/>
@@ -42,13 +51,11 @@
 				<TextBlock x:Name="accuracyText" Margin="0,0,40,0" FontSize="20"/>
 				<TextBlock x:Name="timeText" Margin="0,0,40,0" FontSize="20"/>
 				<AppBarButton Icon="Refresh" x:Name="resetBtn" AccessKey="R" Label="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,10,0"/>
-					<AppBarButton Icon="Paste"  x:Name="pasteBtn" Label="Paste" Click="PasteBtn_Click"  AllowFocusOnInteraction="False" IsTabStop="False" VerticalAlignment="Center">
-						<AppBarButton.KeyboardAccelerators>
-							<KeyboardAccelerator Modifiers="Control" Key="V" />
-						</AppBarButton.KeyboardAccelerators>
-					</AppBarButton>
-				
-
+				<!--<AppBarButton Icon="Paste"  x:Name="pasteBtn" Label="Paste" Click="PasteBtn_Click"  AllowFocusOnInteraction="False" IsTabStop="False" VerticalAlignment="Center">
+					<AppBarButton.KeyboardAccelerators>
+						<KeyboardAccelerator Modifiers="Control" Key="V" />
+					</AppBarButton.KeyboardAccelerators>
+				</AppBarButton>-->
 			</StackPanel>
 			</Border>
 		</StackPanel>

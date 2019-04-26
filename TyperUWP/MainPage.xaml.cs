@@ -123,19 +123,6 @@ namespace TyperUWP
 
 		}
 
-		async private void PasteBtn_Click(object sender, RoutedEventArgs e)
-		{
-			if (modalDialogOpen)
-				return;
-			DataPackageView dataPackageView = Clipboard.GetContent();
-			if (dataPackageView.Contains(StandardDataFormats.Text))
-			{
-				text.TheText = await dataPackageView.GetTextAsync();
-				reset();
-				textsCombo.SelectedIndex = -1;
-			}
-		}
-
 		async private void NewTextBtn_Click(object sender, RoutedEventArgs e)
 		{
 			if (modalDialogOpen)
@@ -178,6 +165,19 @@ namespace TyperUWP
                     selectedIndex--;
                 textsCombo.SelectedIndex = selectedIndex;
             }
+		}
+
+		async private void TextCmPaste_Click(object sender, RoutedEventArgs e)
+		{
+			if (modalDialogOpen)
+				return;
+			DataPackageView dataPackageView = Clipboard.GetContent();
+			if (dataPackageView.Contains(StandardDataFormats.Text))
+			{
+				text.TheText = await dataPackageView.GetTextAsync();
+				reset();
+				textsCombo.SelectedIndex = -1;
+			}
 		}
 	}
 }
