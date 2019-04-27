@@ -48,6 +48,7 @@
 				<TextBlock x:Name="accuracyText" Margin="0,0,30,0" FontSize="20"/>
 				<local:TextBlockEx x:Name="timeText" CornerRadius="6" Margin="0,0,30,0" Padding="10,0,10,0" FontSize="20"/>
 				<AppBarButton Icon="Refresh" x:Name="resetBtn" AccessKey="R" Label="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,10,0"/>
+				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="False" VerticalAlignment="Center" IsChecked="True"/>
 				<!--<AppBarButton Icon="Paste"  x:Name="pasteBtn" Label="Paste" Click="PasteBtn_Click"  AllowFocusOnInteraction="False" IsTabStop="False" VerticalAlignment="Center">
 					<AppBarButton.KeyboardAccelerators>
 						<KeyboardAccelerator Modifiers="Control" Key="V" />

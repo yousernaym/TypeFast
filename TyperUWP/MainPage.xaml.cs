@@ -117,6 +117,11 @@ namespace TyperUWP
 
 		private void ResetBtn_Click(object sender, RoutedEventArgs e)
 		{
+			if ((bool)shuffleBtn.IsChecked)
+			{
+				text.TheText = textList.selectRandom().Text;
+				textsCombo.SelectedItem = textList.Current.Title;
+			}
 			reset();
 		}
 
@@ -124,6 +129,7 @@ namespace TyperUWP
 		{
 			if (modalDialogOpen)
 				return;
+			
 			text.reset();
 			updateTypingStats();
 			//timeBorder.Background = new SolidColorBrush(Colors.Green);
@@ -157,7 +163,7 @@ namespace TyperUWP
 			string title = (string)textsCombo.SelectedItem;
 			if (string.IsNullOrEmpty(title))
 				return;
-			text.TheText = textList.getText(title);
+			text.TheText = textList.select(title);
 			reset();
 		}
 

@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 namespace TyperLib
 {
 	using System.Collections;
+	using System.Linq;
 	using ListType = Dictionary<string, string>;
 
 	[Serializable]
@@ -14,6 +15,7 @@ namespace TyperLib
 		ListType presetList = new ListType();
 		ListType userList = new ListType();
 		readonly string path;
+		public TextEntry Current { get; private set; }
 
 		public TextList(string dir) 
 		{
@@ -79,7 +81,7 @@ namespace TyperLib
 		{
 			//return ((IEnumerable<KeyValuePair<string, string>>)userList).GetEnumerator();
 			foreach (var entry in userList)
-				yield return new TextEntry { Title = entry.Key, Text = entry.Value };
+				yield return new TextEntry(entry);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -94,18 +96,39 @@ namespace TyperLib
 				userList.Add(text.Key, text.Value);
 		}
 
-		public string getText(string titLe)
+		public string select(string title)
 		{
-			return userList[titLe];
+			Current = new TextEntry(title, userList[title]);
+			return Current.Text;
 		}
 
-		
+		public TextEntry selectRandom()
+		{
+			string randomTitle;
+			do
+			{
+				randomTitle = userList.ElementAt(new Random().Next(userList.Count)).Key;
+			} while (randomTitle == Current.Title);
+			select(randomTitle);
+			return Current;
+		}
+
 	}
 
 	public class TextEntry
 	{
 		public string Title;
 		public string Text;
+		public TextEntry(string title, string text)
+		{
+			Title = title;
+			Text = text;
+		}
+		public TextEntry(KeyValuePair<string, string> kvp)
+		{
+			Title = kvp.Key;
+			Text = kvp.Value;
+		}
 	}
 
 }
