@@ -71,16 +71,16 @@ namespace TyperUWP
 		{
 			await Dispatcher.RunAsync(CoreDispatcherPriority.High, delegate
 			{
-				timeText.Text = "Time\n" + text.RemainingTimeString;
+				timeText.Content = "Time\n" + text.RemainingTimeString;
 				wpmText.Text = "WPM\n" + text.Wpm;
 				accuracyText.Text = "Accuracy\n" + text.Accuracy.ToString("0.00") + " %";
-				
+
 				if (text.IsFinished)
 					timeText.Background = new SolidColorBrush(Colors.DarkRed);
 				else if (text.IsRunning)
 					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
 				else
-					timeText.Background = new SolidColorBrush(Colors.Black);
+					timeText.Background = new SolidColorBrush(Color.FromArgb(0,240,240,240));
 
 			});
 		}
@@ -195,6 +195,11 @@ namespace TyperUWP
 				reset();
 				textsCombo.SelectedIndex = -1;
 			}
+		}
+
+		private void TimeText_Click(object sender, RoutedEventArgs e)
+		{
+			
 		}
 	}
 }

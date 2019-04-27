@@ -12,14 +12,22 @@
 
 	<Grid>
 		<StackPanel Orientation="Vertical">
-			<StackPanel Background="#ff001144" CornerRadius="5" Padding="10,0,0,0" Margin="0,0,0,30" HorizontalAlignment="Center" Orientation="Horizontal">
-				<TextBlock Text="Texts:" VerticalAlignment="Center"/>
-				<ComboBox x:Name="textsCombo" AccessKey="T" MinWidth="200" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="11,0,4,0"/>
-				<AppBarButton Icon="Add" x:Name="newTextBtn" Label="New" AccessKey="N" Click="NewTextBtn_Click" IsTabStop="False" AllowFocusOnInteraction="False" VerticalAlignment="Center" LabelPosition="Default"/>
-				<AppBarButton Icon="Delete" x:Name="deleteTextBtn" AccessKey="D" Label="Delete" Click="DeleteTextBtn_Click"  IsTabStop="False" AllowFocusOnInteraction="False" VerticalAlignment="Center"/>
-			</StackPanel>
-				
-			<Grid x:Name ="textPanel">
+			<RelativePanel Background="#ff112266" Padding="0,7,0,7" >
+				<StackPanel RelativePanel.AlignLeftWithPanel="True" Orientation="Horizontal">
+					<AppBarButton Icon="Add" x:Name="newTextBtn" Label="New text" AccessKey="N" Click="NewTextBtn_Click" IsTabStop="False" AllowFocusOnInteraction="False" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+					<AppBarButton Icon="Delete" x:Name="deleteTextBtn" AccessKey="D" Label="Delete text" Click="DeleteTextBtn_Click"  IsTabStop="False" AllowFocusOnInteraction="False" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+				</StackPanel>
+				<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" CornerRadius="5" Padding="10,1,1,0" Orientation="Horizontal" Background="#ff050a15" HorizontalAlignment="Center" Margin="0,0,30,0">
+					<TextBlock x:Name="correctCharsText" Margin="0,0,40,0" FontSize="20"/>
+					<TextBlock x:Name="incorrectCharsText" Margin="0,0,40,0" FontSize="20"/>
+					<TextBlock x:Name="fixedCharsText" Margin="0,0,40,0" FontSize="20"/>
+					<TextBlock x:Name="wpmText" Margin="0,0,40,0" FontSize="20" Foreground="Yellow"/>
+					<TextBlock x:Name="accuracyText" Margin="0,0,30,0" FontSize="20" Foreground="Yellow"/>
+					<!--<local:TextBlockEx x:Name="timeText" CornerRadius="5" Padding="10,0,10,0" FontSize="20"/>-->
+					<Button x:Name="timeText" CornerRadius="5" Padding="10,0,10,0" FontSize="20" IsTabStop="False" Click="TimeText_Click"/>
+				</StackPanel>
+			</RelativePanel>
+			<Grid x:Name ="textPanel" Margin="0,40,0,40">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition />
@@ -39,23 +47,12 @@
 					<TextBlock x:Name="unwrittenTextControl"/>
 				</StackPanel>
 			</Grid>
-		
-			<StackPanel x:Name="sessionInfo" CornerRadius="5" Padding="10,1,1,0" Orientation="Horizontal" Background="#ff050a15" HorizontalAlignment="Center" Margin="0,30,0,30">
-				<TextBlock x:Name="correctCharsText" Margin="0,0,40,0" FontSize="20"/>
-				<TextBlock x:Name="incorrectCharsText" Margin="0,0,40,0" FontSize="20"/>
-				<TextBlock x:Name="fixedCharsText" Margin="0,0,40,0" FontSize="20"/>
-				<TextBlock x:Name="wpmText" Margin="0,0,40,0" FontSize="20"/>
-				<TextBlock x:Name="accuracyText" Margin="0,0,30,0" FontSize="20"/>
-				<local:TextBlockEx x:Name="timeText" CornerRadius="6" Margin="0,0,30,0" Padding="10,0,10,0" FontSize="20"/>
-				<AppBarButton Icon="Refresh" x:Name="resetBtn" AccessKey="R" Label="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,10,0"/>
+			<StackPanel Background="#ff001144" CornerRadius="5" Padding="0,0,0,0" Margin="0,0,0,0" HorizontalAlignment="Center" Orientation="Horizontal">
+				<!--<TextBlock Text="Texts:" VerticalAlignment="Center"/>-->
+				<AppBarButton Icon="Refresh" x:Name="resetBtn" AccessKey="R" Label="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,0,0" HorizontalAlignment="Center"/>
 				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="False" VerticalAlignment="Center" IsChecked="True"/>
-				<!--<AppBarButton Icon="Paste"  x:Name="pasteBtn" Label="Paste" Click="PasteBtn_Click"  AllowFocusOnInteraction="False" IsTabStop="False" VerticalAlignment="Center">
-					<AppBarButton.KeyboardAccelerators>
-						<KeyboardAccelerator Modifiers="Control" Key="V" />
-					</AppBarButton.KeyboardAccelerators>
-				</AppBarButton>-->
 			</StackPanel>
-			
+			<ComboBox x:Name="textsCombo" AccessKey="T" MinWidth="200" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="10,20,10,0" HorizontalAlignment="Center"/>
 		</StackPanel>
 	</Grid>
 </Page>
