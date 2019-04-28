@@ -27,7 +27,7 @@ namespace TyperLib
 				theText = theText.Replace('\t', ' ');
 				theText = theText.Replace((char)160, ' '); //Convert non-breaking space to regular space
 				theText = theText.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen to two ascii hyphens
-				
+
 				//Replace repeating characters with single character
 				Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
 				theText = regex.Replace(theText, " ");
@@ -46,7 +46,7 @@ namespace TyperLib
 		public int IncorrectChars { get; private set; } = 0;
 		public int TotalIncorrectChars { get; private set; } = 0;
 		public int FixedChars => TotalIncorrectChars - IncorrectChars;
-		
+
 		public int Wpm => Math.Max((int)((CorrectChars - IncorrectChars * 3) / ElapsedTime.TotalMinutes), 0) / 5;
 		public float Accuracy
 		{
@@ -55,14 +55,14 @@ namespace TyperLib
 				float totalChars = (float)(writtenChars.Count);
 				if (totalChars == 0)
 					return 0;
-				
+
 				//Total correct characters can be less than 0 if there has been multiple incorrect attempts at the same character, so clamp at 0
 				float totalCorrect = Math.Max(totalChars - TotalIncorrectChars, 0);
 				return totalCorrect / totalChars * 100;
 			}
 		}
 		Stopwatch stopwatch = new Stopwatch();
-		public TimeSpan TimeLimit = new TimeSpan(0, 1, 0);
+		public TimeSpan TimeLimit { get; set; } = new TimeSpan(0, 1, 0);
 		public TimeSpan RemainingTime
 		{
 			get

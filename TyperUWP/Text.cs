@@ -149,6 +149,20 @@ namespace TyperUWP
 				unwrittenTextControl.Text = unwrittenTextToDraw.Substring(1, unwrittenTextToDraw.Length - 1);
 			}
 		}
+	}
 
+	public class TimeLimitConverter : Windows.UI.Xaml.Data.IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, string language)
+		{
+			var time = (TimeSpan)value;
+			return time.Minutes.ToString("d2") + ":" + time.Seconds.ToString("d2");
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		{
+			var time = (string)value;
+			return new TimeSpan(0, int.Parse(time.Substring(0, 2)), int.Parse(time.Substring(3, 2)));
+		}
 	}
 }

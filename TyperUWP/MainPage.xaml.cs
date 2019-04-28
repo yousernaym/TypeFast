@@ -21,6 +21,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.UI.ViewManagement;
 using Windows.Storage;
 using TyperLib;
+using System.Text;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -33,7 +34,7 @@ namespace TyperUWP
 	{
 		Text text;
 		TextList textList = new TextList(ApplicationData.Current.LocalFolder.Path);
-		private bool modalDialogOpen = false;
+		private bool dialogOpen = false;
 
 		public MainPage()
 		{
@@ -56,7 +57,11 @@ namespace TyperUWP
 				textsCombo.Items.Add(text.Title);
 			}
 			textsCombo.SelectedIndex = 0;
-			
+
+
+			//timeLimitPicker.Text = "0100";
+			//string a = timeLimitPicker.Text;
+		
 			//Clipboard.ContentChanged += async (s, e) =>
 			//{
 			//};
@@ -99,7 +104,7 @@ namespace TyperUWP
 
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
-			if (modalDialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu))
+			if (dialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu))
 				return;
 
 			args.Handled = true; //needed?
@@ -127,7 +132,7 @@ namespace TyperUWP
 
 		void reset()
 		{
-			if (modalDialogOpen)
+			if (dialogOpen)
 				return;
 			
 			text.reset();
@@ -137,17 +142,16 @@ namespace TyperUWP
 
 		private void Page_Loaded(object sender, RoutedEventArgs e)
 		{
-
 		}
 
 		async private void NewTextBtn_Click(object sender, RoutedEventArgs e)
 		{
-			if (modalDialogOpen)
+			if (dialogOpen)
 				return;
 			NewTextDialog newTextDialog = new NewTextDialog(textList);
-			modalDialogOpen = true;
+			dialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
-			modalDialogOpen = false;
+			dialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
 			{
@@ -158,7 +162,7 @@ namespace TyperUWP
 
 		private void TextsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (modalDialogOpen)
+			if (dialogOpen)
 				return;
 			string title = (string)textsCombo.SelectedItem;
 			if (string.IsNullOrEmpty(title))
@@ -169,7 +173,7 @@ namespace TyperUWP
 
 		async private void DeleteTextBtn_Click(object sender, RoutedEventArgs e)
 		{
-			if (modalDialogOpen)
+			if (dialogOpen)
 				return;
 			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to delete this text? This action cannot be undone." };
 			ContentDialogResult result = await dlg.ShowAsync();
@@ -186,7 +190,7 @@ namespace TyperUWP
 
 		async private void TextCmPaste_Click(object sender, RoutedEventArgs e)
 		{
-			if (modalDialogOpen)
+			if (dialogOpen)
 				return;
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
@@ -200,6 +204,42 @@ namespace TyperUWP
 		private void TimeText_Click(object sender, RoutedEventArgs e)
 		{
 			
+			
+		}
+
+		private void TimeLimitTb_KeyDown(object sender, KeyRoutedEventArgs e)
+		{
+			if (e.Key == VirtualKey.Enter)
+				timeLimitFlyout.Hide();
+		}
+
+		private void TimeLimitFlyout_Opened(object sender, object e)
+		{
+			dialogOpen = true;
+			timeLimitTb.SelectionStart = 1;
+			timeLimitTb.SelectionLength = 1;
+		}
+
+		private void TimeLimitFlyout_Closed(object sender, object e)
+		{
+			dialogOpen = false;
+			reset();
+		}
+
+		private void TimeLimitTb_CharacterReceived(UIElement sender, CharacterReceivedRoutedEventArgs args)
+		{
+
+			//var charPos = timeLimitTb.SelectionStart - 1;
+			//var strBuilder = new StringBuilder(timeLimitTb.Text);
+			//strBuilder.Remove(charPos, 1);
+			//strBuilder.Insert(caretPos, args.Character);
+			//timeLimitTb.Text = strBuilder.ToString();
+		}
+
+		private void TimeLimitTb_SelectionChanging(TextBox sender, TextBoxSelectionChangingEventArgs args)
+		{
+			//string old
+			timeLimitTb
 		}
 	}
 }
