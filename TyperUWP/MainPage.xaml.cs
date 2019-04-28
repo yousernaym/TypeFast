@@ -22,6 +22,7 @@ using Windows.UI.ViewManagement;
 using Windows.Storage;
 using TyperLib;
 using System.Text;
+using System.Text.RegularExpressions;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -61,7 +62,7 @@ namespace TyperUWP
 
 			//timeLimitPicker.Text = "0100";
 			//string a = timeLimitPicker.Text;
-		
+
 			//Clipboard.ContentChanged += async (s, e) =>
 			//{
 			//};
@@ -85,7 +86,7 @@ namespace TyperUWP
 				else if (text.IsRunning)
 					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
 				else
-					timeText.Background = new SolidColorBrush(Color.FromArgb(0,240,240,240));
+					timeText.Background = new SolidColorBrush(Color.FromArgb(10, 250, 250, 250));
 
 			});
 		}
@@ -134,7 +135,7 @@ namespace TyperUWP
 		{
 			if (dialogOpen)
 				return;
-			
+
 			text.reset();
 			updateTypingStats();
 			//timeBorder.Background = new SolidColorBrush(Colors.Green);
@@ -177,15 +178,15 @@ namespace TyperUWP
 				return;
 			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to delete this text? This action cannot be undone." };
 			ContentDialogResult result = await dlg.ShowAsync();
-            if (result == ContentDialogResult.Primary)
-            {
-                textList.remove((string)textsCombo.SelectedItem);
-                int selectedIndex = textsCombo.SelectedIndex;
-                textsCombo.Items.RemoveAt(textsCombo.SelectedIndex);
-                if (selectedIndex >= textsCombo.Items.Count)
-                    selectedIndex--;
-                textsCombo.SelectedIndex = selectedIndex;
-            }
+			if (result == ContentDialogResult.Primary)
+			{
+				textList.remove((string)textsCombo.SelectedItem);
+				int selectedIndex = textsCombo.SelectedIndex;
+				textsCombo.Items.RemoveAt(textsCombo.SelectedIndex);
+				if (selectedIndex >= textsCombo.Items.Count)
+					selectedIndex--;
+				textsCombo.SelectedIndex = selectedIndex;
+			}
 		}
 
 		async private void TextCmPaste_Click(object sender, RoutedEventArgs e)
@@ -201,16 +202,12 @@ namespace TyperUWP
 			}
 		}
 
-		private void TimeText_Click(object sender, RoutedEventArgs e)
-		{
-			
-			
-		}
-
 		private void TimeLimitTb_KeyDown(object sender, KeyRoutedEventArgs e)
 		{
 			if (e.Key == VirtualKey.Enter)
 				timeLimitFlyout.Hide();
+			else if (e.Key == VirtualKey.Left)
+				timeLimitTb.SelectionStart = Math.Max(0, timeLimitTb.SelectionStart - 1);
 		}
 
 		private void TimeLimitFlyout_Opened(object sender, object e)
@@ -228,18 +225,37 @@ namespace TyperUWP
 
 		private void TimeLimitTb_CharacterReceived(UIElement sender, CharacterReceivedRoutedEventArgs args)
 		{
-
-			//var charPos = timeLimitTb.SelectionStart - 1;
-			//var strBuilder = new StringBuilder(timeLimitTb.Text);
-			//strBuilder.Remove(charPos, 1);
-			//strBuilder.Insert(caretPos, args.Character);
-			//timeLimitTb.Text = strBuilder.ToString();
+			bool digit = args.Character >= '0' && args.Character <= '9';
+			int charPos = timeLimitTb.SelectionStart - 1;
+			bool tooManySeconds = digit && charPos == 3 && args.Character > '5';
+			if (!digit || tooManySeconds)
+			{
+				var strBuilder = new StringBuilder(timeLimitTb.Text);
+				strBuilder.Remove(charPos, 1);
+				strBuilder.Insert(charPos, tooManySeconds ? '5' : '0');
+				timeLimitTb.Text = strBuilder.ToString();
+				timeLimitTb.SelectionStart = charPos + 1;
+			}
 		}
 
 		private void TimeLimitTb_SelectionChanging(TextBox sender, TextBoxSelectionChangingEventArgs args)
 		{
-			//string old
-			timeLimitTb
+			if (isKeyDown(VirtualKey.Left))
+			{
+				int caretPos = Math.Max(0, timeLimitTb.SelectionStart - 1);
+				if (caretPos == 2)
+					caretPos = 1; //Skip ':'
+				timeLimitTb.SelectionStart = caretPos;
+			}
+		}
+
+		private void TimeLimitTb_SelectionChanged(object sender, RoutedEventArgs e)
+		{
+			if (timeLimitTb.SelectionStart == 5)
+				timeLimitTb.SelectionStart = 4;
+			else if (timeLimitTb.SelectionStart == 2)
+				timeLimitTb.SelectionStart = 3;
+			timeLimitTb.SelectionLength = 1;
 		}
 	}
 }

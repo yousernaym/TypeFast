@@ -29,13 +29,13 @@
 					<TextBlock x:Name="wpmText" Margin="0,0,40,0" FontSize="20" Foreground="Yellow"/>
 					<TextBlock x:Name="accuracyText" Margin="0,0,30,0" FontSize="20" Foreground="Yellow"/>
 					<!--<local:TextBlockEx x:Name="timeText" CornerRadius="5" Padding="10,0,10,0" FontSize="20"/>-->
-					<Button x:Name="timeText" CornerRadius="5" Padding="7,0,8,0" FontSize="20" IsTabStop="False" Click="TimeText_Click">
+					<Button x:Name="timeText" CornerRadius="5" Padding="7,0,8,0" FontSize="20" IsTabStop="False" >
 						<Button.Flyout>
 							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closed="TimeLimitFlyout_Closed">
 								<StackPanel Orientation="Horizontal">
 									<TextBlock Text="Time limit:" Margin="0,0,10,0" VerticalAlignment="Center" />
-									<TextBox x:Name="timeLimitTb" Text="{x:Bind text.TimeLimit, Mode=TwoWay, Converter={StaticResource TimeLimitConverter}}" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging"/>
-									<!--extensions:TextBoxMask.CustomMask="5:[0-5]" extensions:TextBoxMask.Mask="99:59" extensions:TextBoxMask.PlaceHolder="0"-->
+									<TextBox x:Name="timeLimitTb" Text="{x:Bind text.TimeLimit, Mode=TwoWay, Converter={StaticResource TimeLimitConverter}}" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging" SelectionChanged="TimeLimitTb_SelectionChanged" />
+									<!--extensions:TextBoxMask.CustomMask="5:[0-5]" extensions:TextBoxMask.Mask="99:59" extensions:TextBoxMask.PlaceHolder="0"/>-->
 								</StackPanel>
 							</Flyout>
 						</Button.Flyout>
