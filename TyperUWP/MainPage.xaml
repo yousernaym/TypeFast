@@ -34,12 +34,16 @@
 							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closed="TimeLimitFlyout_Closed">
 								<StackPanel Orientation="Horizontal">
 									<TextBlock Text="Time limit:" Margin="0,0,10,0" VerticalAlignment="Center" />
-									<TextBox x:Name="timeLimitTb" Text="{x:Bind text.TimeLimit, Mode=TwoWay, Converter={StaticResource TimeLimitConverter}}" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging" SelectionChanged="TimeLimitTb_SelectionChanged" />
+									<TextBox x:Name="timeLimitTb" Text="{x:Bind text.TimeLimit, Mode=TwoWay, Converter={StaticResource TimeLimitConverter}}" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging" SelectionChanged="TimeLimitTb_SelectionChanged" BeforeTextChanging="TimeLimitTb_BeforeTextChanging" />
 									<!--extensions:TextBoxMask.CustomMask="5:[0-5]" extensions:TextBoxMask.Mask="99:59" extensions:TextBoxMask.PlaceHolder="0"/>-->
 								</StackPanel>
 							</Flyout>
 						</Button.Flyout>
 					</Button>
+				</StackPanel>
+				<StackPanel x:Name="fontSettingsPanel">
+					<TextBlock Text="Font:" Margin="0,0,10,0"/>
+					<AutoSuggestBox x:Name="fontBox"/>
 				</StackPanel>
 			</RelativePanel>
 			<Grid x:Name ="textPanel" Margin="0,40,0,40">

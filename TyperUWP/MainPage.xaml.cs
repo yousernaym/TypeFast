@@ -257,5 +257,23 @@ namespace TyperUWP
 				timeLimitTb.SelectionStart = 3;
 			timeLimitTb.SelectionLength = 1;
 		}
+
+		private void TimeLimitTb_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
+		{
+			if (args.NewText.Length < 5)
+			{
+				args.Cancel = true;
+				return;
+			}
+			var caretPos = timeLimitTb.SelectionStart;
+			for (int i = 0; i < args.NewText.Length; i++)
+			{
+				if (i != 2 && !char.IsDigit(args.NewText[i]) || i == 3 && args.NewText[i] > '5')
+				{
+					args.Cancel = true;
+					return;
+				}
+			}
+		}
 	}
 }
