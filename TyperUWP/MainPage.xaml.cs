@@ -73,7 +73,7 @@ namespace TyperUWP
 
 		private void textsCombo_Items_VectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
 		{
-			deleteTextBtn.IsEnabled = textsCombo.Items.Count > 0;
+			textsComboCmDelete.IsEnabled = textsCombo.Items.Count > 0;
 		}
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
@@ -124,7 +124,7 @@ namespace TyperUWP
 			fixedCharsText.Text = "Fixed\n" + text.FixedChars;
 		}
 
-		private void ResetBtn_Click(object sender, RoutedEventArgs e)
+		private void RestartBtn_Click(object sender, RoutedEventArgs e)
 		{
 			if ((bool)shuffleBtn.IsChecked)
 			{
@@ -148,7 +148,7 @@ namespace TyperUWP
 		{
 		}
 
-		async private void NewTextBtn_Click(object sender, RoutedEventArgs e)
+		async private void TextsComboCmNew_Click(object sender, RoutedEventArgs e)
 		{
 			if (dialogOpen)
 				return;
@@ -164,18 +164,12 @@ namespace TyperUWP
 			}
 		}
 
-		private void TextsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		async private void TextsComboCmEdit_Click(object sender, RoutedEventArgs e)
 		{
-			if (dialogOpen)
-				return;
-			string title = (string)textsCombo.SelectedItem;
-			if (string.IsNullOrEmpty(title))
-				return;
-			text.TheText = textList.select(title);
-			reset();
+
 		}
 
-		async private void DeleteTextBtn_Click(object sender, RoutedEventArgs e)
+		async private void TextsComboCmDelete_Click(object sender, RoutedEventArgs e)
 		{
 			if (dialogOpen)
 				return;
@@ -192,6 +186,19 @@ namespace TyperUWP
 			}
 		}
 
+
+		private void TextsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (dialogOpen)
+				return;
+			string title = (string)textsCombo.SelectedItem;
+			if (string.IsNullOrEmpty(title))
+				return;
+			text.TheText = textList.select(title);
+			reset();
+		}
+
+		
 		async private void TextCmPaste_Click(object sender, RoutedEventArgs e)
 		{
 			if (dialogOpen)
@@ -317,6 +324,18 @@ namespace TyperUWP
 		private void TextBkgColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
 		{
 			textBkgColorBtn.Background = new SolidColorBrush(textBkgColorPicker.Color);
+
+		}
+
+		private void FontMFI_Click(object sender, RoutedEventArgs e)
+		{
+			var showOptions = new FlyoutShowOptions();
+			showOptions.Placement = FlyoutPlacementMode.Bottom;
+			fontStyleFlyout.ShowAt(textPanel, showOptions);
+		}
+
+		private void FontMFI_Click_1(object sender, RoutedEventArgs e)
+		{
 
 		}
 	}
