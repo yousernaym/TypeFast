@@ -13,12 +13,13 @@
 	<!--xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"-->
 	<Page.Resources>
 		<local:TimeLimitConverter x:Key="TimeLimitConverter"/>
+		
 	</Page.Resources>
 	
 	<Grid>
 		<StackPanel Orientation="Vertical">
 			<RelativePanel Background="#ff112266" Padding="0,7,0,7" >
-				<StackPanel RelativePanel.AlignLeftWithPanel="True" Orientation="Horizontal">
+				<StackPanel RelativePanel.AlignLeftWithPanel="True" Orientation="Horizontal"  Margin="5,0,0,0">
 					<AppBarButton Icon="Add" x:Name="newTextBtn" Label="New text" AccessKey="N" Click="NewTextBtn_Click" IsTabStop="False" AllowFocusOnInteraction="False" VerticalAlignment="Center" HorizontalAlignment="Right"/>
 					<AppBarButton Icon="Delete" x:Name="deleteTextBtn" AccessKey="D" Label="Delete text" Click="DeleteTextBtn_Click"  IsTabStop="False" AllowFocusOnInteraction="False" VerticalAlignment="Center" HorizontalAlignment="Right"/>
 				</StackPanel>
@@ -41,12 +42,40 @@
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
-				<StackPanel x:Name="fontSettingsPanel">
-					<TextBlock Text="Font:" Margin="0,0,10,0"/>
-					<AutoSuggestBox x:Name="fontBox"/>
-				</StackPanel>
+				<Button Content="A" FontSize="30" FontFamily="Times New Roman" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Margin="0,0,5,0" IsTabStop="False" Background="#40000000">
+					<Button.Flyout>
+						<Flyout x:Name="fontStyleFlyout" Opened="FontStyleFlyout_Opened" Closed="FontStyleFlyout_Closed">
+							<StackPanel Orientation="Horizontal" RelativePanel.AlignRightWithPanel="True" VerticalAlignment="Center" RelativePanel.AlignVerticalCenterWithPanel="True">
+								<ComboBox x:Name="fontCombo" VerticalAlignment="Center" SelectionChanged="FontCombo_SelectionChanged" AllowFocusOnInteraction="True"/>
+								<TextBox x:Name="fontSizeTb" VerticalAlignment="Center" Width="70" MaxLength="3" TextChanged="FontSizeTb_TextChanged" BeforeTextChanging="FontSizeTb_BeforeTextChanging" AllowFocusOnInteraction="True"/>
+								<Grid Width="40" Height="30" Margin="10,0,0,0">
+									<Button x:Name="textColorBtn" Background="White"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+										<Button.Flyout>
+											<Flyout>
+												<ColorPicker x:Name="textColorPicker" Color="{x:Bind text.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
+											</Flyout>									
+										</Button.Flyout>
+									</Button>
+									<!--<Border Background="White" Margin="3,3,3,3"/>-->
+								</Grid>
+								<Grid Width="40" Height="30" Margin="0,0,5,0">
+									<Button x:Name="textBkgColorBtn" Background="Black" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+										<Button.Flyout>
+											<Flyout>
+												<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind text.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
+											</Flyout>
+										</Button.Flyout>
+									</Button>
+									<!--<Border Background="Black" Margin="3,3,3,3"/>-->
+
+								</Grid>
+							</StackPanel>
+						</Flyout>
+					</Button.Flyout>
+				</Button>
+				
 			</RelativePanel>
-			<Grid x:Name ="textPanel" Margin="0,40,0,40">
+			<Grid x:Name ="textPanel" Padding="0,5,0,5" Margin="0,40,0,40">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition />
@@ -71,7 +100,7 @@
 				<AppBarButton Icon="Refresh" x:Name="resetBtn" AccessKey="R" Label="Reset" Click="ResetBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,0,0" HorizontalAlignment="Center"/>
 				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="False" VerticalAlignment="Center" IsChecked="True"/>
 			</StackPanel>
-			<ComboBox x:Name="textsCombo" AccessKey="T" MinWidth="200" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="10,20,10,0" HorizontalAlignment="Center"/>
+			<ComboBox x:Name="textsCombo" AccessKey="T" MinWidth="200" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="0,20,0,0" HorizontalAlignment="Center"/>
 		</StackPanel>
 	</Grid>
 </Page>

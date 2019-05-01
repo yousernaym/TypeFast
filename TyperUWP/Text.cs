@@ -20,13 +20,49 @@ namespace TyperUWP
 		TextBlockEx currentCharControl;
 		TextBlock unwrittenTextControl;
 		double spaceWidth;
-		Brush backgroundBrush;
-		Brush foregroundBrush;
-		Brush correctBrush;
-		Brush errorBrush;
-		FontFamily fontFamily;
+		SolidColorBrush backgroundBrush;
+		public Color Background
+		{
+			get => backgroundBrush.Color;
+			set
+			{
+				backgroundBrush = new SolidColorBrush(value);
+				applyStyle();
+			}
+		}
+		SolidColorBrush foregroundBrush;
+		public Color Foreground
+		{
+			get => foregroundBrush.Color;
+			set
+			{
+				foregroundBrush = new SolidColorBrush(value);
+				applyStyle();
+			}
+		}
+		SolidColorBrush correctBrush;
+		SolidColorBrush errorBrush;
 		double fontSize;
-
+		public double FontSize
+		{
+			get => fontSize;
+			set
+			{
+				fontSize = value;
+				applyStyle();
+			}
+		}
+		FontFamily fontFamily;
+		public string FontName
+		{
+			get => fontFamily.Source;
+			set
+			{
+				fontFamily = new FontFamily(value);
+				applyStyle();
+			}
+		}
+		
 		public Text(Panel _textPanel, StackPanel writtenTextPanel, TextBlockEx _currentCharControl, TextBlock _unwrittenTextControl)
 		{
 			textPanel = _textPanel;
@@ -38,55 +74,37 @@ namespace TyperUWP
 			
 			currentCharControl = _currentCharControl;
 			unwrittenTextControl = _unwrittenTextControl;
-			setFont("", 50);
+			fontFamily = new FontFamily(currentCharControl.FontFamily.Source);
+			fontSize = 20;
+			backgroundBrush = new SolidColorBrush(Colors.Black);
+			foregroundBrush = new SolidColorBrush(Colors.White);
+			applyStyle();
 
-			TextBlockEx templateTextBlock = new TextBlockEx();
-			foregroundBrush = templateTextBlock.ForeGround;
-			backgroundBrush = templateTextBlock.Background;
-
-			//var isDark = Application.Current.RequestedTheme == ApplicationTheme.Dark;
-			//var uiSettings = new UISettings();
-			//var themeBackgroundColor = uiSettings.GetColorValue(UIColorType.Background);
-		
 			errorBrush = new SolidColorBrush(Colors.Red);
 			correctBrush = new SolidColorBrush(Colors.Green);
 		}
 
-		public void setFont(string fontName, double _fontSize)
+		public void applyStyle()
 		{
-			//Create font family
-			if (string.IsNullOrEmpty(fontName))
-				fontFamily = currentCharControl.FontFamily;
-			else
-				fontFamily = new FontFamily(fontName);
-
-			fontSize = _fontSize;
-
-			//Assign brushes
-			//foregroundBrush = foreground;
-			//backgroundBrush = background;
-			//correctBrush = correct;
-			//errorBrush = error;
-
 			//Set panel background
-			//textPanel.Background = background;
+			textPanel.Background = backgroundBrush;
 			
-			//Written text style
+			//Written text font
 			foreach (var control in writtenTextControls)
 			{
 				control.FontFamily = fontFamily;
 				control.FontSize = fontSize;
-				//control.Foreground = foregroundBrush;
+				control.Foreground = foregroundBrush;
 			}
 
 			//Current character
-			//currentCharControl.Background = foregroundBrush;
-			//currentCharControl.Foreground = backgroundBrush;
+			currentCharControl.Background = foregroundBrush;
+			currentCharControl.Foreground = backgroundBrush;
 			currentCharControl.FontFamily = fontFamily;
 			currentCharControl.FontSize = fontSize;
 
 			//Set color of unwritten text
-			//unwrittenTextControl.Foreground = foregroundBrush;
+			unwrittenTextControl.Foreground = foregroundBrush;
 			unwrittenTextControl.FontFamily = fontFamily;
 			unwrittenTextControl.FontSize = fontSize;
 

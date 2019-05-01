@@ -23,6 +23,7 @@ using Windows.Storage;
 using TyperLib;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Graphics.Canvas.Text;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -48,8 +49,12 @@ namespace TyperUWP
 			text.TimeLimit = TimeSpan.FromSeconds(10);
 			text.TimeChecked += Text_TimeChecked;
 			//text.TheText = "abcdefghijklmnopqrstuvwxyzåäö";
-			text.loadText();
+			//text.loadText();
+			text.Foreground = Colors.White;
+			//text.Background =
+
 			text.draw();
+			
 			updateTypingStats();
 			textsCombo.Items.VectorChanged += textsCombo_Items_VectorChanged;
 
@@ -59,13 +64,11 @@ namespace TyperUWP
 			}
 			textsCombo.SelectedIndex = 0;
 
-
-			//timeLimitPicker.Text = "0100";
-			//string a = timeLimitPicker.Text;
-
-			//Clipboard.ContentChanged += async (s, e) =>
-			//{
-			//};
+			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
+			foreach (string font in fonts)
+				fontCombo.Items.Add(font);
+			fontCombo.SelectedItem = text.FontName;
+			fontSizeTb.Text = text.FontSize.ToString();
 		}
 
 		private void textsCombo_Items_VectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -153,7 +156,7 @@ namespace TyperUWP
 			dialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
 			dialogOpen = false;
-
+			
 			if (result == ContentDialogResult.Primary)
 			{
 				textsCombo.Items.Add(newTextDialog.TitleEntry);
@@ -274,6 +277,47 @@ namespace TyperUWP
 					return;
 				}
 			}
+		}
+
+		private void FontCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			text.FontName = (string)fontCombo.SelectedItem;
+		}
+
+		private void FontSizeTb_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			if (fontSizeTb.Text.Length > 0)
+			{
+				int size = int.Parse(fontSizeTb.Text);
+				if (size > 0)
+					text.FontSize = size;
+			}
+		}
+
+		private void FontSizeTb_BeforeTextChanging(TextBox sender, TextBoxBeforeTextChangingEventArgs args)
+		{
+			args.Cancel = args.NewText.Any(c => !char.IsDigit(c));
+		}
+
+		private void FontStyleFlyout_Opened(object sender, object e)
+		{
+			dialogOpen = true;
+		}
+
+		private void FontStyleFlyout_Closed(object sender, object e)
+		{
+			dialogOpen = false;
+		}
+
+		private void TextColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+		{
+			textColorBtn.Background = new SolidColorBrush(textColorPicker.Color);
+		}
+
+		private void TextBkgColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+		{
+			textBkgColorBtn.Background = new SolidColorBrush(textBkgColorPicker.Color);
+
 		}
 	}
 }

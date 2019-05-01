@@ -106,10 +106,10 @@ namespace TyperLib
 			Finished?.Invoke(this, new EventArgs());
 		}
 
-		public void loadText()
-		{
-			TheText = File.ReadAllText("textToType.txt");
-		}
+		//public void loadText()
+		//{
+		//	TheText = File.ReadAllText("textToType.txt");
+		//}
 
 		public void typeChar(uint keyCode)
 		{
