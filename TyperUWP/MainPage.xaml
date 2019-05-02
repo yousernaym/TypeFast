@@ -19,7 +19,8 @@
 		<StackPanel Orientation="Vertical">
 			<RelativePanel Background="#ff112266" Padding="0,7,0,7" >
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" Orientation="Horizontal"  Margin="5,0,0,0">
-					<AppBarButton Label="Stats" x:Name="highScoreBtn" Content="...">
+					<AppBarButton Label="Records" x:Name="highScoreBtn">
+						<FontIcon FontFamily="Webdings" Glyph="&#38;"/>
 					</AppBarButton>
 				</StackPanel>
 				<StackPanel RelativePanel.AlignRightWithPanel="True" Orientation="Horizontal"  Margin="5,0,0,0">
