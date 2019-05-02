@@ -17,15 +17,18 @@
 	
 	<Grid>
 		<StackPanel Orientation="Vertical">
-			<RelativePanel Background="#ff112266" Padding="0,7,0,7" >
-				<StackPanel RelativePanel.AlignLeftWithPanel="True" Orientation="Horizontal"  Margin="5,0,0,0">
-					<AppBarButton Label="Records" x:Name="highScoreBtn">
-						<FontIcon FontFamily="Webdings" Glyph="&#38;"/>
-					</AppBarButton>
+			<RelativePanel Background="#ff112266" Padding="7,7,7,7">
+				<StackPanel RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal" >
+					<Button x:Name="highScoreBtn" BorderBrush="#80ffffff" Background="#20000000" CornerRadius="5" IsTabStop="False">
+						<FontIcon FontFamily="Webdings" FontSize="30" Glyph="&#38;"/>
+					</Button>
 				</StackPanel>
-				<StackPanel RelativePanel.AlignRightWithPanel="True" Orientation="Horizontal"  Margin="5,0,0,0">
-					<AppBarButton Icon="Help" Label="Help" x:Name="helpBtn" Content="...">
-					</AppBarButton>
+				<StackPanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal">
+					<!--<AppBarButton Icon="Help" Label="Help" x:Name="helpBtn" Content="...">
+					</AppBarButton>-->
+					<Button x:Name="helpBtn" BorderBrush="#80ffffff" Background="#20000000" CornerRadius="5" IsTabStop="False">
+						<FontIcon FontFamily="WebDings" FontSize="30" Glyph="s"/>
+					</Button>
 				</StackPanel>
 				<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" CornerRadius="5" Padding="10,1,1,0" Orientation="Horizontal" Background="#ff050a15" HorizontalAlignment="Center" Margin="0,0,30,0">
 					<TextBlock x:Name="correctCharsText" Margin="0,0,40,0" FontSize="20"/>
