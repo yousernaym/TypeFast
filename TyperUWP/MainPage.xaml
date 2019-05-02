@@ -98,7 +98,7 @@
 				<AppBarButton Icon="Refresh" x:Name="restartBtn" AccessKey="R" Label="Restart" Click="RestartBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,0,0" HorizontalAlignment="Center"/>
 				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="False" VerticalAlignment="Center" IsChecked="True"/>
 			</StackPanel>
-			<ComboBox x:Name="textsCombo" AccessKey="T" MinWidth="200" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="0,20,0,0" HorizontalAlignment="Center">
+			<ComboBox x:Name="textsCombo" AccessKey="S" MinWidth="200" DisplayMemberPath="Title" SelectedValuePath="Title" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="0,20,0,0" HorizontalAlignment="Center">
 				<ComboBox.ContextFlyout>
 					<MenuFlyout>
 						<MenuFlyoutItem Icon="Add" x:Name="textsComboCmNew" Text="New text..." Click="TextsComboCmNew_Click" >

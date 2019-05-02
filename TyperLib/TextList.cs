@@ -6,7 +6,9 @@ using System.Runtime.Serialization;
 namespace TyperLib
 {
 	using System.Collections;
+	using System.ComponentModel;
 	using System.Linq;
+	using System.Runtime.CompilerServices;
 	using ListType = Dictionary<string, string>;
 
 	[Serializable]
@@ -15,8 +17,9 @@ namespace TyperLib
 		ListType presetList = new ListType();
 		ListType userList = new ListType();
 		readonly string path;
-		public TextEntry Current { get; private set; }
 
+		public TextEntry Current { get; set; }
+		
 		public TextList(string dir) 
 		{
 			path = Path.Combine(dir, "textList");
@@ -68,7 +71,15 @@ namespace TyperLib
 
 		public void remove(string title)
 		{
+			var indeXable = userList.Keys.ToList();
+			int currentIndex = indeXable.FindIndex(k => k == title);
 			userList.Remove(title);
+			if (title == Current.Title)
+			{
+				if (currentIndex >= userList.Count)
+					currentIndex--;
+				Current = new TextEntry(userList.ElementAt(currentIndex));
+			}
 			save();
 		}
 
@@ -91,7 +102,7 @@ namespace TyperLib
 
 		void resetFactoryTexts()
 		{
-			userList = new ListType();
+			//userList = new ListType();
 			foreach (var text in presetList)
 				userList.Add(text.Key, text.Value);
 		}
@@ -108,17 +119,21 @@ namespace TyperLib
 			do
 			{
 				randomTitle = userList.ElementAt(new Random().Next(userList.Count)).Key;
-			} while (randomTitle == Current.Title);
+			} while (randomTitle == Current?.Title);
 			select(randomTitle);
 			return Current;
 		}
 
+		public void removeCurrent()
+		{
+			remove(Current.Title);
+		}
 	}
 
 	public class TextEntry
 	{
-		public string Title;
-		public string Text;
+		public string Title { get; set; }
+		public string Text { get; set; }
 		public TextEntry(string title, string text)
 		{
 			Title = title;

@@ -10,10 +10,9 @@
     PrimaryButtonText="Save"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
 	CloseButtonText="Cancel"
-	Closing="ContentDialog_Closing"
 	>
-	
-    <Grid Width="700">
+
+	<Grid Width="700">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="4*"/>

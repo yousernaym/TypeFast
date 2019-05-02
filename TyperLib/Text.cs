@@ -20,6 +20,8 @@ namespace TyperLib
 			set
 			{
 				theText = value;
+				if (TheText == null)
+					TheText = "";
 
 				//Change characters to space
 				theText = theText.Replace('\n', ' ');

@@ -46,23 +46,20 @@ namespace TyperUWP
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
+			text.TheText = textList.selectRandom().Text;
+			syncTextsCombo();
+			textsCombo.SelectedValue = textList.Current.Title;
+					   
 			text.TimeLimit = TimeSpan.FromSeconds(10);
 			text.TimeChecked += Text_TimeChecked;
-			//text.TheText = "abcdefghijklmnopqrstuvwxyzåäö";
-			//text.loadText();
 			text.Foreground = Colors.White;
-			//text.Background =
+			text.Background = Colors.Black;
+			textColorBtn.Background = new SolidColorBrush(text.Foreground);
+			textBkgColorBtn.Background = new SolidColorBrush(text.Background);
 
 			text.draw();
-			
 			updateTypingStats();
 			textsCombo.Items.VectorChanged += textsCombo_Items_VectorChanged;
-
-			foreach (var text in textList)
-			{
-				textsCombo.Items.Add(text.Title);
-			}
-			textsCombo.SelectedIndex = 0;
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
 			foreach (string font in fonts)
@@ -129,7 +126,7 @@ namespace TyperUWP
 			if ((bool)shuffleBtn.IsChecked)
 			{
 				text.TheText = textList.selectRandom().Text;
-				textsCombo.SelectedItem = textList.Current.Title;
+				textsCombo.SelectedValue = textList.Current.Title;
 			}
 			reset();
 		}
@@ -152,21 +149,51 @@ namespace TyperUWP
 		{
 			if (dialogOpen)
 				return;
-			NewTextDialog newTextDialog = new NewTextDialog(textList);
+			NewTextDialog newTextDialog = new NewTextDialog(textList, false);
+			newTextDialog.Title = "Add new text";
 			dialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
 			dialogOpen = false;
 			
 			if (result == ContentDialogResult.Primary)
 			{
-				textsCombo.Items.Add(newTextDialog.TitleEntry);
-				textsCombo.SelectedIndex = textsCombo.Items.Count - 1;
+				syncTextsCombo();
+				textsCombo.SelectedValue = newTextDialog.TitleEntry;
+				//textsCombo.Items.Add(new TextEntry(newTextDialog.TitleEntry, newTextDialog.TextEntry));
+				//textsCombo.SelectedItem = textList.Current;
 			}
 		}
 
 		async private void TextsComboCmEdit_Click(object sender, RoutedEventArgs e)
 		{
+			if (dialogOpen)
+				return;
+			NewTextDialog newTextDialog = new NewTextDialog(textList, true);
+			newTextDialog.Title = "Edit text";
+			newTextDialog.TitleEntry = textList.Current.Title;
+			newTextDialog.TextEntry = textList.Current.Text;
+			dialogOpen = true;
+			ContentDialogResult result = await newTextDialog.ShowAsync();
+			dialogOpen = false;
 
+			if (result == ContentDialogResult.Primary)
+			{
+				syncTextsCombo();
+				textsCombo.SelectedValue = newTextDialog.TitleEntry;
+
+				//textsCombo.Items.Remove(textsCombo.SelectedItem);
+				//textsCombo.Items.Add(textsCombo.SelectedItem);
+				//textsCombo.SelectedItem = textList.Current;
+			}
+		}
+
+		private void syncTextsCombo()
+		{
+			int currentIndex = textsCombo.SelectedIndex;
+			textsCombo.Items.Clear();
+			foreach (var entry in textList)
+				textsCombo.Items.Add(entry);
+			textsCombo.SelectedIndex = currentIndex;
 		}
 
 		async private void TextsComboCmDelete_Click(object sender, RoutedEventArgs e)
@@ -177,28 +204,24 @@ namespace TyperUWP
 			ContentDialogResult result = await dlg.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{
-				textList.remove((string)textsCombo.SelectedItem);
+				textList.removeCurrent();
 				int selectedIndex = textsCombo.SelectedIndex;
-				textsCombo.Items.RemoveAt(textsCombo.SelectedIndex);
+				textsCombo.Items.Remove(textsCombo.SelectedItem);
 				if (selectedIndex >= textsCombo.Items.Count)
 					selectedIndex--;
 				textsCombo.SelectedIndex = selectedIndex;
 			}
 		}
 
-
 		private void TextsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			if (dialogOpen)
-				return;
-			string title = (string)textsCombo.SelectedItem;
-			if (string.IsNullOrEmpty(title))
-				return;
-			text.TheText = textList.select(title);
+			//if (textList.Current == null)
+			//	return;
+			textList.Current = (TextEntry)textsCombo.SelectedItem;
+			text.TheText = textList.Current?.Text;
 			reset();
 		}
 
-		
 		async private void TextCmPaste_Click(object sender, RoutedEventArgs e)
 		{
 			if (dialogOpen)

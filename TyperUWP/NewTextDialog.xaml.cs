@@ -20,36 +20,34 @@ namespace TyperUWP
 {
 	public sealed partial class NewTextDialog : ContentDialog
 	{
-		public string TitleEntry => titleTb.Text;
-		public string TextEntry => textTb.Text;
-		TextList textList;
+		public string TitleEntry
+		{
+			get => titleTb.Text;
+			set => titleTb.Text = value;
+		}
+		
+		public string TextEntry
+		{
+			get => textTb.Text;
+			set => textTb.Text = value;
+		}
 
-		public NewTextDialog(TextList _textList)
+		TextList textList;
+		string editExisting;
+
+		public NewTextDialog(TextList textList, bool edit)
 		{
 			this.InitializeComponent();
-			textList = _textList;
+			this.textList = textList;
+			if (edit)
+				this.editExisting = textList.Current.Title;
 		}
 		
 		private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
 		{
-		}
-
-		private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-		{
-		}
-
-		private void ContentDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)
-		{
-			if (args.Result == ContentDialogResult.None)
-				return;
 			if (string.IsNullOrWhiteSpace(TitleEntry))
 			{
 				displayError(titleTb, "Title can't be empty");
-				args.Cancel = true;
-			}
-			else if (textList.containsTitle(TitleEntry))
-			{
-				displayError(titleTb, "A text with this title already exists.");
 				args.Cancel = true;
 			}
 			else if (string.IsNullOrWhiteSpace(TextEntry))
@@ -57,8 +55,17 @@ namespace TyperUWP
 				displayError(textTb, "Text can't be empty.");
 				args.Cancel = true;
 			}
+			else if (editExisting != TitleEntry && textList.containsTitle(TitleEntry))
+			{
+				displayError(titleTb, "Another text with this title already exists.");
+				args.Cancel = true;
+			}
 			else
+			{
+				if (!string.IsNullOrEmpty(editExisting))
+					textList.remove(editExisting);
 				textList.add(TitleEntry, TextEntry);
+			}
 		}
 
 		void displayError(TextBox entry, string error)
