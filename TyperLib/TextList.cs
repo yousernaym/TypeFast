@@ -2,38 +2,39 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Collections;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace TyperLib
 {
-	using System.Collections;
-	using System.ComponentModel;
-	using System.Linq;
-	using System.Runtime.CompilerServices;
-	using ListType = Dictionary<string, string>;
+	using InternalTextList = SortedDictionary<string, string>;
 
 	[Serializable]
 	public class TextList : IEnumerable<TextEntry>
 	{
-		ListType presetList = new ListType();
-		ListType userList = new ListType();
+		InternalTextList presetTexts = new InternalTextList();
+		UserData userData = new UserData();
 		readonly string path;
 
+		public SortedList<int, string> Records => userData.Records;
 		public TextEntry Current { get; set; }
-		
+	
 		public TextList(string dir) 
 		{
 			path = Path.Combine(dir, "textList");
 			//save();
 			if (File.Exists(path))
-				userList = load(path);
+				load(path);
 		}
 
-		ListType load(string loadPath)
+		void load(string loadPath)
 		{
 			using (var stream = File.Open(loadPath, FileMode.Open))
 			{
-				var dcs = new DataContractSerializer(typeof(ListType));
-				return (ListType)dcs.ReadObject(stream);
+				var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
+				userData = (UserData)dcs.ReadObject(stream);
 			}
 		}
 
@@ -46,8 +47,8 @@ namespace TyperLib
 			{
 				using (var stream = File.Open(tempPath, FileMode.Create))
 				{
-					var dcs = new DataContractSerializer(typeof(ListType));
-					dcs.WriteObject(stream, userList);
+					var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
+					dcs.WriteObject(stream, userData);
 				}
 			}
 			catch
@@ -61,37 +62,37 @@ namespace TyperLib
 
 		public void add(string title, string text)
 		{
-			if (userList.ContainsKey(title))
+			if (userData.Texts.ContainsKey(title))
 				throw new ArgumentException("There already exists a text with the specified title.");
 			if (string.IsNullOrWhiteSpace(title))
 				throw new ArgumentException("Title can't be empty.");
-			userList.Add(title, text);
+			userData.Texts.Add(title, text);
 			save();
 		}
 
 		public void remove(string title)
 		{
-			var indeXable = userList.Keys.ToList();
+			var indeXable = userData.Texts.Keys.ToList();
 			int currentIndex = indeXable.FindIndex(k => k == title);
-			userList.Remove(title);
+			userData.Texts.Remove(title);
 			if (title == Current.Title)
 			{
-				if (currentIndex >= userList.Count)
+				if (currentIndex >= userData.Texts.Count)
 					currentIndex--;
-				Current = new TextEntry(userList.ElementAt(currentIndex));
+				Current = new TextEntry(userData.Texts.ElementAt(currentIndex));
 			}
 			save();
 		}
 
 		public bool containsTitle(string title)
 		{
-			return userList.ContainsKey(title);
+			return userData.Texts.ContainsKey(title);
 		}
 
 		public IEnumerator<TextEntry> GetEnumerator()
 		{
 			//return ((IEnumerable<KeyValuePair<string, string>>)userList).GetEnumerator();
-			foreach (var entry in userList)
+			foreach (var entry in userData.Texts)
 				yield return new TextEntry(entry);
 		}
 
@@ -100,33 +101,71 @@ namespace TyperLib
 			return GetEnumerator();
 		}
 
-		void resetFactoryTexts()
+		public void resetFactoryTexts()
 		{
 			//userList = new ListType();
-			foreach (var text in presetList)
-				userList.Add(text.Key, text.Value);
+			foreach (var text in presetTexts)
+				userData.Texts.Add(text.Key, text.Value);
 		}
 
 		public string select(string title)
 		{
-			Current = new TextEntry(title, userList[title]);
+			Current = new TextEntry(title, userData.Texts[title]);
 			return Current.Text;
 		}
 
 		public TextEntry selectRandom()
 		{
+			if (userData.Texts.Count == 0)
+				return null;
 			string randomTitle;
 			do
 			{
-				randomTitle = userList.ElementAt(new Random().Next(userList.Count)).Key;
+				randomTitle = userData.Texts.ElementAt(new Random().Next(userData.Texts.Count)).Key;
 			} while (randomTitle == Current?.Title);
 			select(randomTitle);
 			return Current;
 		}
 
+		public void addRecord(int wpm, string title)
+		{
+			userData.Records.Add(wpm, title);
+			save();
+		}
+
 		public void removeCurrent()
 		{
 			remove(Current.Title);
+		}
+	}
+
+	[Serializable]
+	public class UserData : ISerializable
+	{
+		public InternalTextList Texts { get; set; }
+		public SortedList<int,string> Records { get; set; }
+		static readonly public Type[] SerializeTypes = new Type[] { typeof(InternalTextList), typeof(SortedList<int, string>) };
+
+	public UserData()
+		{
+			Texts = new InternalTextList();
+			Records = new SortedList<int, string>();
+		}
+
+		public UserData(SerializationInfo info, StreamingContext context)
+		{
+			foreach (var entry in info)
+			{
+				if (entry.Name == "texts")
+					Texts = (InternalTextList)entry.Value;
+				else if (entry.Name == "records")
+					Records = (SortedList<int, string>)entry.Value;
+			}
+		}
+		public void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("texts", Texts);
+			info.AddValue("records", Records);
 		}
 	}
 
@@ -146,6 +185,14 @@ namespace TyperLib
 		}
 	}
 
+	//public class Records
+	//{
+	//	SortedList<int, string> records;
+	//	public void add(int wpm, string textTitle)
+	//	{
+	//		records.Add(wpm, textTitle);
+	//	}
+	//}
 }
 
 

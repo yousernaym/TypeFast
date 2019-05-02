@@ -46,12 +46,13 @@ namespace TyperUWP
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
-			text.TheText = textList.selectRandom().Text;
+			text.TheText = textList.selectRandom()?.Text;
 			syncTextsCombo();
-			textsCombo.SelectedValue = textList.Current.Title;
+			textsCombo.SelectedValue = textList.Current?.Title;
 					   
 			text.TimeLimit = TimeSpan.FromSeconds(10);
 			text.TimeChecked += Text_TimeChecked;
+			text.Finished += Text_Finished;
 			text.Foreground = Colors.White;
 			text.Background = Colors.Black;
 			textColorBtn.Background = new SolidColorBrush(text.Foreground);
@@ -68,6 +69,13 @@ namespace TyperUWP
 			fontSizeTb.Text = text.FontSize.ToString();
 		}
 
+		private void Text_Finished(object sender, EventArgs e)
+		{
+			timeText.Background = new SolidColorBrush(Colors.DarkRed);
+			if (textList.Current != null)
+				textList.addRecord(text.Wpm, textList.Current.Title);
+		}
+
 		private void textsCombo_Items_VectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
 		{
 			textsComboCmDelete.IsEnabled = textsCombo.Items.Count > 0;
@@ -80,10 +88,8 @@ namespace TyperUWP
 				timeText.Content = "Time\n" + text.RemainingTimeString;
 				wpmText.Text = "WPM\n" + text.Wpm;
 				accuracyText.Text = "Accuracy\n" + text.Accuracy.ToString("0.00") + " %";
-
-				if (text.IsFinished)
-					timeText.Background = new SolidColorBrush(Colors.DarkRed);
-				else if (text.IsRunning)
+			
+				if (text.IsRunning)
 					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
 				else
 					timeText.Background = new SolidColorBrush(Color.FromArgb(10, 250, 250, 250));
@@ -357,9 +363,9 @@ namespace TyperUWP
 			fontStyleFlyout.ShowAt(textPanel, showOptions);
 		}
 
-		private void FontMFI_Click_1(object sender, RoutedEventArgs e)
+		private void RecordsFlyout_Opened(object sender, object e)
 		{
-
+			recordsView.syncGrid(textList.Records);
 		}
 	}
 }

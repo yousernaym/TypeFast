@@ -19,14 +19,19 @@
 		<StackPanel Orientation="Vertical">
 			<RelativePanel Background="#ff112266" Padding="7,7,7,7">
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal" >
-					<Button x:Name="highScoreBtn" BorderBrush="#80ffffff" Background="#20000000" CornerRadius="5" IsTabStop="False">
+					<Button x:Name="recordsBtn" AccessKey="L" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="False">
 						<FontIcon FontFamily="Webdings" FontSize="30" Glyph="&#38;"/>
+						<Button.Flyout>
+							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened">
+								<local:RecordsView x:Name="recordsView"/>
+							</Flyout>
+						</Button.Flyout>
 					</Button>
 				</StackPanel>
 				<StackPanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal">
 					<!--<AppBarButton Icon="Help" Label="Help" x:Name="helpBtn" Content="...">
 					</AppBarButton>-->
-					<Button x:Name="helpBtn" BorderBrush="#80ffffff" Background="#20000000" CornerRadius="5" IsTabStop="False">
+					<Button x:Name="helpBtn" AccessKey="H" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="False">
 						<FontIcon FontFamily="WebDings" FontSize="30" Glyph="s"/>
 					</Button>
 				</StackPanel>
@@ -37,7 +42,7 @@
 					<TextBlock x:Name="wpmText" Margin="0,0,40,0" FontSize="20" Foreground="Yellow"/>
 					<TextBlock x:Name="accuracyText" Margin="0,0,30,0" FontSize="20" Foreground="Yellow"/>
 					<!--<local:TextBlockEx x:Name="timeText" CornerRadius="5" Padding="10,0,10,0" FontSize="20"/>-->
-					<Button x:Name="timeText" CornerRadius="5" Padding="7,0,8,0" FontSize="20" IsTabStop="False" >
+					<Button x:Name="timeText" AccessKey="T" CornerRadius="5" Padding="7,0,8,0" FontSize="20" IsTabStop="False" >
 						<Button.Flyout>
 							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closed="TimeLimitFlyout_Closed">
 								<StackPanel Orientation="Horizontal">
@@ -102,7 +107,7 @@
 				<AppBarButton Icon="Refresh" x:Name="restartBtn" AccessKey="R" Label="Restart" Click="RestartBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,0,0" HorizontalAlignment="Center"/>
 				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="False" VerticalAlignment="Center" IsChecked="True"/>
 			</StackPanel>
-			<ComboBox x:Name="textsCombo" AccessKey="S" MinWidth="200" DisplayMemberPath="Title" SelectedValuePath="Title" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="0,20,0,0" HorizontalAlignment="Center">
+			<ComboBox x:Name="textsCombo" AccessKey="C" MinWidth="200" DisplayMemberPath="Title" SelectedValuePath="Title" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="0,20,0,0" HorizontalAlignment="Center">
 				<ComboBox.ContextFlyout>
 					<MenuFlyout>
 						<MenuFlyoutItem Icon="Add" x:Name="textsComboCmNew" Text="New text..." Click="TextsComboCmNew_Click" >
