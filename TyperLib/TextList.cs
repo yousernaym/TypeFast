@@ -10,6 +10,7 @@ using System.Runtime.CompilerServices;
 namespace TyperLib
 {
 	using InternalTextList = SortedDictionary<string, string>;
+	using RecordList = List<Record>;
 
 	[Serializable]
 	public class TextList : IEnumerable<TextEntry>
@@ -18,7 +19,7 @@ namespace TyperLib
 		UserData userData = new UserData();
 		readonly string path;
 
-		public SortedList<int, string> Records => userData.Records;
+		public RecordList Records => userData.Records;
 		public TextEntry Current { get; set; }
 	
 		public TextList(string dir) 
@@ -122,14 +123,14 @@ namespace TyperLib
 			do
 			{
 				randomTitle = userData.Texts.ElementAt(new Random().Next(userData.Texts.Count)).Key;
-			} while (randomTitle == Current?.Title);
+			} while (randomTitle == Current?.Title && userData.Texts.Count > 1);
 			select(randomTitle);
 			return Current;
 		}
 
 		public void addRecord(int wpm, string title)
 		{
-			userData.Records.Add(wpm, title);
+			userData.Records.Add(new Record(wpm, title));
 			save();
 		}
 
@@ -143,13 +144,13 @@ namespace TyperLib
 	public class UserData : ISerializable
 	{
 		public InternalTextList Texts { get; set; }
-		public SortedList<int,string> Records { get; set; }
-		static readonly public Type[] SerializeTypes = new Type[] { typeof(InternalTextList), typeof(SortedList<int, string>) };
+		public RecordList Records { get; set; }
+		static readonly public Type[] SerializeTypes = new Type[] { typeof(InternalTextList), typeof(RecordList) };
 
-	public UserData()
+		public UserData()
 		{
 			Texts = new InternalTextList();
-			Records = new SortedList<int, string>();
+			Records = new RecordList();
 		}
 
 		public UserData(SerializationInfo info, StreamingContext context)
@@ -159,7 +160,7 @@ namespace TyperLib
 				if (entry.Name == "texts")
 					Texts = (InternalTextList)entry.Value;
 				else if (entry.Name == "records")
-					Records = (SortedList<int, string>)entry.Value;
+					Records = (RecordList)entry.Value;
 			}
 		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -167,6 +168,61 @@ namespace TyperLib
 			info.AddValue("texts", Texts);
 			info.AddValue("records", Records);
 		}
+	}
+
+	[Serializable]
+	public class Record : ISerializable, IComparable
+	{
+		public int WPM { get; set; }
+		public string TextTitle { get; set; }
+
+		public Record(int wpm, string textTitle)
+		{
+			WPM = wpm;
+			TextTitle = textTitle;
+		}
+
+		public Record(SerializationInfo info, StreamingContext context)
+		{
+			foreach (var entry in info)
+			{
+				if (entry.Name == "wpm")
+					WPM = (int)entry.Value;
+				else if (entry.Name == "textTitle")
+					TextTitle = (string)entry.Value;
+			}
+		}
+
+		public void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("wpm", WPM);
+			info.AddValue("textTitle", TextTitle);
+		}
+
+		public static int reverseSort(Record x, Record y)
+		{
+			//return new ReverseComparer();
+			return x.CompareTo(y) * -1;
+		}
+
+		public int CompareTo(object obj)
+		{
+			int wpm = ((Record)obj).WPM;
+			if (WPM < wpm)
+				return 1;
+			else if (WPM > wpm)
+				return -1;
+			else
+				return 0;
+		}
+
+		//class ReverseComparer : IComparer
+		//{
+		//	public int Compare(object x, object y)
+		//	{
+		//		return ((Record)x).CompareTo((Record)y) * -1;
+		//	}
+		//}
 	}
 
 	public class TextEntry

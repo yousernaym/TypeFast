@@ -29,6 +29,7 @@ namespace TyperLib
 				theText = theText.Replace('\t', ' ');
 				theText = theText.Replace((char)160, ' '); //Convert non-breaking space to regular space
 				theText = theText.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen to two ascii hyphens
+				theText = theText.Trim();
 
 				//Replace repeating characters with single character
 				Regex regex = new Regex("[ ]{2,}", RegexOptions.None);

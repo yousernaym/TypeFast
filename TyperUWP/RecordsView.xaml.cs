@@ -42,8 +42,9 @@ namespace TyperUWP
 					cellBorder.BorderBrush = new SolidColorBrush(Colors.Gray);
 					cellBorder.BorderThickness = new Thickness(1);
 
-					gridCells[i, j] = new TextBlock();
-					cellBorder.Child = gridCells[i, j];
+					var cell = new TextBlock();
+					cell.Foreground = new SolidColorBrush(Colors.White);
+					cellBorder.Child = gridCells[i, j] = cell;
 
 					grid.Children.Add(cellBorder);
 					Grid.SetRow(cellBorder, j);
@@ -54,15 +55,26 @@ namespace TyperUWP
 			gridCells[2, 0].Text = "Text";
 		}
 
-		public void syncGrid(SortedList<int, string> records)
+		public void syncGrid(List<Record> records)
 		{
-			return;
+			Record[] sortedRecords = new Record[records.Count];
+			records.CopyTo(sortedRecords);
+
+			if (CurrentRecordType == RecordType.RT_WorstTexts)
+				Array.Sort(sortedRecords, Record.reverseSort);
+			else
+				Array.Sort(sortedRecords);
+			if (CurrentRecordType != RecordType.RT_ALL)
+			{
+				//TOTO: remove duplicate text titles
+			}
+
 			for (int i = 0; i < Rows - 1; i++)
 			{
 				if (i < records.Count)
 				{
-					gridCells[1, i + 1].Text = records.Keys[i].ToString("d3");
-					gridCells[2, i + 1].Text = records.Values[i];
+					gridCells[1, i + 1].Text = sortedRecords[i].WPM.ToString();
+					gridCells[2, i + 1].Text = sortedRecords[i].TextTitle;
 				}
 				else
 				{

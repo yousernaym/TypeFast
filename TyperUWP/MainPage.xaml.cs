@@ -83,6 +83,8 @@ namespace TyperUWP
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
 		{
+			if (text.IsFinished) //This hethod may be called a few times after finishing
+				return;
 			await Dispatcher.RunAsync(CoreDispatcherPriority.High, delegate
 			{
 				timeText.Content = "Time\n" + text.RemainingTimeString;
