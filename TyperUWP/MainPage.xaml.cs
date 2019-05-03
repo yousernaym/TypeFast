@@ -369,6 +369,12 @@ namespace TyperUWP
 		private void RecordsFlyout_Opened(object sender, object e)
 		{
 			recordsView.syncGrid(textList);
+			dialogOpen = true;
+		}
+
+		private void RecordsFlyout_Closed(object sender, object e)
+		{
+			dialogOpen = false;
 		}
 	}
 }

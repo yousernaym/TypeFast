@@ -22,7 +22,7 @@
 					<Button x:Name="recordsBtn" AccessKey="L" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="False">
 						<FontIcon FontFamily="Webdings" FontSize="30" Glyph="&#38;"/>
 						<Button.Flyout>
-							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened">
+							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed">
 								<local:RecordsView x:Name="recordsView"/>
 							</Flyout>
 						</Button.Flyout>

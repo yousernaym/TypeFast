@@ -9,26 +9,14 @@
     d:DesignHeight="400"
     d:DesignWidth="400">
 
-	<Grid>
+	<Grid Background="Black" BorderThickness="1">
 		<StackPanel>
-			<StackPanel Height="100" Orientation="Horizontal">
-				<Button Content="All attempts" Margin="10,0,0,0"/>
-				<Button Content="Best texts" Margin="10,0,0,0" />
-				<Button Content="Worst texts" Margin="10,0,0,0" />
+			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+				<RadioButton Content="All attempts" Margin="10,0,0,0"/>
+				<RadioButton Content="Best texts" Margin="10,0,0,0" />
+				<RadioButton Content="Worst texts" Margin="10,0,0,0" />
 			</StackPanel>
-			<Grid x:Name="grid" Height="100" Padding="10,10,10,10">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-					<ColumnDefinition/>
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition/>
-					<RowDefinition/>
-					
-				</Grid.RowDefinitions>
-			</Grid>
+			<Grid x:Name="grid" Margin="10" BorderBrush="DarkGray" BorderThickness="1" HorizontalAlignment="Center"/>
 		</StackPanel>
-
 	</Grid>
 </UserControl>

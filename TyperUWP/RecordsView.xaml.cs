@@ -21,54 +21,77 @@ namespace TyperUWP
 {
 	public sealed partial class RecordsView : UserControl
 	{
-		const int NumRecords = 6, Rows = NumRecords + 1, Columns = 3;
+		const int 
+			NumRecords = 6,
+			Rows = NumRecords + 1,
+			Columns = 2,
+			WpmCol = 0,
+			TextCol = 1;
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
 		RecordType CurrentRecordType = RecordType.RT_ALL;
+		
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			for (int j = 0; j < Rows; j++)
+			for (int r = 0; r < Rows; r++)
 			{
 				var row = new RowDefinition();
-				row.Height = new GridLength(0, GridUnitType.Auto);
+				//row.Height = new GridLength(0, GridUnitType.Auto);
 				grid.RowDefinitions.Add(row);
-				for (int i = 0; i < Columns; i++)
+				for (int c = 0; c < Columns; c++)
 				{
 					var column = new ColumnDefinition();
-					column.Width = new GridLength(0, GridUnitType.Auto);
+					//column.MinWidth = c == WpmCol ? 50 : 100;
 					grid.ColumnDefinitions.Add(column);
 					var cellBorder = new Border();
-					cellBorder.BorderBrush = new SolidColorBrush(Colors.Gray);
-					cellBorder.BorderThickness = new Thickness(1);
+					byte rowBrightness = (byte)(25 * ((r + 1) % 2));
+					cellBorder.Background = new SolidColorBrush(Color.FromArgb(255, rowBrightness, rowBrightness, rowBrightness));
+					if (r == 0)
+						cellBorder.Background = new SolidColorBrush(Color.FromArgb(255, 0, 20, 80));
+					cellBorder.Padding = new Thickness(10);
 
 					var cell = new TextBlock();
+					cell.HorizontalAlignment = c == WpmCol ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+					cell.VerticalAlignment = VerticalAlignment.Center;
+					if (c == WpmCol)
+					{
+						cellBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 40, 40, 40));
+						cellBorder.BorderThickness = new Thickness(0, 0, 1, 0);
+					}
+
 					cell.Foreground = new SolidColorBrush(Colors.White);
-					cellBorder.Child = gridCells[i, j] = cell;
+					cell.FontSize = 20;
+					if (r == 0)
+					{
+						cell.FontStyle = Windows.UI.Text.FontStyle.Italic;
+						cell.HorizontalAlignment = HorizontalAlignment.Center;
+					}
+					cellBorder.Child = gridCells[c, r] = cell;
 
 					grid.Children.Add(cellBorder);
-					Grid.SetRow(cellBorder, j);
-					Grid.SetColumn(cellBorder, i);
+					Grid.SetRow(cellBorder, r);
+					Grid.SetColumn(cellBorder, c);
 				}
 			}
-			gridCells[1, 0].Text = "WPM";
-			gridCells[2, 0].Text = "Text";
+			gridCells[WpmCol, 0].Text = "WPM";
+			gridCells[TextCol, 0].Text = "Text";
 		}
 
 		public void syncGrid(Texts texts)
 		{
 			var records = texts.getRecords(CurrentRecordType, NumRecords);
 
-			for (int i = 0; i < Rows - 1; i++)
+			for (int i = 0; i < NumRecords; i++)
 			{
 				if (i < records.Length)
 				{
-					gridCells[1, i + 1].Text = records[i].WPM.ToString();
-					gridCells[2, i + 1].Text = records[i].TextTitle;
+					gridCells[WpmCol, i + 1].Text = records[i].WPM.ToString();
+					gridCells[TextCol, i + 1].Text = records[i].TextTitle;
 				}
 				else
 				{
-					gridCells[1, i + 1].Text = "";
-					gridCells[2, i + 1].Text = "";
+					gridCells[WpmCol, i + 1].Text = "";
+					gridCells[TextCol, i + 1].Text = "";
 				}
 			}
 		}
