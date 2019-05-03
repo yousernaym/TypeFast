@@ -7,8 +7,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="400"
-    d:DesignWidth="400">
-
+    d:DesignWidth="400"
+	>
+	
 	<Grid Background="Black" BorderThickness="1">
 		<StackPanel>
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
@@ -17,6 +18,10 @@
 				<RadioButton Content="Worst texts" Margin="10,0,0,0" />
 			</StackPanel>
 			<Grid x:Name="grid" Margin="10" BorderBrush="DarkGray" BorderThickness="1" HorizontalAlignment="Center"/>
-		</StackPanel>
+			<!--<controls.DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70"
+                          OffsetX="5.0" OffsetY="5.0" Color="Black">
+			<Grid x:Name="grid" Margin="10" BorderBrush="DarkGray" BorderThickness="1" HorizontalAlignment="Center"/>
+		</controls.DropShadowPanel>-->
+	</StackPanel>
 	</Grid>
 </UserControl>
