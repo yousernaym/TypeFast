@@ -27,8 +27,10 @@ namespace TyperUWP
 			Columns = 2,
 			WpmCol = 0,
 			TextCol = 1;
+
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
-		RecordType CurrentRecordType = RecordType.RT_ALL;
+		RecordType currentRecordType = RecordType.RT_ALL;
+		Texts texts;
 		
 		public RecordsView()
 		{
@@ -79,7 +81,13 @@ namespace TyperUWP
 
 		public void syncGrid(Texts texts)
 		{
-			var records = texts.getRecords(CurrentRecordType, NumRecords);
+			this.texts = texts;
+			syncGrid();
+		}
+
+		void syncGrid()
+		{ 
+			var records = texts.getRecords(currentRecordType, NumRecords);
 
 			for (int i = 0; i < NumRecords; i++)
 			{
@@ -94,6 +102,24 @@ namespace TyperUWP
 					gridCells[TextCol, i + 1].Text = "";
 				}
 			}
+		}
+
+		private void AllRBtn_Click(object sender, RoutedEventArgs e)
+		{
+			currentRecordType = RecordType.RT_ALL;
+			syncGrid();
+		}
+
+		private void BestTextsRBtn_Click(object sender, RoutedEventArgs e)
+		{
+			currentRecordType = RecordType.RT_BestTexts;
+			syncGrid();
+		}
+
+		private void WorstTextsRBtn_Click(object sender, RoutedEventArgs e)
+		{
+			currentRecordType = RecordType.RT_WorstTexts;
+			syncGrid();
 		}
 	}
 }

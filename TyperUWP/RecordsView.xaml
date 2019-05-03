@@ -13,9 +13,9 @@
 	<Grid Background="Black" BorderThickness="1">
 		<StackPanel>
 			<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-				<RadioButton Content="All attempts" Margin="10,0,0,0"/>
-				<RadioButton Content="Best texts" Margin="10,0,0,0" />
-				<RadioButton Content="Worst texts" Margin="10,0,0,0" />
+				<RadioButton x:Name="allRBtn" Content="All attempts" Margin="10,0,0,0" Click="AllRBtn_Click"/>
+				<RadioButton x:Name="bestTextsRBtn" Content="Best texts" Margin="10,0,0,0" Click="BestTextsRBtn_Click"/>
+				<RadioButton x:Name="worstTextsRBtn" Content="Worst texts" Margin="10,0,0,0" Click="WorstTextsRBtn_Click" />
 			</StackPanel>
 			<Grid x:Name="grid" Margin="10" BorderBrush="DarkGray" BorderThickness="1" HorizontalAlignment="Center"/>
 			<!--<controls.DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70"

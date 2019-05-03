@@ -153,7 +153,11 @@ namespace TyperLib
 			{
 				var dict = new Dictionary<string, Record>();
 				foreach (var rec in records)
-					dict[rec.TextTitle] = rec;
+				{
+					//Add record to dictionary if it doesn't already contain a record with this text title or if its recorD with this text title has a lower wpm
+					if (!dict.ContainsKey(rec.TextTitle) || dict[rec.TextTitle].WPM < rec.WPM)
+						dict[rec.TextTitle] = rec;
+				}
 				records = new Record[dict.Count];
 				int i = 0;
 				foreach (var rec in dict)
@@ -166,8 +170,9 @@ namespace TyperLib
 			var subArray = records;
 			if (count > 0)
 			{
-				subArray = new Record[count];
-				for (int i = 0; i < count; i++)
+				int actualCount = Math.Min(count, records.Length); //There may be fewer available items than requested. In that case return all availabLe items.
+				subArray = new Record[actualCount];
+				for (int i = 0; i < actualCount; i++)
 					subArray[i] = records[i];
 			}
 			return subArray;
