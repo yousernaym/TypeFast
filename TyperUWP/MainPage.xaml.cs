@@ -35,7 +35,7 @@ namespace TyperUWP
 	public sealed partial class MainPage : Page
 	{
 		Text text;
-		TextList textList = new TextList(ApplicationData.Current.LocalFolder.Path);
+		Texts textList = new Texts(ApplicationData.Current.LocalFolder.Path);
 		private bool dialogOpen = false;
 
 		public MainPage()
@@ -71,7 +71,6 @@ namespace TyperUWP
 
 		private void Text_Finished(object sender, EventArgs e)
 		{
-			timeText.Background = new SolidColorBrush(Colors.DarkRed);
 			if (textList.Current != null)
 				textList.addRecord(text.Wpm, textList.Current.Title);
 		}
@@ -83,8 +82,8 @@ namespace TyperUWP
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
 		{
-			if (text.IsFinished) //This hethod may be called a few times after finishing
-				return;
+			//if (text.IsFinished) //This hethod may be called a few times after finishing
+			//	return;
 			await Dispatcher.RunAsync(CoreDispatcherPriority.High, delegate
 			{
 				timeText.Content = "Time\n" + text.RemainingTimeString;
@@ -93,6 +92,8 @@ namespace TyperUWP
 			
 				if (text.IsRunning)
 					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
+				else if (text.IsFinished)
+					timeText.Background = new SolidColorBrush(Colors.DarkRed);
 				else
 					timeText.Background = new SolidColorBrush(Color.FromArgb(10, 250, 250, 250));
 
@@ -367,7 +368,7 @@ namespace TyperUWP
 
 		private void RecordsFlyout_Opened(object sender, object e)
 		{
-			recordsView.syncGrid(textList.Records);
+			recordsView.syncGrid(textList);
 		}
 	}
 }

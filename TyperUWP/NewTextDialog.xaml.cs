@@ -32,10 +32,10 @@ namespace TyperUWP
 			set => textTb.Text = value;
 		}
 
-		TextList textList;
+		Texts textList;
 		string editExisting;
 
-		public NewTextDialog(TextList textList, bool edit)
+		public NewTextDialog(Texts textList, bool edit)
 		{
 			this.InitializeComponent();
 			this.textList = textList;

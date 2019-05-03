@@ -9,22 +9,23 @@ using System.Runtime.CompilerServices;
 
 namespace TyperLib
 {
-	using InternalTextList = SortedDictionary<string, string>;
-	using RecordList = List<Record>;
-
+	using InternalTexts = SortedDictionary<string, string>;
+	using Records = List<Record>;
+	public enum RecordType { RT_ALL, RT_BestTexts, RT_WorstTexts };
+	
 	[Serializable]
-	public class TextList : IEnumerable<TextEntry>
+	public class Texts : IEnumerable<TextEntry>
 	{
-		InternalTextList presetTexts = new InternalTextList();
+		InternalTexts presetTexts = new InternalTexts();
 		UserData userData = new UserData();
 		readonly string path;
 
-		public RecordList Records => userData.Records;
+		//public Records Records => userData.Records;
 		public TextEntry Current { get; set; }
 	
-		public TextList(string dir) 
+		public Texts(string dir) 
 		{
-			path = Path.Combine(dir, "textList");
+			path = Path.Combine(dir, "texts");
 			//save();
 			if (File.Exists(path))
 				load(path);
@@ -32,6 +33,8 @@ namespace TyperLib
 
 		void load(string loadPath)
 		{
+			if (string.IsNullOrEmpty(loadPath))
+				return;
 			using (var stream = File.Open(loadPath, FileMode.Open))
 			{
 				var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
@@ -43,6 +46,8 @@ namespace TyperLib
 		{
 			if (savePath == null)
 				savePath = path;
+			if (string.IsNullOrEmpty(savePath))
+				return;
 			string tempPath = savePath + "_";
 			try
 			{
@@ -134,6 +139,21 @@ namespace TyperLib
 			save();
 		}
 
+		public Record[] getRecords(RecordType type, int count = 0)
+		{
+			Record[] records = new Record[userData.Records.Count];
+			userData.Records.CopyTo(records);
+			if (type == RecordType.RT_WorstTexts)
+				Array.Sort(records, Record.reverseSort);
+			else
+				Array.Sort(records);
+
+			if (type != RecordType.RT_ALL)
+			{
+			}
+			return records;
+		}
+
 		public void removeCurrent()
 		{
 			remove(Current.Title);
@@ -143,14 +163,14 @@ namespace TyperLib
 	[Serializable]
 	public class UserData : ISerializable
 	{
-		public InternalTextList Texts { get; set; }
-		public RecordList Records { get; set; }
-		static readonly public Type[] SerializeTypes = new Type[] { typeof(InternalTextList), typeof(RecordList) };
+		public InternalTexts Texts { get; set; }
+		public Records Records { get; set; }
+		static readonly public Type[] SerializeTypes = new Type[] { typeof(InternalTexts), typeof(Records) };
 
 		public UserData()
 		{
-			Texts = new InternalTextList();
-			Records = new RecordList();
+			Texts = new InternalTexts();
+			Records = new Records();
 		}
 
 		public UserData(SerializationInfo info, StreamingContext context)
@@ -158,9 +178,9 @@ namespace TyperLib
 			foreach (var entry in info)
 			{
 				if (entry.Name == "texts")
-					Texts = (InternalTextList)entry.Value;
+					Texts = (InternalTexts)entry.Value;
 				else if (entry.Name == "records")
-					Records = (RecordList)entry.Value;
+					Records = (Records)entry.Value;
 			}
 		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -168,61 +188,6 @@ namespace TyperLib
 			info.AddValue("texts", Texts);
 			info.AddValue("records", Records);
 		}
-	}
-
-	[Serializable]
-	public class Record : ISerializable, IComparable
-	{
-		public int WPM { get; set; }
-		public string TextTitle { get; set; }
-
-		public Record(int wpm, string textTitle)
-		{
-			WPM = wpm;
-			TextTitle = textTitle;
-		}
-
-		public Record(SerializationInfo info, StreamingContext context)
-		{
-			foreach (var entry in info)
-			{
-				if (entry.Name == "wpm")
-					WPM = (int)entry.Value;
-				else if (entry.Name == "textTitle")
-					TextTitle = (string)entry.Value;
-			}
-		}
-
-		public void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue("wpm", WPM);
-			info.AddValue("textTitle", TextTitle);
-		}
-
-		public static int reverseSort(Record x, Record y)
-		{
-			//return new ReverseComparer();
-			return x.CompareTo(y) * -1;
-		}
-
-		public int CompareTo(object obj)
-		{
-			int wpm = ((Record)obj).WPM;
-			if (WPM < wpm)
-				return 1;
-			else if (WPM > wpm)
-				return -1;
-			else
-				return 0;
-		}
-
-		//class ReverseComparer : IComparer
-		//{
-		//	public int Compare(object x, object y)
-		//	{
-		//		return ((Record)x).CompareTo((Record)y) * -1;
-		//	}
-		//}
 	}
 
 	public class TextEntry

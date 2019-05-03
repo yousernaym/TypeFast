@@ -19,10 +19,9 @@ using Windows.UI.Xaml.Navigation;
 
 namespace TyperUWP
 {
-	public enum RecordType { RT_ALL, RT_BestTexts, RT_WorstTexts };
 	public sealed partial class RecordsView : UserControl
 	{
-		const int Rows = 7, Columns = 3;
+		const int NumRecords = 6, Rows = NumRecords + 1, Columns = 3;
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
 		RecordType CurrentRecordType = RecordType.RT_ALL;
 		public RecordsView()
@@ -55,26 +54,16 @@ namespace TyperUWP
 			gridCells[2, 0].Text = "Text";
 		}
 
-		public void syncGrid(List<Record> records)
+		public void syncGrid(Texts texts)
 		{
-			Record[] sortedRecords = new Record[records.Count];
-			records.CopyTo(sortedRecords);
-
-			if (CurrentRecordType == RecordType.RT_WorstTexts)
-				Array.Sort(sortedRecords, Record.reverseSort);
-			else
-				Array.Sort(sortedRecords);
-			if (CurrentRecordType != RecordType.RT_ALL)
-			{
-				//TOTO: remove duplicate text titles
-			}
+			var records = texts.getRecords(CurrentRecordType, NumRecords);
 
 			for (int i = 0; i < Rows - 1; i++)
 			{
-				if (i < records.Count)
+				if (i < records.Length)
 				{
-					gridCells[1, i + 1].Text = sortedRecords[i].WPM.ToString();
-					gridCells[2, i + 1].Text = sortedRecords[i].TextTitle;
+					gridCells[1, i + 1].Text = records[i].WPM.ToString();
+					gridCells[2, i + 1].Text = records[i].TextTitle;
 				}
 				else
 				{
