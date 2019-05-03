@@ -25,7 +25,8 @@ namespace TyperLib
 	
 		public Texts(string dir) 
 		{
-			path = Path.Combine(dir, "texts");
+			if (dir != null)
+				path = Path.Combine(dir, "texts");
 			//save();
 			if (File.Exists(path))
 				load(path);
@@ -150,8 +151,26 @@ namespace TyperLib
 
 			if (type != RecordType.RT_ALL)
 			{
+				var dict = new Dictionary<string, Record>();
+				foreach (var rec in records)
+					dict[rec.TextTitle] = rec;
+				records = new Record[dict.Count];
+				int i = 0;
+				foreach (var rec in dict)
+					records[i++] = rec.Value;
+				if (type == RecordType.RT_WorstTexts)
+					Array.Sort(records, Record.reverseSort);
+				else
+					Array.Sort(records);
 			}
-			return records;
+			var subArray = records;
+			if (count > 0)
+			{
+				subArray = new Record[count];
+				for (int i = 0; i < count; i++)
+					subArray[i] = records[i];
+			}
+			return subArray;
 		}
 
 		public void removeCurrent()
