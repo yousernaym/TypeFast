@@ -9,10 +9,12 @@ namespace TyperLib
 	{
 		public int WPM { get; set; }
 		public string TextTitle { get; set; }
+		public float Accuracy { get; set; }
 
-		public Record(int wpm, string textTitle)
+		public Record(int wpm, float accuracy, string textTitle)
 		{
 			WPM = wpm;
+			Accuracy = accuracy;
 			TextTitle = textTitle;
 		}
 
@@ -24,6 +26,8 @@ namespace TyperLib
 					WPM = (int)entry.Value;
 				else if (entry.Name == "textTitle")
 					TextTitle = (string)entry.Value;
+				else if (entry.Name == "accuracy")
+					Accuracy = (float)entry.Value;
 			}
 		}
 
@@ -31,11 +35,11 @@ namespace TyperLib
 		{
 			info.AddValue("wpm", WPM);
 			info.AddValue("textTitle", TextTitle);
+			info.AddValue("accuracy", Accuracy);
 		}
 
 		public static int reverseSort(Record x, Record y)
 		{
-			//return new ReverseComparer();
 			return x.CompareTo(y) * -1;
 		}
 

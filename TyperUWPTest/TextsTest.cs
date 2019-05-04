@@ -19,11 +19,11 @@ namespace TyperUWPTest
 		[TestMethod]
         public void getRecords()
         {
-			texts.addRecord(100, "title1");
-			texts.addRecord(50, "title2");
-			texts.addRecord(50, "title4");
-			texts.addRecord(200, "title3");
-			texts.addRecord(250, "title3");
+			texts.addRecord(100, 90, "title1");
+			texts.addRecord(50, 95, "title2");
+			texts.addRecord(50, 100, "title4");
+			texts.addRecord(200, 10, "title3");
+			texts.addRecord(250, 50, "title3");
 
 			//Get 3 records
 			var records = texts.getRecords(RecordType.RT_ALL, 3);

@@ -72,7 +72,7 @@ namespace TyperUWP
 		private void Text_Finished(object sender, EventArgs e)
 		{
 			if (texts.Current != null)
-				texts.addRecord(text.Wpm, texts.Current.Title);
+				texts.addRecord(text.Wpm, text.Accuracy, texts.Current.Title);
 		}
 
 		private void textsCombo_Items_VectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -88,7 +88,7 @@ namespace TyperUWP
 			{
 				timeText.Content = "Time\n" + text.RemainingTimeString;
 				wpmText.Text = "WPM\n" + text.Wpm;
-				accuracyText.Text = "Accuracy\n" + text.Accuracy.ToString("0.00") + " %";
+				accuracyText.Text = "Accuracy\n" + text.Accuracy.ToString("0.0") + " %";
 			
 				if (text.IsRunning)
 					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
@@ -382,6 +382,7 @@ namespace TyperUWP
 			recordsFlyout.Hide();
 			dialogOpen = false;
 			textsCombo.SelectedValue = e.Title;
+			reset();
 		}
 	}
 }

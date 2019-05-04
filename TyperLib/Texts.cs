@@ -134,9 +134,9 @@ namespace TyperLib
 			return Current;
 		}
 
-		public void addRecord(int wpm, string title)
+		public void addRecord(int wpm, float accuracy, string title)
 		{
-			userData.Records.Add(new Record(wpm, title));
+			userData.Records.Add(new Record(wpm, accuracy, title));
 			save();
 		}
 

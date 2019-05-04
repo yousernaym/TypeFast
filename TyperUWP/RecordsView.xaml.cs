@@ -7,6 +7,7 @@ using TyperLib;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,13 +23,14 @@ namespace TyperUWP
 {
 	public sealed partial class RecordsView : UserControl
 	{
-		const int 
+		const int
 			NumRecords = 6,
 			Rows = NumRecords + 1,
-			Columns = 2,
+			Columns = 3,
 			WpmCol = 0,
-			TextCol = 1;
-
+			AccCol = 1,
+			TextCol = 2;
+		
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
 		RecordType currentRecordType = RecordType.RT_ALL;
 		Texts texts;
@@ -54,7 +56,7 @@ namespace TyperUWP
 					cellBorder.Background = new SolidColorBrush(Color.FromArgb(255, rowBrightness, rowBrightness, rowBrightness));
 					cellBorder.Padding = new Thickness(10);
 					var cell = new TextBlock();
-					cell.HorizontalAlignment = c == WpmCol ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+					cell.HorizontalAlignment = c == WpmCol || c == AccCol ? HorizontalAlignment.Right : HorizontalAlignment.Left;
 					cell.VerticalAlignment = VerticalAlignment.Center;
 					cell.Foreground = new SolidColorBrush(Colors.White);
 					cell.FontSize = 20;
@@ -62,6 +64,7 @@ namespace TyperUWP
 					{
 						cellBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 40, 40, 40));
 						cellBorder.BorderThickness = new Thickness(0, 0, 1, 0);
+						cell.FontWeight = FontWeights.Bold;
 					}
 					else if (c == TextCol)
 					{
@@ -86,6 +89,7 @@ namespace TyperUWP
 				}
 			}
 			gridCells[WpmCol, 0].Text = "WPM";
+			gridCells[AccCol, 0].Text = "Acc %";
 			gridCells[TextCol, 0].Text = "Text";
 		}
 
@@ -110,6 +114,8 @@ namespace TyperUWP
 				if (i < records.Length)
 				{
 					gridCells[WpmCol, i + 1].Text = records[i].WPM.ToString();
+					gridCells[AccCol, i + 1].Text = records[i].Accuracy.ToString("0.0");
+
 					var titleLink = (Hyperlink)gridCells[TextCol, i + 1].Inlines[0];
 					var titleRun = (Run)titleLink.Inlines[0];
 					titleRun.Text = records[i].TextTitle;
