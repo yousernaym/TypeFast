@@ -32,6 +32,9 @@ namespace TyperUWP
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
 		RecordType currentRecordType = RecordType.RT_ALL;
 		Texts texts;
+
+		public delegate void TextTitleClickEH(RecordsView recordsView, TextTitleClickEventArgs e);
+		public event TextTitleClickEH TextTitleClick;
 		
 		public RecordsView()
 		{
@@ -66,7 +69,7 @@ namespace TyperUWP
 						var run = new Run();
 						link.Inlines.Add(run);
 						cell.Inlines.Add(link);
-						link.Click += TextTitleLink_Click;
+						link.Click += TextTitle_Click;
 					}
 
 					if (r == 0)
@@ -86,10 +89,10 @@ namespace TyperUWP
 			gridCells[TextCol, 0].Text = "Text";
 		}
 
-		private void TextTitleLink_Click(Hyperlink sender, HyperlinkClickEventArgs args)
+		private void TextTitle_Click(Hyperlink sender, HyperlinkClickEventArgs args)
 		{
 			var title = ((Run)sender.Inlines[0]).Text;
-			//TODO: Dispatch public title-click event
+			TextTitleClick?.Invoke(this, new TextTitleClickEventArgs(title));
 		}
 
 		public void syncGrid(Texts texts)
@@ -135,6 +138,16 @@ namespace TyperUWP
 		{
 			currentRecordType = RecordType.RT_WorstTexts;
 			syncGrid();
+		}
+	}
+
+	public class TextTitleClickEventArgs : EventArgs
+	{
+		public string Title { get; set; }
+
+		public TextTitleClickEventArgs(string title) 
+		{
+			Title = title;
 		}
 	}
 }

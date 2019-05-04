@@ -23,7 +23,7 @@
 						<FontIcon FontFamily="Webdings" FontSize="30" Glyph="&#38;"/>
 						<Button.Flyout>
 							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed">
-								<local:RecordsView x:Name="recordsView"/>
+								<local:RecordsView x:Name="recordsView" TextTitleClick="RecordsView_TextTitleClick"/>
 							</Flyout>
 						</Button.Flyout>
 					</Button>

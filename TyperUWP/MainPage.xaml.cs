@@ -35,7 +35,7 @@ namespace TyperUWP
 	public sealed partial class MainPage : Page
 	{
 		Text text;
-		Texts textList = new Texts(ApplicationData.Current.LocalFolder.Path);
+		Texts texts = new Texts(ApplicationData.Current.LocalFolder.Path);
 		private bool dialogOpen = false;
 
 		public MainPage()
@@ -46,9 +46,9 @@ namespace TyperUWP
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
-			text.TheText = textList.selectRandom()?.Text;
+			text.TheText = texts.selectRandom()?.Text;
 			syncTextsCombo();
-			textsCombo.SelectedValue = textList.Current?.Title;
+			textsCombo.SelectedValue = texts.Current?.Title;
 					   
 			text.TimeLimit = TimeSpan.FromSeconds(10);
 			text.TimeChecked += Text_TimeChecked;
@@ -71,8 +71,8 @@ namespace TyperUWP
 
 		private void Text_Finished(object sender, EventArgs e)
 		{
-			if (textList.Current != null)
-				textList.addRecord(text.Wpm, textList.Current.Title);
+			if (texts.Current != null)
+				texts.addRecord(text.Wpm, texts.Current.Title);
 		}
 
 		private void textsCombo_Items_VectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -134,8 +134,8 @@ namespace TyperUWP
 		{
 			if ((bool)shuffleBtn.IsChecked)
 			{
-				text.TheText = textList.selectRandom().Text;
-				textsCombo.SelectedValue = textList.Current.Title;
+				text.TheText = texts.selectRandom().Text;
+				textsCombo.SelectedValue = texts.Current.Title;
 			}
 			reset();
 		}
@@ -158,7 +158,7 @@ namespace TyperUWP
 		{
 			if (dialogOpen)
 				return;
-			NewTextDialog newTextDialog = new NewTextDialog(textList, false);
+			NewTextDialog newTextDialog = new NewTextDialog(texts, false);
 			newTextDialog.Title = "Add new text";
 			dialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
@@ -177,10 +177,10 @@ namespace TyperUWP
 		{
 			if (dialogOpen)
 				return;
-			NewTextDialog newTextDialog = new NewTextDialog(textList, true);
+			NewTextDialog newTextDialog = new NewTextDialog(texts, true);
 			newTextDialog.Title = "Edit text";
-			newTextDialog.TitleEntry = textList.Current.Title;
-			newTextDialog.TextEntry = textList.Current.Text;
+			newTextDialog.TitleEntry = texts.Current.Title;
+			newTextDialog.TextEntry = texts.Current.Text;
 			dialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
 			dialogOpen = false;
@@ -200,7 +200,7 @@ namespace TyperUWP
 		{
 			int currentIndex = textsCombo.SelectedIndex;
 			textsCombo.Items.Clear();
-			foreach (var entry in textList)
+			foreach (var entry in texts)
 				textsCombo.Items.Add(entry);
 			textsCombo.SelectedIndex = currentIndex;
 		}
@@ -213,7 +213,7 @@ namespace TyperUWP
 			ContentDialogResult result = await dlg.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{
-				textList.removeCurrent();
+				texts.removeCurrent();
 				int selectedIndex = textsCombo.SelectedIndex;
 				textsCombo.Items.Remove(textsCombo.SelectedItem);
 				if (selectedIndex >= textsCombo.Items.Count)
@@ -226,8 +226,8 @@ namespace TyperUWP
 		{
 			//if (textList.Current == null)
 			//	return;
-			textList.Current = (TextEntry)textsCombo.SelectedItem;
-			text.TheText = textList.Current?.Text;
+			texts.Current = (TextEntry)textsCombo.SelectedItem;
+			text.TheText = texts.Current?.Text;
 			reset();
 		}
 
@@ -368,13 +368,20 @@ namespace TyperUWP
 
 		private void RecordsFlyout_Opened(object sender, object e)
 		{
-			recordsView.syncGrid(textList);
+			recordsView.syncGrid(texts);
 			dialogOpen = true;
 		}
 
 		private void RecordsFlyout_Closed(object sender, object e)
 		{
 			dialogOpen = false;
+		}
+
+		private void RecordsView_TextTitleClick(RecordsView recordsView, TextTitleClickEventArgs e)
+		{
+			recordsFlyout.Hide();
+			dialogOpen = false;
+			textsCombo.SelectedValue = e.Title;
 		}
 	}
 }
