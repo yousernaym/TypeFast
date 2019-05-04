@@ -45,13 +45,20 @@ namespace TyperLib
 
 		public int CompareTo(object obj)
 		{
-			int wpm = ((Record)obj).WPM;
-			if (WPM < wpm)
+			Record rec = (Record)obj;
+			if (WPM < rec.WPM)
 				return 1;
-			else if (WPM > wpm)
+			else if (WPM > rec.WPM)
 				return -1;
-			else
-				return 0;
+			else //Same WPM, compare accuracy
+			{
+				if (Accuracy < rec.Accuracy)
+					return 1;
+				else if (Accuracy > rec.Accuracy)
+					return -1;
+				else
+					return 0;
+			}
 		}
 
 		//class ReverseComparer : IComparer

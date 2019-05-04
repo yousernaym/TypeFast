@@ -115,17 +115,22 @@ namespace TyperUWP
 				{
 					gridCells[WpmCol, i + 1].Text = records[i].WPM.ToString();
 					gridCells[AccCol, i + 1].Text = records[i].Accuracy.ToString("0.0");
-
-					var titleLink = (Hyperlink)gridCells[TextCol, i + 1].Inlines[0];
-					var titleRun = (Run)titleLink.Inlines[0];
-					titleRun.Text = records[i].TextTitle;
+					setLinkText(gridCells[TextCol, i + 1], records[i].TextTitle);
 				}
 				else
 				{
 					gridCells[WpmCol, i + 1].Text = "";
-					gridCells[TextCol, i + 1].Text = "";
+					gridCells[AccCol, i + 1].Text = "";
+					setLinkText(gridCells[TextCol, i + 1], "");
 				}
 			}
+		}
+
+		private void setLinkText(TextBlock textBlock, string text)
+		{
+			var titleLink = (Hyperlink)textBlock.Inlines[0];
+			var titleRun = (Run)titleLink.Inlines[0];
+			titleRun.Text = text;
 		}
 
 		private void AllRBtn_Click(object sender, RoutedEventArgs e)

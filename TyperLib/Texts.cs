@@ -27,7 +27,7 @@ namespace TyperLib
 		{
 			if (dir != null)
 				path = Path.Combine(dir, "texts");
-			//save();
+			save();
 			if (File.Exists(path))
 				load(path);
 		}
