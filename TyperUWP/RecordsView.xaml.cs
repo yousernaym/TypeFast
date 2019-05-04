@@ -11,6 +11,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -48,25 +49,31 @@ namespace TyperUWP
 					var cellBorder = new Border();
 					byte rowBrightness = (byte)(25 * ((r + 1) % 2));
 					cellBorder.Background = new SolidColorBrush(Color.FromArgb(255, rowBrightness, rowBrightness, rowBrightness));
-					if (r == 0)
-						cellBorder.Background = new SolidColorBrush(Color.FromArgb(255, 0, 20, 80));
 					cellBorder.Padding = new Thickness(10);
-
 					var cell = new TextBlock();
 					cell.HorizontalAlignment = c == WpmCol ? HorizontalAlignment.Right : HorizontalAlignment.Left;
 					cell.VerticalAlignment = VerticalAlignment.Center;
+					cell.Foreground = new SolidColorBrush(Colors.White);
+					cell.FontSize = 20;
 					if (c == WpmCol)
 					{
 						cellBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 40, 40, 40));
 						cellBorder.BorderThickness = new Thickness(0, 0, 1, 0);
 					}
+					else if (c == TextCol)
+					{
+						var link = new Hyperlink();
+						var run = new Run();
+						link.Inlines.Add(run);
+						cell.Inlines.Add(link);
+						link.Click += TextTitleLink_Click;
+					}
 
-					cell.Foreground = new SolidColorBrush(Colors.White);
-					cell.FontSize = 20;
 					if (r == 0)
 					{
 						cell.FontStyle = Windows.UI.Text.FontStyle.Italic;
 						cell.HorizontalAlignment = HorizontalAlignment.Center;
+						cellBorder.Background = new SolidColorBrush(Color.FromArgb(255, 0, 20, 80));
 					}
 					cellBorder.Child = gridCells[c, r] = cell;
 
@@ -77,6 +84,12 @@ namespace TyperUWP
 			}
 			gridCells[WpmCol, 0].Text = "WPM";
 			gridCells[TextCol, 0].Text = "Text";
+		}
+
+		private void TextTitleLink_Click(Hyperlink sender, HyperlinkClickEventArgs args)
+		{
+			var title = ((Run)sender.Inlines[0]).Text;
+			//TODO: Dispatch public title-click event
 		}
 
 		public void syncGrid(Texts texts)
@@ -94,7 +107,9 @@ namespace TyperUWP
 				if (i < records.Length)
 				{
 					gridCells[WpmCol, i + 1].Text = records[i].WPM.ToString();
-					gridCells[TextCol, i + 1].Text = records[i].TextTitle;
+					var titleLink = (Hyperlink)gridCells[TextCol, i + 1].Inlines[0];
+					var titleRun = (Run)titleLink.Inlines[0];
+					titleRun.Text = records[i].TextTitle;
 				}
 				else
 				{
