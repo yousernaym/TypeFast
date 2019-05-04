@@ -26,9 +26,9 @@
 				<TextBlock x:Name="errorText" TextWrapping="Wrap" Text="Title Error"/>
 			</Flyout>
 		</FlyoutBase.AttachedFlyout>
-		<TextBlock Text="Title" Grid.Column="0" Grid.Row="0"/>
-		<TextBlock Text="Text" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>
-		<TextBox x:Name="titleTb" Grid.Column="1" Grid.Row="0" MaxLength="40"/>
-		<TextBox x:Name="textTb" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Height="150"/>
+		<!--<TextBlock Text="Title" Grid.Column="0" Grid.Row="0"/>
+		<TextBlock Text="Text" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>-->
+		<TextBox x:Name="titleTb" Header="Title" Grid.Column="1" Grid.Row="0" MaxLength="40"/>
+		<TextBox x:Name="textTb" Header="Text" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Height="150"/>
 	</Grid>
 </ContentDialog>
