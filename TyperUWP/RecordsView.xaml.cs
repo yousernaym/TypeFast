@@ -60,10 +60,14 @@ namespace TyperUWP
 					cell.VerticalAlignment = VerticalAlignment.Center;
 					cell.Foreground = new SolidColorBrush(Colors.White);
 					cell.FontSize = 20;
+
+					if (c != Columns - 1)
+					{
+						cellBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 50, 50, 50));
+						cellBorder.BorderThickness = new Thickness(0, 0, 1, 0);
+					}
 					if (c == WpmCol)
 					{
-						cellBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 40, 40, 40));
-						cellBorder.BorderThickness = new Thickness(0, 0, 1, 0);
 						cell.FontWeight = FontWeights.Bold;
 					}
 					else if (c == TextCol)
@@ -79,7 +83,7 @@ namespace TyperUWP
 					{
 						cell.FontStyle = Windows.UI.Text.FontStyle.Italic;
 						cell.HorizontalAlignment = HorizontalAlignment.Center;
-						cellBorder.Background = new SolidColorBrush(Color.FromArgb(255, 0, 20, 80));
+						cellBorder.Background = new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]);
 					}
 					cellBorder.Child = gridCells[c, r] = cell;
 

@@ -95,7 +95,7 @@ namespace TyperUWP
 				else if (text.IsFinished)
 					timeText.Background = new SolidColorBrush(Colors.DarkRed);
 				else
-					timeText.Background = new SolidColorBrush(Color.FromArgb(10, 250, 250, 250));
+					timeText.Background = new SolidColorBrush(Color.FromArgb(30, 250, 250, 250));
 
 			});
 		}
