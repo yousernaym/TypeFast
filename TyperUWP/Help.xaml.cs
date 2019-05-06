@@ -41,20 +41,23 @@ namespace TyperUWP
 		{
 			int rowNumber = shortcutsTable.RowCount;
 			shortcutsTable.addRow();
-			for (int i = 0; i < cellTexts.Length; i++)
+			for (int colNumber = 0; colNumber < cellTexts.Length; colNumber++)
 			{
 				var cell = new TextBlock();
-				cell.Text = cellTexts[i];
+				cell.Text = cellTexts[colNumber];
 				cell.VerticalAlignment = VerticalAlignment.Center;
 				cell.Foreground = new SolidColorBrush(Colors.White);
 				cell.FontSize = 20;
-				cell.Padding = new Thickness(7, 5, 20, 5);
-				
+				cell.Padding = new Thickness(7, 7, 20, 7);
+				cell.TextWrapping = TextWrapping.Wrap;
+
 				if (rowNumber == 0)
 				{
 					cell.FontStyle = Windows.UI.Text.FontStyle.Italic;
 					cell.HorizontalAlignment = HorizontalAlignment.Center;
 				}
+				if (colNumber == 1)
+					cell.MaxWidth = 600;
 				shortcutsTable.addCell(cell);
 			}
 		}
