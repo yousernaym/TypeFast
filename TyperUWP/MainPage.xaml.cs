@@ -125,6 +125,8 @@ namespace TyperUWP
 
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
+			if (args.KeyCode == 27) //Esc
+				removeFocus(textsAsb);
 			if (dialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu))
 				return;
 
@@ -148,6 +150,7 @@ namespace TyperUWP
 
 		private void clickResetBtn()
 		{
+			removeFocus(textsAsb);
 			if ((bool)shuffleBtn.IsChecked)
 			{
 				text.TheText = texts.selectRandom().Text;
@@ -399,6 +402,70 @@ namespace TyperUWP
 			dialogOpen = false;
 			textsCombo.SelectedValue = e.Title;
 			reset();
+		}
+
+		private void TextsASB_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+		{
+			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+				findAsbTitleMatches();
+		}
+
+		void findAsbTitleMatches()
+		{
+			var matchingTexts = new List<string>();
+			foreach (var text in texts)
+			{
+				if (text.Title.Contains(textsAsb.Text))
+					matchingTexts.Add(text.Title);
+			}
+			if (matchingTexts.Count == 0)
+				matchingTexts.Add("No matching titles found.");
+			textsAsb.ItemsSource = matchingTexts;
+		}
+
+		private void TextsAsb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+		{
+			removeFocus(sender);
+			if (texts.containsTitle(args.QueryText))
+			{
+				texts.select(args.QueryText);
+				reset();
+			}
+		}
+
+		private void TextsAsb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
+		{
+			sender.Text = (string)args.SelectedItem;
+		}
+
+		private void TextsAsb_GotFocus(object sender, RoutedEventArgs e)
+		{
+			dialogOpen = true;
+			findAsbTitleMatches();
+		}
+
+		private void TextsAsb_LostFocus(object sender, RoutedEventArgs e)
+		{
+			dialogOpen = false;
+		}
+
+		private void TextsAsb_KeyDown(object sender, KeyRoutedEventArgs e)
+		{
+			//if (e.Key == VirtualKey.Escape)
+			//	removeFocus((Control)sender);
+		}
+
+		void removeFocus(Control control)
+		{
+			control.IsEnabled = false;
+			control.IsEnabled = true;
+			dialogOpen = false;
+		}
+
+		private void TextsAsb_CharacterReceived(UIElement sender, CharacterReceivedRoutedEventArgs args)
+		{
+			
+
 		}
 	}
 }
