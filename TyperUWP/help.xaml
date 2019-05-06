@@ -9,7 +9,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid Background="Black" Width="500">
+    <Grid Background="Black">
 		<local:Table x:Name="shortcutsTable"/>
 	</Grid>
 </UserControl>

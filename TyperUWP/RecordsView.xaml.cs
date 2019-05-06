@@ -74,7 +74,7 @@ namespace TyperUWP
 						cell.FontStyle = Windows.UI.Text.FontStyle.Italic;
 						cell.HorizontalAlignment = HorizontalAlignment.Center;
 					}
-					table.addCell(r, cell);
+					table.addCell(cell);
 				}
 			}
 			table.getCell<TextBlock>(0, WpmCol).Text = "WPM";

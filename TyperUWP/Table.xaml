@@ -9,7 +9,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid x:Name="grid" BorderBrush="#ff505050" BorderThickness="1">
+    <Grid x:Name="grid" BorderBrush="DarkGray" BorderThickness="1">
 
     </Grid>
 </UserControl>

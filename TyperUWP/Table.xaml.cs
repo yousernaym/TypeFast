@@ -96,11 +96,13 @@ namespace TyperUWP
 			if (row == null)
 				return;
 			foreach (var cell in row)
-				addCell(rows.Count - 1, cell);
+				addCell(cell);
 		}
 
-		public void addCell(int row, UIElement cell)
+		public void addCell(UIElement cell, int row = -1)
 		{
+			if (row < 0)
+				row = rows.Count - 1;
 			var border = new Border();
 			border.Child = cell;
 			rows[row].Add(border);
