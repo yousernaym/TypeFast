@@ -12,23 +12,13 @@
 	CloseButtonText="Cancel"
 	>
 
-	<Grid Width="700">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*"/>
-			<ColumnDefinition Width="4*"/>
-		</Grid.ColumnDefinitions>
-		<Grid.RowDefinitions>
-			<RowDefinition />
-			<RowDefinition />
-		</Grid.RowDefinitions>
+	<StackPanel Width="600">
 		<FlyoutBase.AttachedFlyout>
 			<Flyout x:Name="errorFlyout">
 				<TextBlock x:Name="errorText" TextWrapping="Wrap" Text="Title Error"/>
 			</Flyout>
 		</FlyoutBase.AttachedFlyout>
-		<!--<TextBlock Text="Title" Grid.Column="0" Grid.Row="0"/>
-		<TextBlock Text="Text" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"/>-->
-		<TextBox x:Name="titleTb" Header="Title" Grid.Column="1" Grid.Row="0" MaxLength="40"/>
-		<TextBox x:Name="textTb" Header="Text" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" Height="150"/>
-	</Grid>
+		<TextBox x:Name="titleTb" Header="Title" Grid.Column="1" MaxLength="60"/>
+		<TextBox x:Name="textTb" Header="Text" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="280"/>
+	</StackPanel>
 </ContentDialog>

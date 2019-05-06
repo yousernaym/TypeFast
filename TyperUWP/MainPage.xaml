@@ -25,7 +25,7 @@
 		<StackPanel Orientation="Vertical">
 			<RelativePanel Background="{StaticResource PrimaryColor}" Padding="7,7,7,7">
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal" >
-					<Button x:Name="recordsBtn" AccessKey="L" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="False">
+					<Button x:Name="recordsBtn" AccessKey="R" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="False">
 						<FontIcon FontFamily="Webdings" FontSize="35" Glyph="&#38;"/>
 						<Button.Flyout>
 							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed" FlyoutPresenterStyle="{StaticResource flyoutStyle}">
@@ -113,7 +113,7 @@
 			</Grid>
 			<StackPanel Background="#ff001144" CornerRadius="5" Padding="0,0,0,0" Margin="0,0,0,0" HorizontalAlignment="Center" Orientation="Horizontal">
 				<!--<TextBlock Text="Texts:" VerticalAlignment="Center"/>-->
-				<AppBarButton Icon="Refresh" x:Name="restartBtn" AccessKey="R" Label="Restart" Click="RestartBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,0,0" HorizontalAlignment="Center"/>
+				<AppBarButton Icon="Refresh" x:Name="restartBtn" Label="Restart" Click="RestartBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,0,0" HorizontalAlignment="Center"/>
 				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="False" VerticalAlignment="Center" IsChecked="True"/>
 			</StackPanel>
 			<ComboBox x:Name="textsCombo" AccessKey="C" MinWidth="200" DisplayMemberPath="Title" SelectedValuePath="Title" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="0,20,0,0" HorizontalAlignment="Center">

@@ -45,6 +45,8 @@ namespace TyperUWP
 			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
+			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
+
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			text.TheText = texts.selectRandom()?.Text;
 			syncTextsCombo();
@@ -67,6 +69,15 @@ namespace TyperUWP
 				fontCombo.Items.Add(font);
 			fontCombo.SelectedItem = text.FontName;
 			fontSizeTb.Text = text.FontSize.ToString();
+		}
+
+		private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
+		{
+			if (isKeyDown(VirtualKey.Control))
+			{
+				if (args.VirtualKey == VirtualKey.R)
+					clickResetBtn();
+			}
 		}
 
 		private void Text_Finished(object sender, EventArgs e)
@@ -131,6 +142,11 @@ namespace TyperUWP
 		}
 
 		private void RestartBtn_Click(object sender, RoutedEventArgs e)
+		{
+			clickResetBtn();
+		}
+
+		private void clickResetBtn()
 		{
 			if ((bool)shuffleBtn.IsChecked)
 			{
