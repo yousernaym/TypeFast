@@ -10,24 +10,6 @@
     d:DesignWidth="400">
 
     <Grid Background="Black" Width="500">
-		<RichTextBlock TextWrapping="Wrap" Margin="10">
-			<Paragraph FontSize="26">
-				Customization
-			</Paragraph>
-			<Paragraph >
-				To change font settings for the typing session text:
-				<LineBreak/>
-				\tClick on the text and select
-				<Bold>Font settings</Bold>
-				, or press
-				<Bold>Ctrl - F</Bold>
-				.
-			</Paragraph>
-			<Paragraph  Margin="5">
-				To create a new typing session based on the clipboard contents, click on the text and select
-				<Bold>Paste</Bold>, or press
-				<Bold>Ctrl - V</Bold>.				
-			</Paragraph>
-		</RichTextBlock>
-    </Grid>
+		<local:Table x:Name="shortcutsTable"/>
+	</Grid>
 </UserControl>

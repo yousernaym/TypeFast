@@ -24,104 +24,137 @@ namespace TyperUWP
 	enum TablePart { TP_Header = 1, TP_Body = 2, TP_All = 3}
 	public sealed partial class Table : UserControl
 	{
-		public int ColumnCount { get; private set; }
-		public int RowCount { get; private set; } 
-		
-		Border[] headerCells;
-		Border[,] cells;
+		//public int ColumnCount => cells.Count;
+		public int RowCount => rows.Count;
 
-		public Table(int cols, int rows)
+		public Brush RowBackground1
+		{
+			get => rowBackground1;
+			set
+			{
+				rowBackground1 = value;
+				applyRowBackgrounds();
+			}
+		}
+
+		public Brush RowBackground2
+		{
+			get => rowBackground2;
+			set
+			{
+				rowBackground2 = value;
+				applyRowBackgrounds();
+			}
+		}
+
+		public Brush HeaderBackground
+		{
+			get => headerBackground;
+			set
+			{
+				headerBackground = value;
+				applyHeaderBackground();
+			}
+		}
+
+		public Brush VerticalLineBrush
+		{
+			get => verticalLineBrush;
+			set
+			{
+				verticalLineBrush = value;
+				applyVerticalLineBrush();
+			}
+		}
+
+		List<List<Border>> rows = new List<List<Border>>();
+		Brush rowBackground1 = new SolidColorBrush(Colors.Black);
+		Brush rowBackground2 = new SolidColorBrush(Color.FromArgb(255, 25, 25, 25));
+		Brush headerBackground = new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]);
+		Brush verticalLineBrush = new SolidColorBrush(Color.FromArgb(255, 50, 50, 50));
+		
+		public Table()
 		{
 			this.InitializeComponent();
-			ColumnCount = cols;
-			RowCount = rows;
-			headerCells = new Border[cols];
-			cells = new Border[cols, rows];
-			for (int r = 0; r <= rows; r++) //Add an extra row for the header
-				grid.RowDefinitions.Add(new RowDefinition());
-			for (int c = 0; c < cols; c++)
-			{
-				grid.ColumnDefinitions.Add(new ColumnDefinition());
-				headerCells[c] = new Border();
-				Grid.SetColumn(headerCells[c], c);
-			}
-			setHeaderBackground(new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]));
+		}
 
-			for (int r = 0; r < rows; r++)
+		public void addRow(List<UIElement> row = null)
+		{
+			rows.Add(new List<Border>());
+			grid.RowDefinitions.Add(new RowDefinition());
+			if (row == null)
+				return;
+			foreach (var cell in row)
+				addCell(rows.Count - 1, cell);
+		}
+
+		public void addCell(int row, UIElement cell)
+		{
+			var border = new Border();
+			border.Child = cell;
+			rows[row].Add(border);
+			if (rows[row].Count > grid.ColumnDefinitions.Count)
+				grid.ColumnDefinitions.Add(new ColumnDefinition());
+			grid.Children.Add(border);
+			Grid.SetRow(border, row);
+			Grid.SetColumn(border, rows[row].Count - 1);
+
+			applyStyle();
+		}
+
+		public void setCell(int row, int col, UIElement element)
+		{
+			rows[row][col].Child = element;
+		}
+
+		public T getCell<T>(int row, int col) where T : UIElement
+		{
+			return (T)rows[row][col].Child;
+		}
+
+		void applyHeaderBackground()
+		{
+			foreach (var cell in rows[0])
+				cell.Background = headerBackground;
+		}
+
+		void applyRowBackgrounds()
+		{
+			int mod = rowBackground2 == null ? 1 : 2;
+			for (int r = 1; r < RowCount; r++)
 			{
-				for (int c = 0; c < cols; c++)
+				var color = (r - 1) % mod == 0 ? rowBackground1 : rowBackground2;
+				for (int c = 0; c < rows[r].Count; c++)
 				{
-					var cell = new Border();
-					//cellBorder.Padding = new Thickness(10);
-					if (c != cols - 1)
-					{
-						cell.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 50, 50, 50));
-						cell.BorderThickness = new Thickness(0, 0, 1, 0);
-					}
-					
-					grid.Children.Add(cell);
-					Grid.SetRow(cell, r + 1);
-					Grid.SetColumn(cell, c + 1);
-					cells[c, r] = cell;
+					rows[r][c].Background = color;
 				}
 			}
-			byte rowBrightness = (byte)25;
-			setBackground(new SolidColorBrush(Color.FromArgb(255, rowBrightness, rowBrightness, rowBrightness)), new SolidColorBrush(Colors.Black));
 		}
 
-		void setCell(int col, int row, UIElement element)
-		{
-			cells[col, row].Child = element;
-		}
 
-		UIElement getCell(int col, int row)
+		void applyVerticalLineBrush()
 		{
-			return cells[col, row].Child;
-		}
-
-		void setHeaderCell(int col, UIElement element)
-		{
-			cells[col, 0].Child = element;
-		}
-
-		UIElement getCell(int col)
-		{
-			return cells[col, 0].Child;
-		}
-
-		//void setHeaderLabels(params string[] labels)
-		//{
-		//	for (int i = 0; i < labels.Length; i++)
-		//		headerCells[i].Text = labels[i];
-		//}
-
-		void setHeaderBackground(Brush value)
-		{
-			foreach (var cell in headerCells)
-				cell.Background = value;
-		}
-
-		void setBackground(Brush value1, Brush value2 = null)
-		{
-			int mod = value2 == null ? 1 : 2;
 			for (int r = 0; r < RowCount; r++)
 			{
-				var color = r % mod == 0 ? value1 : value2;
-				for (int c = 0; c < RowCount; c++)
+				for (int c = 0; c < rows[r].Count; c++)
 				{
-					cells[r, c].Background = color;
+					var cell = rows[r][c];
+					cell.BorderBrush = verticalLineBrush;
+					cell.BorderThickness = new Thickness(0, 0, c == rows[r].Count - 1 ? 0 : 1, 0);
 				}
 			}
+		}
 
+		void applyStyle()
+		{
+			applyHeaderBackground();
+			applyRowBackgrounds();
+			applyVerticalLineBrush();
 		}
 
 		bool compareTablePartFlags(TablePart value1, TablePart value2)
 		{
 			return ((int)value1 & (int)value2) > 0;
-			
 		}
-
-		
 	}
-
 }

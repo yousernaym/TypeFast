@@ -41,31 +41,19 @@ namespace TyperUWP
 		public RecordsView()
 		{
 			this.InitializeComponent();
+			
 			for (int r = 0; r < Rows; r++)
 			{
-				var row = new RowDefinition();
-				//row.Height = new GridLength(0, GridUnitType.Auto);
-				grid.RowDefinitions.Add(row);
+				table.addRow();
 				for (int c = 0; c < Columns; c++)
 				{
-					var column = new ColumnDefinition();
-					//column.MinWidth = c == WpmCol ? 50 : 100;
-					grid.ColumnDefinitions.Add(column);
-					var cellBorder = new Border();
-					byte rowBrightness = (byte)(25 * ((r + 1) % 2));
-					cellBorder.Background = new SolidColorBrush(Color.FromArgb(255, rowBrightness, rowBrightness, rowBrightness));
-					cellBorder.Padding = new Thickness(10);
 					var cell = new TextBlock();
 					cell.HorizontalAlignment = c == WpmCol || c == AccCol ? HorizontalAlignment.Right : HorizontalAlignment.Left;
 					cell.VerticalAlignment = VerticalAlignment.Center;
 					cell.Foreground = new SolidColorBrush(Colors.White);
 					cell.FontSize = 20;
+					cell.Padding = new Thickness(10, 5, 10, 5);
 
-					if (c != Columns - 1)
-					{
-						cellBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(255, 50, 50, 50));
-						cellBorder.BorderThickness = new Thickness(0, 0, 1, 0);
-					}
 					if (c == WpmCol)
 					{
 						cell.FontWeight = FontWeights.Bold;
@@ -83,18 +71,13 @@ namespace TyperUWP
 					{
 						cell.FontStyle = Windows.UI.Text.FontStyle.Italic;
 						cell.HorizontalAlignment = HorizontalAlignment.Center;
-						cellBorder.Background = new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]);
 					}
-					cellBorder.Child = gridCells[c, r] = cell;
-
-					grid.Children.Add(cellBorder);
-					Grid.SetRow(cellBorder, r);
-					Grid.SetColumn(cellBorder, c);
+					table.addCell(r, cell);
 				}
 			}
-			gridCells[WpmCol, 0].Text = "WPM";
-			gridCells[AccCol, 0].Text = "Acc %";
-			gridCells[TextCol, 0].Text = "Text";
+			table.getCell<TextBlock>(0, WpmCol).Text = "WPM";
+			table.getCell<TextBlock>(0, AccCol).Text = "Acc %";
+			table.getCell<TextBlock>(0, TextCol).Text = "Text";
 		}
 
 		private void TextTitle_Click(Hyperlink sender, HyperlinkClickEventArgs args)
@@ -117,15 +100,15 @@ namespace TyperUWP
 			{
 				if (i < records.Length)
 				{
-					gridCells[WpmCol, i + 1].Text = records[i].WPM.ToString();
-					gridCells[AccCol, i + 1].Text = records[i].Accuracy.ToString("0.0");
-					setLinkText(gridCells[TextCol, i + 1], records[i].TextTitle);
+					table.getCell<TextBlock>(i + 1, WpmCol).Text = records[i].WPM.ToString();
+					table.getCell<TextBlock>(i + 1, AccCol).Text = records[i].Accuracy.ToString("0.0");
+					setLinkText(table.getCell<TextBlock>(i + 1, TextCol), records[i].TextTitle);
 				}
 				else
 				{
-					gridCells[WpmCol, i + 1].Text = "";
-					gridCells[AccCol, i + 1].Text = "";
-					setLinkText(gridCells[TextCol, i + 1], "");
+					table.getCell<TextBlock>(i + 1, WpmCol).Text = "";
+					table.getCell<TextBlock>(i + 1, AccCol).Text = "";
+					setLinkText(table.getCell<TextBlock>(i + 1, TextCol), "");
 				}
 			}
 		}
