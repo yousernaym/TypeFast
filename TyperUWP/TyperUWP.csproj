@@ -132,6 +132,9 @@
       <DependentUpon>NewTextDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Table.xaml.cs">
+      <DependentUpon>Table.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Text.cs" />
     <Compile Include="TextBlockEx.xaml.cs">
       <DependentUpon>TextBlockEx.xaml</DependentUpon>
@@ -172,6 +175,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="NewTextDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Table.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
