@@ -24,8 +24,19 @@ namespace TyperUWP
 	enum TablePart { TP_Header = 1, TP_Body = 2, TP_All = 3}
 	public sealed partial class Table : UserControl
 	{
-		//public int ColumnCount => cells.Count;
 		public int RowCount => rows.Count;
+
+		new public Brush BorderBrush
+		{
+			get => grid.BorderBrush;
+			set => grid.BorderBrush = value;
+		}
+
+		new public Thickness BorderThickness
+		{
+			get => grid.BorderThickness;
+			set => grid.BorderThickness = value;
+		}
 
 		public Brush RowBackground1
 		{
@@ -71,7 +82,7 @@ namespace TyperUWP
 		Brush rowBackground1 = new SolidColorBrush(Colors.Black);
 		Brush rowBackground2 = new SolidColorBrush(Color.FromArgb(255, 25, 25, 25));
 		Brush headerBackground = new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]);
-		Brush verticalLineBrush = new SolidColorBrush(Color.FromArgb(255, 50, 50, 50));
+		Brush verticalLineBrush = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
 		
 		public Table()
 		{
@@ -121,9 +132,10 @@ namespace TyperUWP
 		void applyRowBackgrounds()
 		{
 			int mod = rowBackground2 == null ? 1 : 2;
-			for (int r = 1; r < RowCount; r++)
+			int startRow = headerBackground == null ? 0 : 1;
+			for (int r = startRow; r < RowCount; r++)
 			{
-				var color = (r - 1) % mod == 0 ? rowBackground1 : rowBackground2;
+				var color = (r - startRow) % mod == 0 ? rowBackground1 : rowBackground2;
 				for (int c = 0; c < rows[r].Count; c++)
 				{
 					rows[r][c].Background = color;

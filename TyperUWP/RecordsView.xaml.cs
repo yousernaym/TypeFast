@@ -52,7 +52,9 @@ namespace TyperUWP
 					cell.VerticalAlignment = VerticalAlignment.Center;
 					cell.Foreground = new SolidColorBrush(Colors.White);
 					cell.FontSize = 20;
-					cell.Padding = new Thickness(10, 5, 10, 5);
+					cell.Padding = new Thickness(20, 5, 7, 5);
+					if (c == TextCol)
+						cell.Padding = new Thickness(7, 5, 7, 5);
 
 					if (c == WpmCol)
 					{
