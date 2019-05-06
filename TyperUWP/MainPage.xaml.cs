@@ -132,6 +132,7 @@ namespace TyperUWP
 
 			args.Handled = true; //needed?
 			text.typeChar(args.KeyCode);
+			currentCharControl.Focus(FocusState.Programmatic);
 			text.draw();
 			updateTypingStats();
 		}
@@ -166,11 +167,13 @@ namespace TyperUWP
 
 			text.reset();
 			updateTypingStats();
-			//timeBorder.Background = new SolidColorBrush(Colors.Green);
+			removeFocus(textsAsb);
+			selectedTextTbk.Focus(FocusState.Programmatic);
 		}
 
 		private void Page_Loaded(object sender, RoutedEventArgs e)
 		{
+			currentCharControl.Focus(FocusState.Programmatic);
 		}
 
 		async private void TextsComboCmNew_Click(object sender, RoutedEventArgs e)
@@ -412,14 +415,14 @@ namespace TyperUWP
 
 		void findAsbTitleMatches()
 		{
-			var matchingTexts = new List<string>();
+			var matchingTexts = new LinkedList<string>();
 			foreach (var text in texts)
 			{
 				if (text.Title.Contains(textsAsb.Text))
-					matchingTexts.Add(text.Title);
+					matchingTexts.AddFirst(text.Title);
 			}
 			if (matchingTexts.Count == 0)
-				matchingTexts.Add("No matching titles found.");
+				matchingTexts.AddFirst("No matching titles found.");
 			textsAsb.ItemsSource = matchingTexts;
 		}
 
@@ -449,23 +452,11 @@ namespace TyperUWP
 			dialogOpen = false;
 		}
 
-		private void TextsAsb_KeyDown(object sender, KeyRoutedEventArgs e)
-		{
-			//if (e.Key == VirtualKey.Escape)
-			//	removeFocus((Control)sender);
-		}
-
 		void removeFocus(Control control)
 		{
 			control.IsEnabled = false;
 			control.IsEnabled = true;
 			dialogOpen = false;
-		}
-
-		private void TextsAsb_CharacterReceived(UIElement sender, CharacterReceivedRoutedEventArgs args)
-		{
-			
-
 		}
 	}
 }

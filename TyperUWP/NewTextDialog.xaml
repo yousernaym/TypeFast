@@ -18,7 +18,7 @@
 				<TextBlock x:Name="errorText" TextWrapping="Wrap" Text="Title Error"/>
 			</Flyout>
 		</FlyoutBase.AttachedFlyout>
-		<TextBox x:Name="titleTb" Header="Title" Grid.Column="1" MaxLength="60"/>
+		<TextBox x:Name="titleTb" Header="Title" Grid.Column="1" MaxLength="40"/>
 		<TextBox x:Name="textTb" Header="Text" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="280"/>
 	</StackPanel>
 </ContentDialog>

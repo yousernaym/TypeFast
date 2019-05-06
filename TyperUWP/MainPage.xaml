@@ -14,7 +14,7 @@
 	<Page.Resources>
 		<local:TimeLimitConverter x:Key="TimeLimitConverter"/>
 		<Style TargetType="FlyoutPresenter" x:Key="flyoutStyle">
-			<Setter Property="MaxWidth" Value="800" />
+			<Setter Property="MaxWidth" Value="1000" />
 			<!--<Setter Property="Padding" Value="4" />-->
 			<!--<Setter Property="Background" Value="Blue" />-->
 
@@ -107,8 +107,8 @@
 				</Grid.ContextFlyout>
 				<StackPanel x:Name="writtenTextPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 				<StackPanel x:Name="unwrittenTextPanel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" >
-					<local:TextBlockEx x:Name="currentCharControl" Foreground="Black" Background="White"/>
-					<TextBlock x:Name="unwrittenTextControl"/>
+					<local:TextBlockEx x:Name="currentCharControl" Foreground="Black" Background="White" IsTabStop="True"/>
+					<TextBlock x:Name="unwrittenTextControl" />
 				</StackPanel>
 			</Grid>
 			<StackPanel Background="#ff001144" CornerRadius="5" Padding="0,0,0,0" Margin="0,0,0,0" HorizontalAlignment="Center" Orientation="Horizontal">
@@ -116,7 +116,8 @@
 				<AppBarButton Icon="Refresh" x:Name="restartBtn" Label="Restart" Click="RestartBtn_Click" AllowFocusOnInteraction="False" IsTabStop="False" Margin="0,0,0,0" HorizontalAlignment="Center"/>
 				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="False" VerticalAlignment="Center" IsChecked="True"/>
 			</StackPanel>
-			<AutoSuggestBox x:Name="textsAsb" Width="200" Margin="20" PlaceholderText="Type a text title" TextChanged="TextsASB_TextChanged" QueryIcon="Find" QuerySubmitted="TextsAsb_QuerySubmitted" SuggestionChosen="TextsAsb_SuggestionChosen" GotFocus="TextsAsb_GotFocus" LostFocus="TextsAsb_LostFocus" KeyDown="TextsAsb_KeyDown" CharacterReceived="TextsAsb_CharacterReceived"/>
+			<AutoSuggestBox x:Name="textsAsb" IsTabStop="False" Width="300" Margin="20" PlaceholderText="Type a text title" TextChanged="TextsASB_TextChanged" QueryIcon="Find" QuerySubmitted="TextsAsb_QuerySubmitted" SuggestionChosen="TextsAsb_SuggestionChosen" GotFocus="TextsAsb_GotFocus" LostFocus="TextsAsb_LostFocus" />
+			<TextBlock x:Name="selectedTextTbk" Foreground="White"/>
 			<ComboBox x:Name="textsCombo" AccessKey="C" MinWidth="200" DisplayMemberPath="Title" SelectedValuePath="Title" SelectionChanged="TextsCombo_SelectionChanged" VerticalAlignment="Center" IsTabStop="False" Margin="0,20,0,0" HorizontalAlignment="Center" >
 				<ComboBox.ContextFlyout>
 					<MenuFlyout>

@@ -22,7 +22,8 @@ namespace TyperLib
 
 		//public Records Records => userData.Records;
 		public TextEntry Current { get; set; }
-	
+		public int Count => userData.Texts.Count;
+		
 		public Texts(string dir) 
 		{
 			if (dir != null)
