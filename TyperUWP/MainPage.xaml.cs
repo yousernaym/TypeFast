@@ -49,8 +49,6 @@ namespace TyperUWP
 
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			text.TheText = texts.selectRandom()?.Text;
-			syncTextsCombo();
-			textsCombo.SelectedValue = texts.Current?.Title;
 					   
 			text.TimeLimit = TimeSpan.FromSeconds(10);
 			text.TimeChecked += Text_TimeChecked;
@@ -62,7 +60,6 @@ namespace TyperUWP
 
 			text.draw();
 			updateTypingStats();
-			textsCombo.Items.VectorChanged += textsCombo_Items_VectorChanged;
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
 			foreach (string font in fonts)
@@ -84,11 +81,6 @@ namespace TyperUWP
 		{
 			if (texts.Current != null)
 				texts.addRecord(text.Wpm, text.Accuracy, texts.Current.Title);
-		}
-
-		private void textsCombo_Items_VectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
-		{
-			textsComboCmDelete.IsEnabled = textsCombo.Items.Count > 0;
 		}
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
@@ -153,11 +145,9 @@ namespace TyperUWP
 		{
 			removeFocus(textsAsb);
 			if ((bool)shuffleBtn.IsChecked)
-			{
-				text.TheText = texts.selectRandom().Text;
-				textsCombo.SelectedValue = texts.Current.Title;
-			}
-			reset();
+				selectText(null);
+			else
+				reset();
 		}
 
 		void reset()
@@ -187,12 +177,7 @@ namespace TyperUWP
 			dialogOpen = false;
 			
 			if (result == ContentDialogResult.Primary)
-			{
-				syncTextsCombo();
-				textsCombo.SelectedValue = newTextDialog.TitleEntry;
-				//textsCombo.Items.Add(new TextEntry(newTextDialog.TitleEntry, newTextDialog.TextEntry));
-				//textsCombo.SelectedItem = textList.Current;
-			}
+				selectText(newTextDialog.TitleEntry);
 		}
 
 		async private void TextsComboCmEdit_Click(object sender, RoutedEventArgs e)
@@ -208,23 +193,7 @@ namespace TyperUWP
 			dialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
-			{
-				syncTextsCombo();
-				textsCombo.SelectedValue = newTextDialog.TitleEntry;
-
-				//textsCombo.Items.Remove(textsCombo.SelectedItem);
-				//textsCombo.Items.Add(textsCombo.SelectedItem);
-				//textsCombo.SelectedItem = textList.Current;
-			}
-		}
-
-		private void syncTextsCombo()
-		{
-			int currentIndex = textsCombo.SelectedIndex;
-			textsCombo.Items.Clear();
-			foreach (var entry in texts)
-				textsCombo.Items.Add(entry);
-			textsCombo.SelectedIndex = currentIndex;
+				selectText(newTextDialog.TitleEntry);
 		}
 
 		async private void TextsComboCmDelete_Click(object sender, RoutedEventArgs e)
@@ -236,21 +205,8 @@ namespace TyperUWP
 			if (result == ContentDialogResult.Primary)
 			{
 				texts.removeCurrent();
-				int selectedIndex = textsCombo.SelectedIndex;
-				textsCombo.Items.Remove(textsCombo.SelectedItem);
-				if (selectedIndex >= textsCombo.Items.Count)
-					selectedIndex--;
-				textsCombo.SelectedIndex = selectedIndex;
+				reset();
 			}
-		}
-
-		private void TextsCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			//if (textList.Current == null)
-			//	return;
-			texts.Current = (TextEntry)textsCombo.SelectedItem;
-			text.TheText = texts.Current?.Text;
-			reset();
 		}
 
 		async private void TextCmPaste_Click(object sender, RoutedEventArgs e)
@@ -262,7 +218,7 @@ namespace TyperUWP
 			{
 				text.TheText = await dataPackageView.GetTextAsync();
 				reset();
-				textsCombo.SelectedIndex = -1;
+				selectedTextTbk.Text = text.TheText;
 			}
 		}
 
@@ -403,7 +359,16 @@ namespace TyperUWP
 		{
 			recordsFlyout.Hide();
 			dialogOpen = false;
-			textsCombo.SelectedValue = e.Title;
+			selectText(e.Title);
+		}
+
+		private void selectText(string title)
+		{
+			if (title == null)
+				texts.selectRandom();
+			else
+				texts.select(title);
+			text.TheText = texts.Current.Text;
 			reset();
 		}
 
@@ -432,6 +397,7 @@ namespace TyperUWP
 			if (texts.containsTitle(args.QueryText))
 			{
 				texts.select(args.QueryText);
+				text.TheText = texts.Current.Text;
 				reset();
 			}
 		}
