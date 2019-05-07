@@ -48,8 +48,6 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
 
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
-			text.TheText = texts.selectRandom()?.Text;
-					   
 			text.TimeLimit = TimeSpan.FromSeconds(10);
 			text.TimeChecked += Text_TimeChecked;
 			text.Finished += Text_Finished;
@@ -58,8 +56,7 @@ namespace TyperUWP
 			textColorBtn.Background = new SolidColorBrush(text.Foreground);
 			textBkgColorBtn.Background = new SolidColorBrush(text.Background);
 
-			text.draw();
-			updateTypingStats();
+			selectText(null);  //Select random text
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
 			foreach (string font in fonts)
@@ -158,7 +155,6 @@ namespace TyperUWP
 			text.reset();
 			updateTypingStats();
 			removeFocus(textsAsb);
-			selectedTextTbk.Focus(FocusState.Programmatic);
 		}
 
 		private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -218,7 +214,7 @@ namespace TyperUWP
 			{
 				text.TheText = await dataPackageView.GetTextAsync();
 				reset();
-				selectedTextTbk.Text = text.TheText;
+				selectedTextTbk.Text = "Clipboard contents"; ;
 			}
 		}
 
@@ -369,6 +365,7 @@ namespace TyperUWP
 			else
 				texts.select(title);
 			text.TheText = texts.Current.Text;
+			selectedTextTbk.Text = texts.Current.Title;
 			reset();
 		}
 
@@ -395,11 +392,7 @@ namespace TyperUWP
 		{
 			removeFocus(sender);
 			if (texts.containsTitle(args.QueryText))
-			{
-				texts.select(args.QueryText);
-				text.TheText = texts.Current.Text;
-				reset();
-			}
+				selectText(args.QueryText);
 		}
 
 		private void TextsAsb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
