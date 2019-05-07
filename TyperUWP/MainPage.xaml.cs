@@ -214,7 +214,7 @@ namespace TyperUWP
 			{
 				text.TheText = await dataPackageView.GetTextAsync();
 				reset();
-				selectedTextTbk.Text = "Clipboard contents"; ;
+				//selectedTextTbk.Text = "Clipboard contents"; ;
 			}
 		}
 
@@ -365,7 +365,9 @@ namespace TyperUWP
 			else
 				texts.select(title);
 			text.TheText = texts.Current.Text;
-			selectedTextTbk.Text = texts.Current.Title;
+			//selectedTextTbk.Text = texts.Current.Title;
+			textsAsb.PlaceholderText = texts.Current.Title;
+			textsAsb.Text = "";
 			reset();
 		}
 
