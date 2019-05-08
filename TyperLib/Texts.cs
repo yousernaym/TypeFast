@@ -82,7 +82,15 @@ namespace TyperLib
 		{
 			var indeXable = userData.Texts.Keys.ToList();
 			int currentIndex = indeXable.FindIndex(k => k == title);
+
+			//Remove the text with this title
 			userData.Texts.Remove(title);
+
+			//Remove all records for this title
+			Record recordMatch;
+			while ((recordMatch = userData.Records.Find((r) => r.TextTitle == title)) != null)
+				userData.Records.Remove(recordMatch);
+
 			if (title == Current.Title)
 			{
 				if (currentIndex >= userData.Texts.Count)
