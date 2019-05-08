@@ -50,7 +50,18 @@ namespace TyperLib
 		public int TotalIncorrectChars { get; private set; } = 0;
 		public int FixedChars => TotalIncorrectChars - IncorrectChars;
 
-		public int Wpm => Math.Max((int)((CorrectChars - IncorrectChars * 3) / ElapsedTime.TotalMinutes), 0) / 5;
+		public int Wpm
+		{
+			get
+			{
+				//If last typed chasactes was incorrect, don't apply WPM penalty for that character. Only apply pehalty if user keeps going without fixing.
+				var adjustedIncorrectChars = IncorrectChars;
+				if (IncorrectChars > 0 && !writtenChars.First.Value.Item1)
+					adjustedIncorrectChars--;
+
+				return Math.Max((int)((CorrectChars - adjustedIncorrectChars * 3) / ElapsedTime.TotalMinutes), 0) / 5;
+			}
+		}
 		public float Accuracy
 		{
 			get
@@ -117,8 +128,6 @@ namespace TyperLib
 		public bool typeChar(uint keyCode)
 		{
 			char c = (char)keyCode;
-			//if ((args.KeyCode < ' ') || (args.KeyCode > '~'))       //Exit if its a non displayed character
-				//return;
 			if (IsFinished || keyCode == KeyCode_Enter || keyCode == KeyCode_Escape || c == '\t')
 				return false;
 
@@ -129,18 +138,21 @@ namespace TyperLib
 				startTime();
 			}
 
+			//Backspace
 			if (c == KeyCode_Backspace)
 			{
+				//Aiready at beginning?
 				if (currentCharIndex == 0)
 					return false;
+
 				currentCharIndex--;
-				if (writtenChars.First.Value.Item1) //if correct
-					CorrectChars--;
+				if (writtenChars.First.Value.Item1) 
+					CorrectChars--; //Correct char deleted
 				else
-					IncorrectChars--;
+					IncorrectChars--; //Inorrect char deleted
 				writtenChars.RemoveFirst();
 			}
-			else
+			else //Not backspace
 			{
 				char currentChar = theText[currentCharIndex++];
 				bool isCorrect = currentChar == c;

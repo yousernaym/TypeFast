@@ -370,6 +370,8 @@ namespace TyperUWP
 			textsAsb.PlaceholderText = texts.Current.Title;
 			textsAsb.Text = "";
 			reset();
+
+			textsComb.ItemSource = texts.Titles;
 		}
 
 		private void TextsASB_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
@@ -383,7 +385,7 @@ namespace TyperUWP
 			var matchingTexts = new LinkedList<string>();
 			foreach (var text in texts)
 			{
-				if (text.Title.Contains(textsAsb.Text))
+				if (text.Title.ToLower().Contains(textsAsb.Text.ToLower()))
 					matchingTexts.AddFirst(text.Title);
 			}
 			if (matchingTexts.Count == 0)
