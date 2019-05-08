@@ -116,7 +116,7 @@
 				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="True" VerticalAlignment="Center" IsChecked="True"/>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-				<AutoSuggestBox x:Name="textsAsb" IsTabStop="False" Width="300" Margin="0 20 10 0" PlaceholderText="" Header="Text list" TextChanged="TextsASB_TextChanged" QuerySubmitted="TextsAsb_QuerySubmitted" SuggestionChosen="TextsAsb_SuggestionChosen" GotFocus="TextsAsb_GotFocus" LostFocus="TextsAsb_LostFocus"  >
+				<AutoSuggestBox x:Name="textsAsb" IsTabStop="False" Width="300" Margin="0 20 5 0" PlaceholderText="" Header="Text list" TextChanged="TextsASB_TextChanged" QuerySubmitted="TextsAsb_QuerySubmitted" SuggestionChosen="TextsAsb_SuggestionChosen" GotFocus="TextsAsb_GotFocus" LostFocus="TextsAsb_LostFocus"  >
 				</AutoSuggestBox>
 				<Button x:Name="textsOptionsBtn" Content="Edit list" IsTabStop="True" VerticalAlignment="Bottom" >
 					<Button.Flyout>

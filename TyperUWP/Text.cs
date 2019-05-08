@@ -75,7 +75,7 @@ namespace TyperUWP
 			currentCharControl = _currentCharControl;
 			unwrittenTextControl = _unwrittenTextControl;
 			fontFamily = new FontFamily(currentCharControl.FontFamily.Source);
-			fontSize = 20;
+			fontSize = 30;
 			backgroundBrush = new SolidColorBrush(Colors.Black);
 			foregroundBrush = new SolidColorBrush(Colors.White);
 			applyStyle();

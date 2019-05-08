@@ -48,14 +48,14 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
 
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
-			text.TimeLimit = TimeSpan.FromSeconds(10);
+            //text.TimeLimit = TimeSpan.FromSeconds(60);
 			text.TimeChecked += Text_TimeChecked;
 			text.Finished += Text_Finished;
 			text.Foreground = Colors.White;
 			text.Background = Colors.Black;
 			textColorBtn.Background = new SolidColorBrush(text.Foreground);
 			textBkgColorBtn.Background = new SolidColorBrush(text.Background);
-
+			text.FontSize = 60;
 			selectText(null);  //Select random text
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
@@ -197,7 +197,7 @@ namespace TyperUWP
 		{
 			if (dialogOpen)
 				return;
-			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to delete this text? This action cannot be undone." };
+			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to permanently delete this text and all its associated records?" };
 			ContentDialogResult result = await dlg.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{
