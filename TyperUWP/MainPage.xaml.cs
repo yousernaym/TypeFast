@@ -120,7 +120,8 @@ namespace TyperUWP
 				return;
 
 			args.Handled = true; //needed?
-			text.typeChar(args.KeyCode);
+			if (!text.typeChar(args.KeyCode))
+				return;
 			currentCharControl.Focus(FocusState.Programmatic);
 			text.draw();
 			updateTypingStats();
@@ -201,7 +202,7 @@ namespace TyperUWP
 			if (result == ContentDialogResult.Primary)
 			{
 				texts.removeCurrent();
-				reset();
+				selectText(texts.Current.Title);
 			}
 		}
 

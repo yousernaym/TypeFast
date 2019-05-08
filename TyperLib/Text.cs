@@ -114,25 +114,25 @@ namespace TyperLib
 		//	TheText = File.ReadAllText("textToType.txt");
 		//}
 
-		public void typeChar(uint keyCode)
+		public bool typeChar(uint keyCode)
 		{
 			char c = (char)keyCode;
 			//if ((args.KeyCode < ' ') || (args.KeyCode > '~'))       //Exit if its a non displayed character
 				//return;
 			if (IsFinished || keyCode == KeyCode_Enter || keyCode == KeyCode_Escape || c == '\t')
-				return;
+				return false;
 
 			if (!stopwatch.IsRunning)
 			{
 				if (keyCode == KeyCode_Backspace)
-					return;
+					return false;
 				startTime();
 			}
 
 			if (c == KeyCode_Backspace)
 			{
 				if (currentCharIndex == 0)
-					return;
+					return false;
 				currentCharIndex--;
 				if (writtenChars.First.Value.Item1) //if correct
 					CorrectChars--;
@@ -155,6 +155,7 @@ namespace TyperLib
 				if (currentCharIndex >= theText.Length)
 					OnFinished();
 			}
+			return true;
 		}
 
 		void startTime()
