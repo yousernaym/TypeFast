@@ -23,6 +23,16 @@ namespace TyperLib
 		//public Records Records => userData.Records;
 		public TextEntry Current { get; set; }
 		public int Count => userData.Texts.Count;
+		public List<string> Titles
+		{
+			get
+			{
+				var titles = new List<string>();
+				foreach (var text in this)
+					titles.Add(text.Title);
+				return titles;
+			}
+		}
 		
 		public Texts(string dir) 
 		{
