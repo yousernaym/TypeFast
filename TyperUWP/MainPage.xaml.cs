@@ -51,11 +51,11 @@ namespace TyperUWP
             //text.TimeLimit = TimeSpan.FromSeconds(60);
 			text.TimeChecked += Text_TimeChecked;
 			text.Finished += Text_Finished;
-			text.Foreground = Colors.White;
-			text.Background = Colors.Black;
+			//text.Foreground = Colors.White;
+			//text.Background = Colors.Black;
 			textColorBtn.Background = new SolidColorBrush(text.Foreground);
 			textBkgColorBtn.Background = new SolidColorBrush(text.Background);
-			text.FontSize = 60;
+			text.FontSize = 50;
 			selectText(null);  //Select random text
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
@@ -365,9 +365,8 @@ namespace TyperUWP
 				texts.selectRandom();
 			else
 				texts.select(title);
-			text.TheText = texts.Current.Text;
-			//selectedTextTbk.Text = texts.Current.Title;
-			textsAsb.PlaceholderText = texts.Current.Title;
+			text.TheText = texts.Current?.Text;
+			textsAsb.PlaceholderText = texts.Current == null ? "" : texts.Current.Title;
 			textsAsb.Text = "";
 			reset();
 

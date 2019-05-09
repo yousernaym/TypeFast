@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 
 namespace TyperLib
 {
-	using InternalTexts = SortedDictionary<string, string>;
+	using InternalTexts = SortedDictionary<string, TextEntry>;
 	using Records = List<Record>;
 	public enum RecordType { RT_ALL, RT_BestTexts, RT_WorstTexts };
 	
@@ -84,7 +84,7 @@ namespace TyperLib
 				throw new ArgumentException("There already exists a text with the specified title.");
 			if (string.IsNullOrWhiteSpace(title))
 				throw new ArgumentException("Title can't be empty.");
-			userData.Texts.Add(title, text);
+			userData.Texts.Add(title, new TextEntry(title, text));
 			save();
 		}
 
@@ -105,7 +105,7 @@ namespace TyperLib
 			{
 				if (currentIndex >= userData.Texts.Count)
 					currentIndex--;
-				Current = new TextEntry(userData.Texts.ElementAt(currentIndex));
+				Current = userData.Texts.ElementAt(currentIndex).Value;
 			}
 			save();
 		}
@@ -119,7 +119,7 @@ namespace TyperLib
 		{
 			//return ((IEnumerable<KeyValuePair<string, string>>)userList).GetEnumerator();
 			foreach (var entry in userData.Texts)
-				yield return new TextEntry(entry);
+				yield return entry.Value;
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -136,7 +136,7 @@ namespace TyperLib
 
 		public string select(string title)
 		{
-			Current = new TextEntry(title, userData.Texts[title]);
+			Current = userData.Texts[title];
 			return Current.Text;
 		}
 
@@ -206,34 +206,42 @@ namespace TyperLib
 	[Serializable]
 	public class UserData : ISerializable
 	{
-		public InternalTexts Texts { get; set; }
-		public Records Records { get; set; }
-		static readonly public Type[] SerializeTypes = new Type[] { typeof(InternalTexts), typeof(Records) };
+		public InternalTexts Texts { get; set; } = new InternalTexts();
+		public Records Records { get; set; } = new Records();
+		public string CurrentTextTitle { get; set; }
+		static readonly public Type[] SerializeTypes = new Type[] { typeof(TextEntry), typeof(Record), typeof(Records), typeof(InternalTexts) };
 
 		public UserData()
 		{
-			Texts = new InternalTexts();
-			Records = new Records();
 		}
 
 		public UserData(SerializationInfo info, StreamingContext context)
 		{
 			foreach (var entry in info)
 			{
-				if (entry.Name == "texts")
-					Texts = (InternalTexts)entry.Value;
-				else if (entry.Name == "records")
-					Records = (Records)entry.Value;
+				if (entry.Name.StartsWith("textEntry_"))
+				{
+					var textEntry = (TextEntry)entry.Value;
+					Texts.Add(textEntry.Title, textEntry);
+				}
+				else if (entry.Name.StartsWith("records_"))
+					Records.Add((Record)entry.Value);
+				else if (entry.Name == "currentTextTitle")
+					CurrentTextTitle = (string)entry.Value;
 			}
 		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("texts", Texts);
-			info.AddValue("records", Records);
+			foreach (var textEntry in Texts)
+				info.AddValue("textEntry_"+textEntry.Key, textEntry.Value);
+			for (int i = 0; i < Records.Count; i++)
+				info.AddValue("record_"+i, Records[i]);
+			info.AddValue("currentTextTitle", CurrentTextTitle); 
 		}
 	}
 
-	public class TextEntry
+	[Serializable]
+	public class TextEntry : ISerializable
 	{
 		public string Title { get; set; }
 		public string Text { get; set; }
@@ -242,10 +250,28 @@ namespace TyperLib
 			Title = title;
 			Text = text;
 		}
+
 		public TextEntry(KeyValuePair<string, string> kvp)
 		{
 			Title = kvp.Key;
 			Text = kvp.Value;
+		}
+
+		public TextEntry(SerializationInfo info, StreamingContext context)
+		{
+			foreach (var entry in info)
+			{
+				if (entry.Name == "title")
+					Title = (string)entry.Value;
+				else if (entry.Name == "text")
+					Text = (string)entry.Value;
+			}
+		}
+		
+		public void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("title", Title);
+			info.AddValue("text", Text);
 		}
 	}
 
