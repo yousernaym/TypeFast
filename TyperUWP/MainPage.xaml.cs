@@ -48,7 +48,7 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
 
 			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
-            //text.TimeLimit = TimeSpan.FromSeconds(60);
+			//text.TimeLimit = TimeSpan.FromSeconds(60);
 			text.TimeChecked += Text_TimeChecked;
 			text.Finished += Text_Finished;
 			//text.Foreground = Colors.White;
@@ -89,7 +89,7 @@ namespace TyperUWP
 				timeText.Content = "Time\n" + text.RemainingTimeString;
 				wpmText.Text = "WPM\n" + text.Wpm;
 				accuracyText.Text = "Accuracy\n" + text.Accuracy.ToString("0.0") + " %";
-			
+
 				if (text.IsRunning)
 					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
 				else if (text.IsFinished)
@@ -115,14 +115,14 @@ namespace TyperUWP
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
 			if (args.KeyCode == 27) //Esc
-				removeFocus(textsAsb);
+				focusOnTyping();
 			if (dialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu))
 				return;
 
 			args.Handled = true; //needed?
 			if (!text.typeChar(args.KeyCode))
 				return;
-			currentCharControl.Focus(FocusState.Programmatic);
+			focusOnTyping();
 			text.draw();
 			updateTypingStats();
 		}
@@ -141,7 +141,6 @@ namespace TyperUWP
 
 		private void clickResetBtn()
 		{
-			removeFocus(textsAsb);
 			if ((bool)shuffleBtn.IsChecked)
 				selectText(null);
 			else
@@ -155,7 +154,7 @@ namespace TyperUWP
 
 			text.reset();
 			updateTypingStats();
-			removeFocus(textsAsb);
+			focusOnTyping();
 		}
 
 		private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -172,7 +171,7 @@ namespace TyperUWP
 			dialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
 			dialogOpen = false;
-			
+
 			if (result == ContentDialogResult.Primary)
 				selectText(newTextDialog.TitleEntry);
 		}
@@ -369,12 +368,12 @@ namespace TyperUWP
 			textsAsb.PlaceholderText = texts.Current == null ? "" : texts.Current.Title;
 			textsAsb.Text = "";
 			reset();
-
-			textsComb.ItemSource = texts.Titles;
 		}
 
 		private void TextsASB_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
 		{
+			if (!dialogOpen)
+				return;
 			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
 				findAsbTitleMatches();
 		}
@@ -394,7 +393,7 @@ namespace TyperUWP
 
 		private void TextsAsb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
-			removeFocus(sender);
+			focusOnTyping();
 			if (texts.containsTitle(args.QueryText))
 				selectText(args.QueryText);
 		}
@@ -413,13 +412,13 @@ namespace TyperUWP
 		private void TextsAsb_LostFocus(object sender, RoutedEventArgs e)
 		{
 			dialogOpen = false;
+			textsAsb.ItemsSource = null;
 		}
 
-		void removeFocus(Control control)
+		void focusOnTyping()
 		{
-			control.IsEnabled = false;
-			control.IsEnabled = true;
 			dialogOpen = false;
+			currentCharControl.Focus(FocusState.Programmatic);
 		}
 	}
 }
