@@ -7,33 +7,33 @@ using System.Threading;
 
 namespace TyperLib
 {
-	abstract public class Text
+	abstract public class TypingSession
 	{
 		const uint KeyCode_Enter = 13;
 		const uint KeyCode_Backspace = 8;
 		const uint KeyCode_Escape = 27;
 
-		protected string theText;
-		public string TheText
+		protected string text;
+		public string Text
 		{
-			get => theText;
+			get => text;
 			set
 			{
-				theText = value;
-				if (TheText == null)
-					TheText = "";
+				text = value;
+				if (Text == null)
+					Text = "";
 
 				//Change characters to space
-				theText = theText.Replace('\n', ' ');
-				theText = theText.Replace('\r', ' ');
-				theText = theText.Replace('\t', ' ');
-				theText = theText.Replace((char)160, ' '); //Convert non-breaking space to regular space
-				theText = theText.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen to two ascii hyphens
-				theText = theText.Trim();
+				text = text.Replace('\n', ' ');
+				text = text.Replace('\r', ' ');
+				text = text.Replace('\t', ' ');
+				text = text.Replace((char)160, ' '); //Convert non-breaking space to regular space
+				text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen to two ascii hyphens
+				text = text.Trim();
 
 				//Replace repeating characters with single character
 				Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
-				theText = regex.Replace(theText, " ");
+				text = regex.Replace(text, " ");
 				//regex = new Regex("[-]{2,}", RegexOptions.None);
 				//theText = regex.Replace(theText, "-");
 
@@ -91,14 +91,14 @@ namespace TyperLib
 		public string RemainingTimeString => RemainingTime.Minutes + ":" + RemainingTime.Seconds.ToString("d2");
 			
 		public TimeSpan ElapsedTime => stopwatch.Elapsed;
-		public bool IsFinished => RemainingTime.Ticks == 0 || currentCharIndex >= theText.Length;
+		public bool IsFinished => RemainingTime.Ticks == 0 || currentCharIndex >= text.Length;
 		public bool IsRunning => stopwatch.IsRunning;
 		Timer checkTimeTimer;
 		public event EventHandler TimeChecked;
 		public event EventHandler Finished;
 
-		protected string writtenTextToDraw => theText == null ? "" : theText.Substring(startDrawChar, currentCharIndex - startDrawChar);
-		protected string unwrittenTextToDraw => theText == null ? "" : theText.Substring(currentCharIndex, Math.Min(theText.Length - currentCharIndex, NumCharsFromCenter));
+		protected string writtenTextToDraw => text == null ? "" : text.Substring(startDrawChar, currentCharIndex - startDrawChar);
+		protected string unwrittenTextToDraw => text == null ? "" : text.Substring(currentCharIndex, Math.Min(text.Length - currentCharIndex, NumCharsFromCenter));
 
 		protected virtual void OnTimeChecked()
 		{
@@ -154,7 +154,7 @@ namespace TyperLib
 			}
 			else //Not backspace
 			{
-				char currentChar = theText[currentCharIndex++];
+				char currentChar = text[currentCharIndex++];
 				bool isCorrect = currentChar == c;
 				writtenChars.AddFirst(new Tuple<bool, char>(isCorrect, currentChar));
 				if (isCorrect)
@@ -164,7 +164,7 @@ namespace TyperLib
 					IncorrectChars++;
 					TotalIncorrectChars++;
 				}
-				if (currentCharIndex >= theText.Length)
+				if (currentCharIndex >= text.Length)
 					OnFinished();
 			}
 			return true;

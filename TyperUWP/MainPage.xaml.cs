@@ -213,7 +213,7 @@ namespace TyperUWP
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
 			{
-				text.TheText = await dataPackageView.GetTextAsync();
+				text.Text = await dataPackageView.GetTextAsync();
 				reset();
 				//selectedTextTbk.Text = "Clipboard contents"; ;
 			}
@@ -365,7 +365,7 @@ namespace TyperUWP
 				texts.selectRandom();
 			else
 				texts.select(title);
-			text.TheText = texts.Current?.Text;
+			text.Text = texts.Current?.Text;
 			textsAsb.PlaceholderText = texts.Current == null ? "" : texts.Current.Title;
 			textsAsb.Text = "";
 			reset();
