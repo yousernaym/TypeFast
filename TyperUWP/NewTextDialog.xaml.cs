@@ -64,7 +64,7 @@ namespace TyperUWP
 			{
 				if (!string.IsNullOrEmpty(editExisting))
 					textList.remove(editExisting);
-				textList.add(TitleEntry, TextEntry);
+				textList.add(new TextEntry(TitleEntry, TextEntry));
 			}
 		}
 

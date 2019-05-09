@@ -9,20 +9,18 @@ using System.Runtime.CompilerServices;
 
 namespace TyperLib
 {
-	using InternalTexts = SortedDictionary<string, TextEntry>;
 	using Records = List<Record>;
 	public enum RecordType { RT_ALL, RT_BestTexts, RT_WorstTexts };
 	
 	[Serializable]
 	public class Texts : IEnumerable<TextEntry>
 	{
-		InternalTexts presetTexts = new InternalTexts();
+		TextEntries presetTexts = new TextEntries();
 		UserData userData = new UserData();
 		readonly string path;
 
-		//public Records Records => userData.Records;
 		public TextEntry Current { get; set; }
-		public int Count => userData.Texts.Count;
+		public int Count => userData.TextEntries.Count;
 		public List<string> Titles
 		{
 			get
@@ -78,23 +76,22 @@ namespace TyperLib
 			File.Move(tempPath, savePath);
 		}
 
-		public void add(string title, string text)
+		public void add(TextEntry entry)
 		{
-			if (userData.Texts.ContainsKey(title))
+			if (userData.TextEntries.containsKey(entry.Title))
 				throw new ArgumentException("There already exists a text with the specified title.");
-			if (string.IsNullOrWhiteSpace(title))
+			if (string.IsNullOrWhiteSpace(entry.Title))
 				throw new ArgumentException("Title can't be empty.");
-			userData.Texts.Add(title, new TextEntry(title, text));
+			userData.TextEntries.add(entry);
 			save();
 		}
 
 		public void remove(string title)
 		{
-			var indeXable = userData.Texts.Keys.ToList();
-			int currentIndex = indeXable.FindIndex(k => k == title);
+			int currentIndex = userData.TextEntries.indexOf(title);
 
 			//Remove the text with this title
-			userData.Texts.Remove(title);
+			userData.TextEntries.remove(title);
 
 			//Remove all records for this title
 			Record recordMatch;
@@ -103,23 +100,22 @@ namespace TyperLib
 
 			if (title == Current.Title)
 			{
-				if (currentIndex >= userData.Texts.Count)
+				if (currentIndex >= userData.TextEntries.Count)
 					currentIndex--;
-				Current = userData.Texts.ElementAt(currentIndex).Value;
+				Current = userData.TextEntries.ElementAt(currentIndex);
 			}
 			save();
 		}
 
 		public bool containsTitle(string title)
 		{
-			return userData.Texts.ContainsKey(title);
+			return userData.TextEntries.containsKey(title);
 		}
 
 		public IEnumerator<TextEntry> GetEnumerator()
 		{
-			//return ((IEnumerable<KeyValuePair<string, string>>)userList).GetEnumerator();
-			foreach (var entry in userData.Texts)
-				yield return entry.Value;
+			foreach (var entry in userData.TextEntries)
+				yield return entry;
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
@@ -131,24 +127,24 @@ namespace TyperLib
 		{
 			//userList = new ListType();
 			foreach (var text in presetTexts)
-				userData.Texts.Add(text.Key, text.Value);
+				userData.TextEntries.add(text);
 		}
 
 		public string select(string title)
 		{
-			Current = userData.Texts[title];
+			Current = userData.TextEntries[title];
 			return Current.Text;
 		}
 
 		public TextEntry selectRandom()
 		{
-			if (userData.Texts.Count == 0)
+			if (userData.TextEntries.Count == 0)
 				return null;
 			string randomTitle;
 			do
 			{
-				randomTitle = userData.Texts.ElementAt(new Random().Next(userData.Texts.Count)).Key;
-			} while (randomTitle == Current?.Title && userData.Texts.Count > 1);
+				randomTitle = userData.TextEntries.ElementAt(new Random().Next(userData.TextEntries.Count)).Title;
+			} while (randomTitle == Current?.Title && userData.TextEntries.Count > 1);
 			select(randomTitle);
 			return Current;
 		}
@@ -204,14 +200,14 @@ namespace TyperLib
 	}
 
 	[Serializable]
-	public class UserData : ISerializable
+	internal class UserData : ISerializable
 	{
-		public InternalTexts Texts { get; set; } = new InternalTexts();
-		public Records Records { get; set; } = new Records();
-		public string CurrentTextTitle { get; set; }
-		static readonly public Type[] SerializeTypes = new Type[] { typeof(TextEntry), typeof(Record), typeof(Records), typeof(InternalTexts) };
+		internal TextEntries TextEntries { get; set; } = new TextEntries();
+		internal Records Records { get; set; } = new Records();
+		internal string CurrentTextTitle { get; set; }
+		static readonly public Type[] SerializeTypes = new Type[] { typeof(TextEntry), typeof(Record) };
 
-		public UserData()
+		internal UserData()
 		{
 		}
 
@@ -219,10 +215,11 @@ namespace TyperLib
 		{
 			foreach (var entry in info)
 			{
+				//Save individual texts and records in order to be able to shange data structure without changing file format.
 				if (entry.Name.StartsWith("textEntry_"))
 				{
 					var textEntry = (TextEntry)entry.Value;
-					Texts.Add(textEntry.Title, textEntry);
+					TextEntries.add(textEntry);
 				}
 				else if (entry.Name.StartsWith("records_"))
 					Records.Add((Record)entry.Value);
@@ -232,57 +229,13 @@ namespace TyperLib
 		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			foreach (var textEntry in Texts)
-				info.AddValue("textEntry_"+textEntry.Key, textEntry.Value);
+			foreach (var textEntry in TextEntries)
+				info.AddValue("textEntry_"+textEntry.Title, textEntry);
 			for (int i = 0; i < Records.Count; i++)
 				info.AddValue("record_"+i, Records[i]);
 			info.AddValue("currentTextTitle", CurrentTextTitle); 
 		}
 	}
-
-	[Serializable]
-	public class TextEntry : ISerializable
-	{
-		public string Title { get; set; }
-		public string Text { get; set; }
-		public TextEntry(string title, string text)
-		{
-			Title = title;
-			Text = text;
-		}
-
-		public TextEntry(KeyValuePair<string, string> kvp)
-		{
-			Title = kvp.Key;
-			Text = kvp.Value;
-		}
-
-		public TextEntry(SerializationInfo info, StreamingContext context)
-		{
-			foreach (var entry in info)
-			{
-				if (entry.Name == "title")
-					Title = (string)entry.Value;
-				else if (entry.Name == "text")
-					Text = (string)entry.Value;
-			}
-		}
-		
-		public void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue("title", Title);
-			info.AddValue("text", Text);
-		}
-	}
-
-	//public class Records
-	//{
-	//	SortedList<int, string> records;
-	//	public void add(int wpm, string textTitle)
-	//	{
-	//		records.Add(wpm, textTitle);
-	//	}
-	//}
 }
 
 
