@@ -34,35 +34,53 @@ namespace TyperUWP
 	/// </summary>
 	public sealed partial class MainPage : Page
 	{
-		Text text;
-		Texts texts = new Texts(ApplicationData.Current.LocalFolder.Path);
+		TypingSession typingSession;
+		Texts texts = new Texts(ApplicationData.Current.RoamingFolder.Path);
 		private bool dialogOpen = false;
-
+		
 		public MainPage()
 		{
 			this.InitializeComponent();
+			var importIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEA52" };
+			textsOptionsImport.Icon = importIcon;
+			var exportIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEDE2" };
+			textsOptionsExport.Icon = importIcon;
+
 			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 500));
 			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+			ApplicationData.Current.DataChanged += Current_DataChanged;
+			Windows.Storage.ApplicationData.Current.DataChanged +=
+		 new TypedEventHandler<ApplicationData, object>(DataChangeHandler);
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
 
-			text = new Text(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
+			typingSession = new TypingSession(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			//text.TimeLimit = TimeSpan.FromSeconds(60);
-			text.TimeChecked += Text_TimeChecked;
-			text.Finished += Text_Finished;
+			typingSession.TimeChecked += Text_TimeChecked;
+			typingSession.Finished += Text_Finished;
 			//text.Foreground = Colors.White;
 			//text.Background = Colors.Black;
-			textColorBtn.Background = new SolidColorBrush(text.Foreground);
-			textBkgColorBtn.Background = new SolidColorBrush(text.Background);
-			text.FontSize = 50;
+			textColorBtn.Background = new SolidColorBrush(typingSession.Foreground);
+			textBkgColorBtn.Background = new SolidColorBrush(typingSession.Background);
+			typingSession.FontSize = 50;
 			selectText(null);  //Select random text
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
 			foreach (string font in fonts)
 				fontCombo.Items.Add(font);
-			fontCombo.SelectedItem = text.FontName;
-			fontSizeTb.Text = text.FontSize.ToString();
+			fontCombo.SelectedItem = typingSession.FontName;
+			fontSizeTb.Text = typingSession.FontSize.ToString();
+		}
+
+		private void DataChangeHandler(ApplicationData sender, object args)
+		{
+			
+		}
+
+		private void Current_DataChanged(ApplicationData sender, object args)
+		{
+			//sender
 		}
 
 		private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
@@ -77,7 +95,7 @@ namespace TyperUWP
 		private void Text_Finished(object sender, EventArgs e)
 		{
 			if (texts.Current != null)
-				texts.addRecord(text.Wpm, text.Accuracy, texts.Current.Title);
+				texts.addRecord(typingSession.Wpm, typingSession.Accuracy, texts.Current.Title);
 		}
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
@@ -86,13 +104,13 @@ namespace TyperUWP
 			//	return;
 			await Dispatcher.RunAsync(CoreDispatcherPriority.High, delegate
 			{
-				timeText.Content = "Time\n" + text.RemainingTimeString;
-				wpmText.Text = "WPM\n" + text.Wpm;
-				accuracyText.Text = "Accuracy\n" + text.Accuracy.ToString("0.0") + " %";
+				timeText.Content = "Time\n" + typingSession.RemainingTimeString;
+				wpmText.Text = "WPM\n" + typingSession.Wpm;
+				accuracyText.Text = "Accuracy\n" + typingSession.Accuracy.ToString("0.0") + " %";
 
-				if (text.IsRunning)
+				if (typingSession.IsRunning)
 					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
-				else if (text.IsFinished)
+				else if (typingSession.IsFinished)
 					timeText.Background = new SolidColorBrush(Colors.DarkRed);
 				else
 					timeText.Background = new SolidColorBrush(Color.FromArgb(30, 250, 250, 250));
@@ -120,18 +138,18 @@ namespace TyperUWP
 				return;
 
 			args.Handled = true; //needed?
-			if (!text.typeChar(args.KeyCode))
+			if (!typingSession.typeChar(args.KeyCode))
 				return;
 			focusOnTyping();
-			text.draw();
+			typingSession.draw();
 			updateTypingStats();
 		}
 
 		private void updateTypingStats()
 		{
-			correctCharsText.Text = "Correct\n" + text.CorrectChars;
-			incorrectCharsText.Text = "Incorrect\n" + text.IncorrectChars;
-			fixedCharsText.Text = "Fixed\n" + text.FixedChars;
+			correctCharsText.Text = "Correct\n" + typingSession.CorrectChars;
+			incorrectCharsText.Text = "Incorrect\n" + typingSession.IncorrectChars;
+			fixedCharsText.Text = "Fixed\n" + typingSession.FixedChars;
 		}
 
 		private void RestartBtn_Click(object sender, RoutedEventArgs e)
@@ -152,7 +170,7 @@ namespace TyperUWP
 			if (dialogOpen)
 				return;
 
-			text.reset();
+			typingSession.reset();
 			updateTypingStats();
 			focusOnTyping();
 		}
@@ -162,7 +180,7 @@ namespace TyperUWP
 			currentCharControl.Focus(FocusState.Programmatic);
 		}
 
-		async private void TextsComboCmNew_Click(object sender, RoutedEventArgs e)
+		async private void TextsOptionsNew_Click(object sender, RoutedEventArgs e)
 		{
 			if (dialogOpen)
 				return;
@@ -176,7 +194,7 @@ namespace TyperUWP
 				selectText(newTextDialog.TitleEntry);
 		}
 
-		async private void TextsComboCmEdit_Click(object sender, RoutedEventArgs e)
+		async private void TextsOptionsEdit_Click(object sender, RoutedEventArgs e)
 		{
 			if (dialogOpen)
 				return;
@@ -192,7 +210,7 @@ namespace TyperUWP
 				selectText(newTextDialog.TitleEntry);
 		}
 
-		async private void TextsComboCmDelete_Click(object sender, RoutedEventArgs e)
+		async private void TextsOptionsDelete_Click(object sender, RoutedEventArgs e)
 		{
 			if (dialogOpen)
 				return;
@@ -212,7 +230,7 @@ namespace TyperUWP
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
 			{
-				text.Text = await dataPackageView.GetTextAsync();
+				typingSession.Text = await dataPackageView.GetTextAsync();
 				reset();
 				//selectedTextTbk.Text = "Clipboard contents"; ;
 			}
@@ -294,7 +312,7 @@ namespace TyperUWP
 
 		private void FontCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			text.FontName = (string)fontCombo.SelectedItem;
+			typingSession.FontName = (string)fontCombo.SelectedItem;
 		}
 
 		private void FontSizeTb_TextChanged(object sender, TextChangedEventArgs e)
@@ -303,7 +321,7 @@ namespace TyperUWP
 			{
 				int size = int.Parse(fontSizeTb.Text);
 				if (size > 0)
-					text.FontSize = size;
+					typingSession.FontSize = size;
 			}
 		}
 
@@ -364,7 +382,7 @@ namespace TyperUWP
 				texts.selectRandom();
 			else
 				texts.select(title);
-			text.Text = texts.Current?.Text;
+			typingSession.Text = texts.Current?.Text;
 			textsAsb.PlaceholderText = texts.Current == null ? "" : texts.Current.Title;
 			textsAsb.Text = "";
 			reset();
@@ -419,6 +437,16 @@ namespace TyperUWP
 		{
 			dialogOpen = false;
 			currentCharControl.Focus(FocusState.Programmatic);
+		}
+
+		private void TextsOptionsExport_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void TextsOptionsImport_Click(object sender, RoutedEventArgs e)
+		{
+
 		}
 	}
 }

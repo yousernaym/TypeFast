@@ -15,7 +15,7 @@ namespace TyperLib
 	[Serializable]
 	public class Texts : IEnumerable<TextEntry>
 	{
-		TextEntries presetTexts = new TextEntries();
+		TextEntries presetTextEntries = new TextEntries();
 		UserData userData = new UserData();
 		readonly string path;
 
@@ -126,7 +126,7 @@ namespace TyperLib
 		public void resetFactoryTexts()
 		{
 			//userList = new ListType();
-			foreach (var text in presetTexts)
+			foreach (var text in presetTextEntries)
 				userData.TextEntries.add(text);
 		}
 

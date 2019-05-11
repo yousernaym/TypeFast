@@ -56,7 +56,7 @@
 							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closed="TimeLimitFlyout_Closed">
 								<StackPanel Orientation="Horizontal">
 									<TextBlock Text="Time limit:" Margin="0,0,10,0" VerticalAlignment="Center" />
-									<TextBox x:Name="timeLimitTb" Text="{x:Bind text.TimeLimit, Mode=TwoWay, Converter={StaticResource TimeLimitConverter}}" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging" SelectionChanged="TimeLimitTb_SelectionChanged" BeforeTextChanging="TimeLimitTb_BeforeTextChanging" />
+									<TextBox x:Name="timeLimitTb" Text="{x:Bind typingSession.TimeLimit, Mode=TwoWay, Converter={StaticResource TimeLimitConverter}}" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging" SelectionChanged="TimeLimitTb_SelectionChanged" BeforeTextChanging="TimeLimitTb_BeforeTextChanging" />
 									<!--extensions:TextBoxMask.CustomMask="5:[0-5]" extensions:TextBoxMask.Mask="99:59" extensions:TextBoxMask.PlaceHolder="0"/>-->
 								</StackPanel>
 							</Flyout>
@@ -88,14 +88,14 @@
 									<Button x:Name="textColorBtn" Margin="10,0,0,0" Background="White"  Width="40" Height="30">
 										<Button.Flyout>
 											<Flyout>
-												<ColorPicker x:Name="textColorPicker" Color="{x:Bind text.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
+													<ColorPicker x:Name="textColorPicker" Color="{x:Bind typingSession.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
 											</Flyout>
 										</Button.Flyout>
 									</Button>
 									<Button x:Name="textBkgColorBtn" Background="Black" Width="40" Height="30">
 										<Button.Flyout>
 											<Flyout>
-												<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind text.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
+													<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind typingSession.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
 											</Flyout>
 										</Button.Flyout>
 									</Button>
@@ -117,20 +117,32 @@
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0" >
 				<AutoSuggestBox x:Name="textsAsb" IsTabStop="False" Width="300" PlaceholderText="" Header="Text list" TextChanged="TextsASB_TextChanged" QuerySubmitted="TextsAsb_QuerySubmitted" SuggestionChosen="TextsAsb_SuggestionChosen" GotFocus="TextsAsb_GotFocus" LostFocus="TextsAsb_LostFocus" />
-				<Button x:Name="textsOptionsBtn" Margin="5 0 5 0" Content="Edit list" IsTabStop="True" VerticalAlignment="Bottom" >
+				<Button  x:Name="textsOptionsBtn" Margin="5 0 5 0" IsTabStop="True" VerticalAlignment="Bottom" >
+					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE712;"/>
 					<Button.Flyout>
 						<MenuFlyout>
-							<MenuFlyoutItem Icon="Add" x:Name="textsComboCmNew" Text="New text..." Click="TextsComboCmNew_Click" >
+							<MenuFlyoutItem Icon="Add" x:Name="textsOptionsNew" Text="New..." Click="TextsOptionsNew_Click" >
 								<MenuFlyoutItem.KeyboardAccelerators>
 									<KeyboardAccelerator Modifiers="Control" Key="N"/>
 								</MenuFlyoutItem.KeyboardAccelerators>
 							</MenuFlyoutItem>
-							<MenuFlyoutItem Icon="Edit" x:Name="textsComboCmEdit" Text="Edit text..." Click="TextsComboCmEdit_Click">
+							<MenuFlyoutItem Icon="Edit" x:Name="textsOptionsEdit" Text="Edit..." Click="TextsOptionsEdit_Click">
 								<MenuFlyoutItem.KeyboardAccelerators>
 									<KeyboardAccelerator Modifiers="Control" Key="E"/>
 								</MenuFlyoutItem.KeyboardAccelerators>
 							</MenuFlyoutItem>
-							<MenuFlyoutItem Icon="Delete" x:Name="textsComboCmDelete" Text="Delete text" Click="TextsComboCmDelete_Click">
+							<MenuFlyoutItem Icon="Delete"  x:Name="textsOptionsDelete" Text="Delete" Click="TextsOptionsDelete_Click">
+								<MenuFlyoutItem.KeyboardAccelerators>
+									<KeyboardAccelerator Modifiers="Control" Key="D"/>
+								</MenuFlyoutItem.KeyboardAccelerators>
+							</MenuFlyoutItem>
+							<MenuFlyoutSeparator />
+							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import..." Click="TextsOptionsImport_Click">
+								<MenuFlyoutItem.KeyboardAccelerators>
+									<KeyboardAccelerator Modifiers="Control" Key="D"/>
+								</MenuFlyoutItem.KeyboardAccelerators>
+							</MenuFlyoutItem>
+							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export..." Click="TextsOptionsExport_Click">
 								<MenuFlyoutItem.KeyboardAccelerators>
 									<KeyboardAccelerator Modifiers="Control" Key="D"/>
 								</MenuFlyoutItem.KeyboardAccelerators>

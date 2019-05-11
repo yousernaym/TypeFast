@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Media;
 
 namespace TyperUWP
 {
-	class Text : TyperLib.TypingSession
+	class TypingSession : TyperLib.TypingSession
 	{
 		Panel textPanel;
 		TextBlockEx[] writtenTextControls = new TextBlockEx[NumCharsFromCenter];
@@ -63,7 +63,7 @@ namespace TyperUWP
 			}
 		}
 		
-		public Text(Panel _textPanel, StackPanel writtenTextPanel, TextBlockEx _currentCharControl, TextBlock _unwrittenTextControl)
+		public TypingSession(Panel _textPanel, StackPanel writtenTextPanel, TextBlockEx _currentCharControl, TextBlock _unwrittenTextControl)
 		{
 			textPanel = _textPanel;
 			for (int i = writtenTextControls.Length - 1; i >= 0; i--)
