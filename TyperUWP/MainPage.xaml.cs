@@ -24,6 +24,8 @@ using TyperLib;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Graphics.Canvas.Text;
+using Windows.Storage.Pickers;
+using System.Runtime.Serialization;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -34,27 +36,31 @@ namespace TyperUWP
 	/// </summary>
 	public sealed partial class MainPage : Page
 	{
+		readonly string RoamingDir = ApplicationData.Current.RoamingFolder.Path;
 		TypingSession typingSession;
-		Texts texts = new Texts(ApplicationData.Current.RoamingFolder.Path);
+		Texts texts;
 		private bool dialogOpen = false;
-		
+		readonly string settingsPath;
+
 		public MainPage()
 		{
 			this.InitializeComponent();
 			var importIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEA52" };
 			textsOptionsImport.Icon = importIcon;
 			var exportIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEDE2" };
-			textsOptionsExport.Icon = importIcon;
+			textsOptionsExport.Icon = exportIcon;
 
 			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 500));
 			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-			ApplicationData.Current.DataChanged += Current_DataChanged;
-			Windows.Storage.ApplicationData.Current.DataChanged +=
-		 new TypedEventHandler<ApplicationData, object>(DataChangeHandler);
-			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
-			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
 
+			ApplicationData.Current.DataChanged += Current_DataChanged;
+			ApplicationData.Current.DataChanged += new TypedEventHandler<ApplicationData, object>(DataChangeHandler);			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
+			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
+			Window.Current.CoreWindow.Closed += CoreWindow_Closed;
+
+			texts = new Texts(RoamingDir);
+			settingsPath = Path.Combine(RoamingDir, "settings");
 			typingSession = new TypingSession(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			//text.TimeLimit = TimeSpan.FromSeconds(60);
 			typingSession.TimeChecked += Text_TimeChecked;
@@ -71,6 +77,46 @@ namespace TyperUWP
 				fontCombo.Items.Add(font);
 			fontCombo.SelectedItem = typingSession.FontName;
 			fontSizeTb.Text = typingSession.FontSize.ToString();
+
+			loadSettings();
+		}
+
+		private void CoreWindow_Closed(CoreWindow sender, CoreWindowEventArgs args)
+		{
+			saveSettings();
+		}
+
+		private void saveSettings()
+		{
+			try
+			{
+				using (var stream = File.Open(settingsPath, FileMode.Create))
+				{
+					var dcs = new DataContractSerializer(typeof(Settings), Settings.SerializeTypes);
+					var settings = (Settings)dcs.ReadObject(stream);
+				}
+			}
+			catch
+			{
+
+			}
+
+		}
+
+		private void loadSettings()
+		{
+			try
+			{
+				using (var stream = File.Open(settingsPath, FileMode.Open))
+				{
+					var dcs = new DataContractSerializer(typeof(Settings), Settings.SerializeTypes);
+					var settings = (Settings)dcs.ReadObject(stream);
+				}
+			}
+			catch (Exception)
+			{
+
+			}
 		}
 
 		private void DataChangeHandler(ApplicationData sender, object args)
@@ -439,9 +485,17 @@ namespace TyperUWP
 			currentCharControl.Focus(FocusState.Programmatic);
 		}
 
-		private void TextsOptionsExport_Click(object sender, RoutedEventArgs e)
+		async private void TextsOptionsExport_Click(object sender, RoutedEventArgs e)
 		{
-
+			var fsp = new FileSavePicker();
+			fsp.FileTypeChoices.Add("Typer Texts", new List<string>() { ".tt" });
+			fsp.SuggestedFileName = "texts.tt";
+			StorageFile file = await fsp.PickSaveFileAsync();
+			if (file != null)
+			{
+				var stream = await file.OpenStreamForWriteAsync();
+				texts.save(stream);
+			}
 		}
 
 		private void TextsOptionsImport_Click(object sender, RoutedEventArgs e)

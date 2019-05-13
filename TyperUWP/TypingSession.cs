@@ -182,5 +182,10 @@ namespace TyperUWP
 			var time = (string)value;
 			return new TimeSpan(0, int.Parse(time.Substring(0, 2)), int.Parse(time.Substring(3, 2)));
 		}
+
+		public class Settings
+		{
+			public 
+		}
 	}
 }

@@ -139,12 +139,12 @@
 							<MenuFlyoutSeparator />
 							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import..." Click="TextsOptionsImport_Click">
 								<MenuFlyoutItem.KeyboardAccelerators>
-									<KeyboardAccelerator Modifiers="Control" Key="D"/>
+									<KeyboardAccelerator Modifiers="Control" Key="I"/>
 								</MenuFlyoutItem.KeyboardAccelerators>
 							</MenuFlyoutItem>
 							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export..." Click="TextsOptionsExport_Click">
 								<MenuFlyoutItem.KeyboardAccelerators>
-									<KeyboardAccelerator Modifiers="Control" Key="D"/>
+									<KeyboardAccelerator Modifiers="Control" Key="E"/>
 								</MenuFlyoutItem.KeyboardAccelerators>
 							</MenuFlyoutItem>
 						</MenuFlyout>
