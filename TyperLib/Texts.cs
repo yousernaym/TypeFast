@@ -17,7 +17,6 @@ namespace TyperLib
 	{
 		TextEntries presetTextEntries = new TextEntries();
 		UserData userData = new UserData();
-		readonly string userDataDir;
 		readonly string userDataPath;
 		
 		public TextEntry Current { get; set; }

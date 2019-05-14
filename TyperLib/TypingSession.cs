@@ -13,15 +13,15 @@ namespace TyperLib
 		const uint KeyCode_Backspace = 8;
 		const uint KeyCode_Escape = 27;
 
-		protected string text;
-		public string Text
+		TextEntry textEntry = new TextEntry();
+		public TextEntry TextEntry
 		{
-			get => text;
+			get => textEntry;
 			set
 			{
-				text = value;
-				if (Text == null)
-					Text = "";
+				textEntry = value;
+				if (value == null)
+					textEntry = new TextEntry();
 
 				//Change characters to space
 				text = text.Replace('\n', ' ');
@@ -31,14 +31,18 @@ namespace TyperLib
 				text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen to two ascii hyphens
 				text = text.Trim();
 
-				//Replace repeating characters with single character
+				//Replace repeating spaces with single space
 				Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
 				text = regex.Replace(text, " ");
-				//regex = new Regex("[-]{2,}", RegexOptions.None);
-				//theText = regex.Replace(theText, "-");
 
 				reset();
 			}
+		}
+
+		string text
+		{
+			get => textEntry.Text;
+			set => textEntry.Text = value;
 		}
 
 		protected int currentCharIndex;

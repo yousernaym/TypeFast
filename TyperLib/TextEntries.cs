@@ -53,6 +53,11 @@ namespace TyperLib
 	{
 		public string Title { get; set; }
 		public string Text { get; set; }
+		public TextEntry()
+		{
+			Title = Text = "";
+		}
+
 		public TextEntry(string title, string text)
 		{
 			Title = title;

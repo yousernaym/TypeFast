@@ -57,7 +57,7 @@ namespace TyperUWP
 			ApplicationData.Current.DataChanged += Current_DataChanged;
 			ApplicationData.Current.DataChanged += new TypedEventHandler<ApplicationData, object>(DataChangeHandler);			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
-			Window.Current.CoreWindow.Closed += CoreWindow_Closed;
+			Application.Current.Suspending += Current_Suspending;
 
 			texts = new Texts(RoamingDir);
 			settingsPath = Path.Combine(RoamingDir, "settings");
@@ -67,21 +67,18 @@ namespace TyperUWP
 			typingSession.Finished += Text_Finished;
 			//text.Foreground = Colors.White;
 			//text.Background = Colors.Black;
-			textColorBtn.Background = new SolidColorBrush(typingSession.Foreground);
-			textBkgColorBtn.Background = new SolidColorBrush(typingSession.Background);
-			typingSession.FontSize = 50;
+			textColorBtn.Background = typingSession.Settings.ForegroundBrush;
+			textBkgColorBtn.Background = typingSession.Settings.BackgroundBrush;
+			typingSession.Settings.FontSize = 50;
 			selectText(null);  //Select random text
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
 			foreach (string font in fonts)
 				fontCombo.Items.Add(font);
-			fontCombo.SelectedItem = typingSession.FontName;
-			fontSizeTb.Text = typingSession.FontSize.ToString();
-
 			loadSettings();
 		}
 
-		private void CoreWindow_Closed(CoreWindow sender, CoreWindowEventArgs args)
+		private void Current_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
 		{
 			saveSettings();
 		}
@@ -92,13 +89,13 @@ namespace TyperUWP
 			{
 				using (var stream = File.Open(settingsPath, FileMode.Create))
 				{
-					var dcs = new DataContractSerializer(typeof(Settings), Settings.SerializeTypes);
-					var settings = (Settings)dcs.ReadObject(stream);
+					var dcs = new DataContractSerializer(typeof(TypingSessionSettings), TypingSessionSettings.SerializeTypes);
+					dcs.WriteObject(stream, typingSession.Settings);
 				}
 			}
-			catch
+			catch 
 			{
-
+				
 			}
 
 		}
@@ -109,14 +106,18 @@ namespace TyperUWP
 			{
 				using (var stream = File.Open(settingsPath, FileMode.Open))
 				{
-					var dcs = new DataContractSerializer(typeof(Settings), Settings.SerializeTypes);
-					var settings = (Settings)dcs.ReadObject(stream);
+					var dcs = new DataContractSerializer(typeof(TypingSessionSettings), TypingSessionSettings.SerializeTypes);
+					var settings = (TypingSessionSettings)dcs.ReadObject(stream);
+					typingSession.Settings = settings;
 				}
 			}
-			catch (Exception)
+			catch 
 			{
-
+				throw;
 			}
+			fontCombo.SelectedItem = typingSession.Settings.FontName;
+			fontSizeTb.Text = typingSession.Settings.FontSize.ToString();
+			selectText(typingSession.Settings.StartText);
 		}
 
 		private void DataChangeHandler(ApplicationData sender, object args)
@@ -205,7 +206,7 @@ namespace TyperUWP
 
 		private void clickResetBtn()
 		{
-			if ((bool)shuffleBtn.IsChecked)
+			if (typingSession.Settings.Shuffle)
 				selectText(null);
 			else
 				reset();
@@ -276,9 +277,8 @@ namespace TyperUWP
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
 			{
-				typingSession.Text = await dataPackageView.GetTextAsync();
+				typingSession.TextEntry = new TextEntry("", await dataPackageView.GetTextAsync());
 				reset();
-				//selectedTextTbk.Text = "Clipboard contents"; ;
 			}
 		}
 
@@ -358,7 +358,7 @@ namespace TyperUWP
 
 		private void FontCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			typingSession.FontName = (string)fontCombo.SelectedItem;
+			typingSession.Settings.FontName = (string)fontCombo.SelectedItem;
 		}
 
 		private void FontSizeTb_TextChanged(object sender, TextChangedEventArgs e)
@@ -367,7 +367,7 @@ namespace TyperUWP
 			{
 				int size = int.Parse(fontSizeTb.Text);
 				if (size > 0)
-					typingSession.FontSize = size;
+					typingSession.Settings.FontSize = size;
 			}
 		}
 
@@ -428,7 +428,7 @@ namespace TyperUWP
 				texts.selectRandom();
 			else
 				texts.select(title);
-			typingSession.Text = texts.Current?.Text;
+			typingSession.TextEntry = texts.Current;
 			textsAsb.PlaceholderText = texts.Current == null ? "" : texts.Current.Title;
 			textsAsb.Text = "";
 			reset();
