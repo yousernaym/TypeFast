@@ -26,6 +26,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Graphics.Canvas.Text;
 using Windows.Storage.Pickers;
 using System.Runtime.Serialization;
+using Windows.ApplicationModel;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -59,7 +60,7 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
 			Application.Current.Suspending += Current_Suspending;
 
-			texts = new Texts(RoamingDir);
+			texts = new Texts(RoamingDir, Package.Current.InstalledLocation.Path);
 			settingsPath = Path.Combine(RoamingDir, "settings");
 			typingSession = new TypingSession(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			//text.TimeLimit = TimeSpan.FromSeconds(60);
@@ -266,7 +267,7 @@ namespace TyperUWP
 			if (result == ContentDialogResult.Primary)
 			{
 				texts.removeCurrent();
-				selectText(texts.Current.Title);
+				selectText(texts.Current?.Title);
 			}
 		}
 
@@ -488,18 +489,28 @@ namespace TyperUWP
 		async private void TextsOptionsExport_Click(object sender, RoutedEventArgs e)
 		{
 			var fsp = new FileSavePicker();
-			fsp.FileTypeChoices.Add("Typer Texts", new List<string>() { ".tt" });
-			fsp.SuggestedFileName = "texts.tt";
+			fsp.FileTypeChoices.Add("Typer Texts", new List<string>() { ".tts" });
+			fsp.SuggestedFileName = "Typer Texts";
 			StorageFile file = await fsp.PickSaveFileAsync();
 			if (file != null)
 			{
 				var stream = await file.OpenStreamForWriteAsync();
-				texts.save(stream);
+				texts.saveUserTextsAsPresets(stream);
 			}
 		}
 
 		private void TextsOptionsImport_Click(object sender, RoutedEventArgs e)
 		{
+
+		}
+
+		async private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
+		{
+			var uri = new Uri("ms-appx:///presets.tts");
+			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
+			var stream = await sampleFile.OpenStreamForReadAsync();
+			texts.restorePresets(stream);
+			stream.Dispose();
 
 		}
 	}

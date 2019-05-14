@@ -147,6 +147,7 @@
 									<KeyboardAccelerator Modifiers="Control" Key="E"/>
 								</MenuFlyoutItem.KeyboardAccelerators>
 							</MenuFlyoutItem>
+							<MenuFlyoutItem x:Name="textsOptionsRestore" Text="Restore presets" Click="TextsOptionsRestore_Click"/>
 						</MenuFlyout>
 					</Button.Flyout>
 				</Button>

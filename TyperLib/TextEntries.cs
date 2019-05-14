@@ -12,7 +12,7 @@ namespace TyperLib
 		public int Count => entries.Count;
 		internal void add(TextEntry entry)
 		{
-			entries.Add(entry.Title, entry);
+			entries[entry.Title] = entry;
 		}
 
 		public IEnumerator<TextEntry> GetEnumerator()

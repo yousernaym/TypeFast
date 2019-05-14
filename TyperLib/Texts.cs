@@ -15,9 +15,10 @@ namespace TyperLib
 	[Serializable]
 	public class Texts : IEnumerable<TextEntry>
 	{
-		TextEntries presetTextEntries = new TextEntries();
+		TextEntries presets = new TextEntries();
 		UserData userData = new UserData();
 		readonly string userDataPath;
+		readonly string presetsPath;
 		
 		public TextEntry Current { get; set; }
 		public int Count => userData.TextEntries.Count;
@@ -32,40 +33,49 @@ namespace TyperLib
 			}
 		}
 		
-		public Texts(string userDataDir) 
+		public Texts(string userDataDir, string presetsDir)
 		{
 			if (userDataDir != null)
-				this.userDataPath = Path.Combine(userDataDir, "texts");
-			//save();
-			if (File.Exists(this.userDataPath))
-				load(this.userDataPath);
+				userDataPath = Path.Combine(userDataDir, "texts");
+			if (presetsDir != null)
+				presetsPath = Path.Combine(presetsDir, "presets.typertexts");
+			//saveUserData();
+			//loadUserData(presetsPath);
+			
+			if (File.Exists(userDataPath))
+				loadUserData(userDataPath);
+			else if (File.Exists(presetsPath))
+				loadUserData(presetsPath);
 		}
 
-		public void load(string loadPath)
+		public void loadUserData(string loadPath)
 		{
 			if (string.IsNullOrEmpty(loadPath))
 				return;
 			using (var stream = File.Open(loadPath, FileMode.Open))
 			{
-				var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
-				var data = (UserData)dcs.ReadObject(stream);
-				foreach (var text in data.TextEntries)
-					userData.TextEntries.add(text);
-				foreach (var rec in data.Records)
-					userData.Records.Add(rec);
+				loadUserData(stream);
 			}
 		}
 
-		public void save(string savePath)
+		public void loadUserData(Stream stream)
 		{
-			if (string.IsNullOrEmpty(savePath))
-				return;
-			string tempPath = savePath + "_";
+			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
+			var data = (UserData)dcs.ReadObject(stream);
+			foreach (var text in data.TextEntries)
+				userData.TextEntries.add(text);
+			foreach (var rec in data.Records)
+				userData.Records.Add(rec);
+		}
+
+		public void saveUserData()
+		{
+			string tempPath = userDataPath + "_";
 			try
 			{
 				using (var stream = File.Open(tempPath, FileMode.Create))
 				{
-					save(stream);
+					saveStream(stream, userData);
 				}
 			}
 			catch
@@ -73,11 +83,18 @@ namespace TyperLib
 				File.Delete(tempPath);
 				throw;
 			}
-			File.Delete(savePath);
-			File.Move(tempPath, savePath);
+			File.Delete(userDataPath);
+			File.Move(tempPath, userDataPath);
 		}
 
-		public void save(Stream stream)
+		public void saveUserTextsAsPresets(Stream stream)
+		{
+			var data = new UserData();
+			data.TextEntries = userData.TextEntries;
+			saveStream(stream, data);
+		}
+
+		void saveStream(Stream stream, UserData data)
 		{
 			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
 			dcs.WriteObject(stream, userData);
@@ -90,7 +107,7 @@ namespace TyperLib
 			if (string.IsNullOrWhiteSpace(entry.Title))
 				throw new ArgumentException("Title can't be empty.");
 			userData.TextEntries.add(entry);
-			save(userDataPath);
+			saveUserData();
 		}
 
 		public void remove(string title)
@@ -109,9 +126,13 @@ namespace TyperLib
 			{
 				if (currentIndex >= userData.TextEntries.Count)
 					currentIndex--;
-				Current = userData.TextEntries.ElementAt(currentIndex);
+
+				if (currentIndex == -1)
+					Current = null;
+				else
+					Current = userData.TextEntries.ElementAt(currentIndex);
 			}
-			save(userDataPath);
+			saveUserData();
 		}
 
 		public bool containsTitle(string title)
@@ -132,9 +153,9 @@ namespace TyperLib
 
 		public void resetFactoryTexts()
 		{
-			//userList = new ListType();
-			foreach (var text in presetTextEntries)
-				userData.TextEntries.add(text);
+			//var data = load(presetsPath);
+			//foreach (var text in data)
+			//	userData.TextEntries.add(text);
 		}
 
 		public string select(string title)
@@ -159,7 +180,7 @@ namespace TyperLib
 		public void addRecord(int wpm, float accuracy, string title)
 		{
 			userData.Records.Add(new Record(wpm, accuracy, title));
-			save(userDataPath);
+			saveUserData();
 		}
 
 		public Record[] getRecords(RecordType type, int count = 0)
@@ -203,6 +224,11 @@ namespace TyperLib
 		public void removeCurrent()
 		{
 			remove(Current.Title);
+		}
+
+		public void restorePresets(Stream stream)
+		{
+			loadUserData(stream);
 		}
 	}
 

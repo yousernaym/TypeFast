@@ -149,6 +149,9 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <Content Include="presets.tts">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="TyperUWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
