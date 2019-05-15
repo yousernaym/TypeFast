@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using TyperLib;
+using System.Globalization;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -86,7 +87,8 @@ namespace TyperUWP
 
 		private void updateCharCountText()
 		{
-			textCharCount.Text = textTb.Text.Length + " characters";
+			string remainingChars = String.Format("{0:n0}", textTb.MaxLength - textTb.Text.Length).Replace(NumberFormatInfo.CurrentInfo.NumberGroupSeparator, " ");
+			textCharCount.Text = $"{remainingChars} characters remaining";
 		}
 	}
 }
