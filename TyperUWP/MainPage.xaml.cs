@@ -37,11 +37,12 @@ namespace TyperUWP
 	/// </summary>
 	public sealed partial class MainPage : Page
 	{
-		readonly string RoamingDir = ApplicationData.Current.RoamingFolder.Path;
+		readonly string RoamingDataDir = ApplicationData.Current.RoamingFolder.Path;
+		readonly string LocalDataDir = ApplicationData.Current.LocalFolder.Path;
+		readonly string SettingsPath;
 		TypingSession typingSession;
 		Texts texts;
 		private bool dialogOpen = false;
-		readonly string settingsPath;
 
 		public MainPage()
 		{
@@ -60,8 +61,8 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
 			Application.Current.Suspending += Current_Suspending;
 
-			texts = new Texts(RoamingDir, Package.Current.InstalledLocation.Path);
-			settingsPath = Path.Combine(RoamingDir, "settings");
+			texts = new Texts(LocalDataDir, Package.Current.InstalledLocation.Path);
+			SettingsPath = Path.Combine(RoamingDataDir, "settings");
 			typingSession = new TypingSession(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			//text.TimeLimit = TimeSpan.FromSeconds(60);
 			typingSession.TimeChecked += Text_TimeChecked;
@@ -88,7 +89,7 @@ namespace TyperUWP
 		{
 			try
 			{
-				using (var stream = File.Open(settingsPath, FileMode.Create))
+				using (var stream = File.Open(SettingsPath, FileMode.Create))
 				{
 					var dcs = new DataContractSerializer(typeof(TypingSessionSettings), TypingSessionSettings.SerializeTypes);
 					dcs.WriteObject(stream, typingSession.Settings);
@@ -105,7 +106,7 @@ namespace TyperUWP
 		{
 			try
 			{
-				using (var stream = File.Open(settingsPath, FileMode.Open))
+				using (var stream = File.Open(SettingsPath, FileMode.Open))
 				{
 					var dcs = new DataContractSerializer(typeof(TypingSessionSettings), TypingSessionSettings.SerializeTypes);
 					var settings = (TypingSessionSettings)dcs.ReadObject(stream);
