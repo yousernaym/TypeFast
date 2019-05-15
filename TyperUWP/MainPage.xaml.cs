@@ -57,7 +57,8 @@ namespace TyperUWP
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
 			ApplicationData.Current.DataChanged += Current_DataChanged;
-			ApplicationData.Current.DataChanged += new TypedEventHandler<ApplicationData, object>(DataChangeHandler);			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
+			ApplicationData.Current.DataChanged += new TypedEventHandler<ApplicationData, object>(DataChangeHandler);
+			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
 			Application.Current.Suspending += Current_Suspending;
 
@@ -181,12 +182,16 @@ namespace TyperUWP
 
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
-			if (args.KeyCode == 27) //Esc
+			if (args.KeyCode == 27) //Esc key should remove focus from the AutoSuggestBox
 				focusOnTyping();
-			if (dialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu))
+			if (dialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu) || args.KeyCode == 13)
 				return;
 
-			args.Handled = true; //needed?
+			//Ignore spaces if in the beginning of a text
+			if (!typingSession.IsRunning && args.KeyCode == (uint)' ')
+				return;
+
+			//args.Handled = true; //needed?
 			if (!typingSession.typeChar(args.KeyCode))
 				return;
 			focusOnTyping();
@@ -221,7 +226,7 @@ namespace TyperUWP
 
 			typingSession.reset();
 			updateTypingStats();
-			focusOnTyping();
+			//focusOnTyping();
 		}
 
 		private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -459,9 +464,19 @@ namespace TyperUWP
 
 		private void TextsAsb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
 		{
-			focusOnTyping();
-			if (texts.containsTitle(args.QueryText))
-				selectText(args.QueryText);
+			string title = (string)args.ChosenSuggestion;
+			if (title == null)
+				title = args.QueryText;
+			if (title == "")
+			{
+				focusOnTyping();
+				return;
+			}
+			if (texts.containsTitle(title))
+			{
+				focusOnTyping();
+				selectText(title);
+			}
 		}
 
 		private void TextsAsb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
@@ -479,6 +494,7 @@ namespace TyperUWP
 		{
 			dialogOpen = false;
 			textsAsb.ItemsSource = null;
+			textsAsb.Text = "";
 		}
 
 		void focusOnTyping()
