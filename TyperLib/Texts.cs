@@ -255,7 +255,7 @@ namespace TyperLib
 					var textEntry = (TextEntry)entry.Value;
 					TextEntries.add(textEntry);
 				}
-				else if (entry.Name.StartsWith("records_"))
+				else if (entry.Name.StartsWith("record_"))
 					Records.Add((Record)entry.Value);
 			}
 		}
