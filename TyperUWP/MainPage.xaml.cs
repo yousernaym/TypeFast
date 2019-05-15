@@ -47,23 +47,24 @@ namespace TyperUWP
 		public MainPage()
 		{
 			this.InitializeComponent();
-			var importIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEA52" };
-			textsOptionsImport.Icon = importIcon;
-			var exportIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEDE2" };
-			textsOptionsExport.Icon = exportIcon;
+			//var importIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEA52" };
+			//textsOptionsImport.Icon = importIcon;
+			//var exportIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEDE2" };
+			//textsOptionsExport.Icon = exportIcon;
 
 			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 500));
 			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
-			ApplicationData.Current.DataChanged += Current_DataChanged;
-			ApplicationData.Current.DataChanged += new TypedEventHandler<ApplicationData, object>(DataChangeHandler);
+			//ApplicationData.Current.DataChanged += Current_DataChanged;
+			//ApplicationData.Current.DataChanged += new TypedEventHandler<ApplicationData, object>(DataChangeHandler);
+
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
-			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown; ;
+			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
 
 			texts = new Texts(LocalDataDir, Package.Current.InstalledLocation.Path);
-			SettingsPath = Path.Combine(RoamingDataDir, "settings");
+			SettingsPath = Path.Combine(LocalDataDir, "settings");
 			typingSession = new TypingSession(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
 			//text.TimeLimit = TimeSpan.FromSeconds(60);
 			typingSession.TimeChecked += Text_TimeChecked;
@@ -116,7 +117,7 @@ namespace TyperUWP
 			}
 			catch 
 			{
-				throw;
+				
 			}
 			fontCombo.SelectedItem = typingSession.Settings.FontName;
 			fontSizeTb.Text = typingSession.Settings.FontSize.ToString();
@@ -512,13 +513,25 @@ namespace TyperUWP
 			if (file != null)
 			{
 				var stream = await file.OpenStreamForWriteAsync();
-				texts.saveUserTextsAsPresets(stream);
+
+				//Todo: save complete user data (texts + records) before releasing app
+				texts.saveUserTexts(stream);
+				//texts.saveUserData(stream); 
 			}
 		}
 
-		private void TextsOptionsImport_Click(object sender, RoutedEventArgs e)
+		async private void TextsOptionsImport_Click(object sender, RoutedEventArgs e)
 		{
-
+			var fop = new FileOpenPicker();
+			fop.FileTypeFilter.Add(".tts");
+			StorageFile file = await fop.PickSingleFileAsync();
+			if (file != null)
+			{
+				var stream = await file.OpenStreamForReadAsync();
+				texts.importUserData(stream);
+				stream.Dispose();
+				selectText(texts.Current.Title);
+			}
 		}
 
 		async private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
@@ -526,7 +539,7 @@ namespace TyperUWP
 			var uri = new Uri("ms-appx:///presets.tts");
 			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
 			var stream = await sampleFile.OpenStreamForReadAsync();
-			texts.restorePresets(stream);
+			texts.importUserData(stream);
 			stream.Dispose();
 			selectText(texts.Current.Title);
 		}

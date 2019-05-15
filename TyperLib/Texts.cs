@@ -75,7 +75,7 @@ namespace TyperLib
 			{
 				using (var stream = File.Open(tempPath, FileMode.Create))
 				{
-					saveStream(stream, userData);
+					saveUserData(stream, userData);
 				}
 			}
 			catch
@@ -87,18 +87,24 @@ namespace TyperLib
 			File.Move(tempPath, userDataPath);
 		}
 
-		public void saveUserTextsAsPresets(Stream stream)
+		public void saveUserTexts(Stream stream)
 		{
 			var data = new UserData();
 			data.TextEntries = userData.TextEntries;
-			saveStream(stream, data);
+			saveUserData(stream, data);
 		}
 
-		void saveStream(Stream stream, UserData data)
+		void saveUserData(Stream stream, UserData data)
 		{
 			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
 			dcs.WriteObject(stream, userData);
 		}
+
+		public void saveUserData(Stream stream)
+		{
+			saveUserData(stream, userData);
+		}
+
 
 		public void add(TextEntry entry)
 		{
@@ -226,11 +232,11 @@ namespace TyperLib
 			remove(Current.Title);
 		}
 
-		public void restorePresets(Stream stream)
+		public void importUserData(Stream stream)
 		{
 			loadUserData(stream);
 			saveUserData();
-			Current = userData.TextEntries.ElementAt(userData.TextEntries.indexOf(Current.Title));
+			select(Current.Title);
 		}
 	}
 
