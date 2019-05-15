@@ -73,5 +73,20 @@ namespace TyperUWP
 			errorText.Text = error;
 			errorFlyout.ShowAt(entry);
 		}
+
+		private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+		{
+			updateCharCountText();
+		}
+
+		private void TextTb_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			updateCharCountText();			
+		}
+
+		private void updateCharCountText()
+		{
+			textCharCount.Text = textTb.Text.Length + " characters";
+		}
 	}
 }

@@ -10,6 +10,7 @@
     PrimaryButtonText="Save"
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
 	CloseButtonText="Cancel"
+	Opened="ContentDialog_Opened"
 	>
 
 	<StackPanel Width="600">
@@ -19,6 +20,7 @@
 			</Flyout>
 		</FlyoutBase.AttachedFlyout>
 		<TextBox x:Name="titleTb" Header="Title" Grid.Column="1" MaxLength="40"/>
-		<TextBox x:Name="textTb" Header="Text" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="280"/>
+		<TextBox x:Name="textTb" Header="Text" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="280" TextChanged="TextTb_TextChanged"/>
+		<TextBlock x:Name="textCharCount"/>
 	</StackPanel>
 </ContentDialog>
