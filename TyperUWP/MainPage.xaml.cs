@@ -511,7 +511,7 @@ namespace TyperUWP
 			var stream = await sampleFile.OpenStreamForReadAsync();
 			texts.restorePresets(stream);
 			stream.Dispose();
-
+			selectText(texts.Current.Title);
 		}
 	}
 }

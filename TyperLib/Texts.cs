@@ -229,6 +229,8 @@ namespace TyperLib
 		public void restorePresets(Stream stream)
 		{
 			loadUserData(stream);
+			saveUserData();
+			Current = userData.TextEntries.ElementAt(userData.TextEntries.indexOf(Current.Title));
 		}
 	}
 
