@@ -27,6 +27,7 @@ namespace TyperLib
 				text = text.Replace('\n', ' ');
 				text = text.Replace('\r', ' ');
 				text = text.Replace('\t', ' ');
+				text = text.Replace('“', '"');
 				text = text.Replace((char)160, ' '); //Convert non-breaking space to regular space
 				text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen to two ascii hyphens
 				text = text.Trim();

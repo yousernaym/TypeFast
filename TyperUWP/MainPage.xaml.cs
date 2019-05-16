@@ -514,7 +514,7 @@ namespace TyperUWP
 			{
 				var stream = await file.OpenStreamForWriteAsync();
 
-				//Todo: save complete user data (texts + records) before releasing app
+				//Todo: save complete user data (texts + records) before releasing app (or not?)
 				texts.saveUserTexts(stream);
 				//texts.saveUserData(stream); 
 			}

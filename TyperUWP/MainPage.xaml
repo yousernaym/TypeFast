@@ -14,7 +14,7 @@
 	<Page.Resources>
 		<local:TimeLimitConverter x:Key="TimeLimitConverter"/>
 		<Style TargetType="FlyoutPresenter" x:Key="flyoutStyle">
-			<Setter Property="MaxWidth" Value="1000" />
+			<Setter Property="MaxWidth" Value="2000" />
 			<!--<Setter Property="Padding" Value="4" />-->
 			<!--<Setter Property="Background" Value="Blue" />-->
 
