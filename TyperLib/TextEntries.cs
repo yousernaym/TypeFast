@@ -53,9 +53,15 @@ namespace TyperLib
 	{
 		public string Title { get; set; }
 		public string Text { get; set; }
-		public TextEntry()
+		public TextEntry(TextEntry source = null)
 		{
-			Title = Text = "";
+			if (source == null)
+				Title = Text = "";
+			else
+			{
+				Title = source.Title;
+				Text = source.Text;
+			}
 		}
 
 		public TextEntry(string title, string text)

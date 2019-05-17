@@ -4,35 +4,39 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Threading;
+using System.Text;
+using System.Linq;
 
 namespace TyperLib
 {
 	abstract public class TypingSession
 	{
+		enum RndEntity { Chars, Words, Lines, None};
 		const uint KeyCode_Enter = 13;
 		const uint KeyCode_Backspace = 8;
 		const uint KeyCode_Escape = 27;
 
 		TextEntry textEntry = new TextEntry();
+		string[] rndElements = null;
+		int rndWordLength;
+		
 		public TextEntry TextEntry
 		{
 			get => textEntry;
 			set
 			{
-				textEntry = value;
-				if (value == null)
-					textEntry = new TextEntry();
+				textEntry = new TextEntry(value);
 
-				//Change characters to space
-				text = text.Replace('\n', ' ');
+				//Replace whitespace with space
 				text = text.Replace('\r', ' ');
 				text = text.Replace('\t', ' ');
+				text = text.Replace((char)160, ' '); //Convert non-breaking space to regular space
+
 				text = text.Replace('“', '"');
 				text = text.Replace('”', '"');
 				text = text.Replace('‘', '\'');
 				text = text.Replace('’', '\'');
 
-				text = text.Replace((char)160, ' '); //Convert non-breaking space to regular space
 				text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen to two ascii hyphens
 				text = text.Trim();
 
@@ -40,7 +44,26 @@ namespace TyperLib
 				Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
 				text = regex.Replace(text, " ");
 
+				//Replace repeating line breaks with single break
+				regex = new Regex("[\n]{2,}", RegexOptions.None);
+				text = regex.Replace(text, " ");
+
+				rndWordLength = -1; //-1 means a space is inserted  between everry element
+				if (text.StartsWith("__rnd__"))
+				{
+					text = text.Replace(" ", "");
+					text = text.Replace("\n", "");
+					rndElements = text.Substring(7).Select(x => x.ToString()).ToArray();
+					rndWordLength = 0; //0 means a space is inserted between a random number of elements
+				}
+				else if (text.StartsWith("__rndws__"))
+					rndElements = text.Substring(9).Split(' ', '\n');
+				else if (text.StartsWith("__rndbr__"))
+					rndElements = text.Substring(9).Split('\n');
+								
 				reset();
+				text = text.Replace('\n', ' ');
+
 			}
 		}
 
@@ -202,6 +225,21 @@ namespace TyperLib
 			writtenChars = new LinkedList<Tuple<bool, char>>();
 			CorrectChars = IncorrectChars = TotalIncorrectChars = 0;
 			currentCharIndex = 0;
+
+			if (rndElements != null)
+			{
+				var rnd = new Random();
+				var sb = new StringBuilder();
+				while (sb.Length < 10000)
+				{
+					if (rndWordLength == 0)
+						rndWordLength = rnd.Next(1, 7);
+					sb.Append(rndElements[rnd.Next(rndElements.Length)]);
+					if (--rndWordLength <= 0)
+						sb.Append(' ');
+				}
+				text = sb.ToString();
+			}
 		}
 	}
 }
