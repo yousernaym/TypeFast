@@ -308,6 +308,11 @@ namespace TyperUWP
 		private void TimeLimitFlyout_Closed(object sender, object e)
 		{
 			dialogOpen = false;
+			if (typingSession.TimeLimit.TotalSeconds < 30)
+			{
+				timeLimitTb.Text = "00:30";
+				typingSession.TimeLimit = TimeSpan.FromSeconds(30);
+			}
 			reset();
 		}
 
