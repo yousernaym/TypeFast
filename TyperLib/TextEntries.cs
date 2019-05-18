@@ -8,7 +8,7 @@ namespace TyperLib
 {
 	internal class TextEntries : IEnumerable<TextEntry>
 	{
-		SortedDictionary<string, TextEntry> entries = new SortedDictionary<string, TextEntry>();
+		SortedDictionary<string, TextEntry> entries = new SortedDictionary<string, TextEntry>(StringComparer.InvariantCultureIgnoreCase);
 		public int Count => entries.Count;
 		internal void add(TextEntry entry)
 		{

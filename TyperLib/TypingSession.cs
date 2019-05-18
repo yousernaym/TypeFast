@@ -17,7 +17,7 @@ namespace TyperLib
 		const uint KeyCode_Escape = 27;
 
 		TextEntry textEntry = new TextEntry();
-		string[] rndElements = null;
+		string[] rndElements;
 		int rndWordLength;
 		
 		public TextEntry TextEntry
@@ -48,6 +48,7 @@ namespace TyperLib
 				regex = new Regex("[\n]{2,}", RegexOptions.None);
 				text = regex.Replace(text, " ");
 
+				rndElements = null;
 				rndWordLength = -1; //-1 means a space is inserted  between everry element
 				if (text.StartsWith("__rnd__"))
 				{
@@ -60,7 +61,7 @@ namespace TyperLib
 					rndElements = text.Substring(9).Split(' ', '\n');
 				else if (text.StartsWith("__rndbr__"))
 					rndElements = text.Substring(9).Split('\n');
-								
+							
 				reset();
 				text = text.Replace('\n', ' ');
 

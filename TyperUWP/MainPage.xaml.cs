@@ -146,7 +146,7 @@ namespace TyperUWP
 		private void Text_Finished(object sender, EventArgs e)
 		{
 			if (texts.Current != null)
-				texts.addRecord(typingSession.Wpm, typingSession.Accuracy, texts.Current.Title);
+				texts.addRecord(typingSession.Wpm, typingSession.Accuracy, typingSession.ElapsedTime, texts.Current.Title);
 		}
 
 		private async void Text_TimeChecked(object sender, EventArgs e)

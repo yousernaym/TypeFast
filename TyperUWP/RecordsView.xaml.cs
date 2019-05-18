@@ -26,10 +26,11 @@ namespace TyperUWP
 		const int
 			NumRecords = 6,
 			Rows = NumRecords + 1,
-			Columns = 3,
+			Columns = 4,
 			WpmCol = 0,
 			AccCol = 1,
-			TextCol = 2;
+			TimeCol = 2,
+			TextCol = 3;
 		
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
 		RecordType currentRecordType = RecordType.RT_ALL;
@@ -79,6 +80,7 @@ namespace TyperUWP
 			}
 			table.getCell<TextBlock>(0, WpmCol).Text = "WPM";
 			table.getCell<TextBlock>(0, AccCol).Text = "Acc %";
+			table.getCell<TextBlock>(0, TimeCol).Text = "Time";
 			table.getCell<TextBlock>(0, TextCol).Text = "Text";
 		}
 
@@ -104,6 +106,10 @@ namespace TyperUWP
 				{
 					table.getCell<TextBlock>(i + 1, WpmCol).Text = records[i].WPM.ToString();
 					table.getCell<TextBlock>(i + 1, AccCol).Text = records[i].Accuracy.ToString("0.0");
+					var format = "m\\:ss";
+					if (records[i].Time.TotalSeconds < 10)
+						format += "\\.ff";
+					table.getCell<TextBlock>(i + 1, TimeCol).Text = records[i].Time.ToString(format);
 					setLinkText(table.getCell<TextBlock>(i + 1, TextCol), records[i].TextTitle);
 				}
 				else
