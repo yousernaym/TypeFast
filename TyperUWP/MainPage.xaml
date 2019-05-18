@@ -88,14 +88,14 @@
 									<Button x:Name="textColorBtn" Margin="10,0,0,0" Background="White"  Width="40" Height="30">
 										<Button.Flyout>
 											<Flyout>
-													<ColorPicker x:Name="textColorPicker" Color="{x:Bind typingSession.Settings.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
+													<ColorPicker x:Name="textColorPicker" Color="{x:Bind typingSession.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
 											</Flyout>
 										</Button.Flyout>
 									</Button>
 									<Button x:Name="textBkgColorBtn" Background="Black" Width="40" Height="30">
 										<Button.Flyout>
 											<Flyout>
-													<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind typingSession.Settings.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
+													<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind typingSession.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
 											</Flyout>
 										</Button.Flyout>
 									</Button>
@@ -113,7 +113,7 @@
 			</Grid>
 			<StackPanel Background="#ff001144" CornerRadius="5" Padding="0,0,0,0" Margin="0,0,0,0" HorizontalAlignment="Center" Orientation="Horizontal">
 				<AppBarButton Icon="Refresh" x:Name="restartBtn" Label="Restart" Click="RestartBtn_Click" AllowFocusOnInteraction="False" IsTabStop="True" Margin="0,0,0,0" HorizontalAlignment="Center"/>
-				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="True" VerticalAlignment="Center" IsChecked="{x:Bind typingSession.Settings.Shuffle, Mode=TwoWay}"/>
+				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="True" VerticalAlignment="Center" IsChecked="{x:Bind typingSession.Shuffle, Mode=TwoWay}"/>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0" >
 				<AutoSuggestBox x:Name="textsAsb" IsTabStop="False" Width="300" PlaceholderText="" Header="Text list" AccessKey="L" TextChanged="TextsASB_TextChanged" QuerySubmitted="TextsAsb_QuerySubmitted" SuggestionChosen="TextsAsb_SuggestionChosen" GotFocus="TextsAsb_GotFocus" LostFocus="TextsAsb_LostFocus" />

@@ -41,6 +41,7 @@ namespace TyperUWP
 		readonly string LocalDataDir = ApplicationData.Current.LocalFolder.Path;
 		readonly string SettingsPath;
 		TypingSession typingSession;
+		TypingSessionView typingSessionView;
 		Texts texts;
 		private bool dialogOpen = false;
 
@@ -62,23 +63,25 @@ namespace TyperUWP
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
-
 			texts = new Texts(LocalDataDir, Package.Current.InstalledLocation.Path);
 			SettingsPath = Path.Combine(LocalDataDir, "settings");
-			typingSession = new TypingSession(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl);
+
+			typingSession = new TypingSession();
+			typingSessionView = new TypingSessionView(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, typingSession);
 			//text.TimeLimit = TimeSpan.FromSeconds(60);
 			typingSession.TimeChecked += Text_TimeChecked;
 			typingSession.Finished += Text_Finished;
 			//text.Foreground = Colors.White;
 			//text.Background = Colors.Black;
-			textColorBtn.Background = typingSession.Settings.ForegroundBrush;
-			textBkgColorBtn.Background = typingSession.Settings.BackgroundBrush;
-			typingSession.Settings.FontSize = 50;
+			textColorBtn.Background = typingSession.ForegroundBrush;
+			textBkgColorBtn.Background = typingSession.BackgroundBrush;
+			typingSession.FontSize = 50;
 			selectText(null);  //Select random text
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
 			foreach (string font in fonts)
 				fontCombo.Items.Add(font);
+			//saveSettings();
 			loadSettings();
 		}
 
@@ -93,8 +96,8 @@ namespace TyperUWP
 			{
 				using (var stream = File.Open(SettingsPath, FileMode.Create))
 				{
-					var dcs = new DataContractSerializer(typeof(TypingSessionSettings), TypingSessionSettings.SerializeTypes);
-					dcs.WriteObject(stream, typingSession.Settings);
+					var dcs = new DataContractSerializer(typeof(TypingSession), TypingSession.SerializeTypes);
+					dcs.WriteObject(stream, typingSession);
 				}
 			}
 			catch 
@@ -106,22 +109,24 @@ namespace TyperUWP
 
 		private void loadSettings()
 		{
+			TypingSession session;
 			try
 			{
 				using (var stream = File.Open(SettingsPath, FileMode.Open))
 				{
-					var dcs = new DataContractSerializer(typeof(TypingSessionSettings), TypingSessionSettings.SerializeTypes);
-					var settings = (TypingSessionSettings)dcs.ReadObject(stream);
-					typingSession.Settings = settings;
+					var dcs = new DataContractSerializer(typeof(TypingSession), TypingSession.SerializeTypes);
+					session = (TypingSession)dcs.ReadObject(stream);
 				}
 			}
 			catch 
 			{
-				
+				return;
 			}
-			fontCombo.SelectedItem = typingSession.Settings.FontName;
-			fontSizeTb.Text = typingSession.Settings.FontSize.ToString();
-			selectText(typingSession.Settings.StartText);
+			typingSession = session;
+			fontCombo.SelectedItem = typingSession.FontName;
+			fontSizeTb.Text = typingSession.FontSize.ToString();
+			if (texts.containsTitle(typingSession.StartText))
+				selectText(typingSession.StartText);
 		}
 
 		private void DataChangeHandler(ApplicationData sender, object args)
@@ -196,7 +201,7 @@ namespace TyperUWP
 			if (!typingSession.typeChar(args.KeyCode))
 				return;
 			focusOnTyping();
-			typingSession.draw();
+			typingSessionView.draw();
 			updateTypingStats();
 		}
 
@@ -214,7 +219,7 @@ namespace TyperUWP
 
 		private void clickResetBtn()
 		{
-			if (typingSession.Settings.Shuffle)
+			if (typingSession.Shuffle)
 				selectText(null);
 			else
 				reset();
@@ -371,7 +376,7 @@ namespace TyperUWP
 
 		private void FontCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			typingSession.Settings.FontName = (string)fontCombo.SelectedItem;
+			typingSession.FontName = (string)fontCombo.SelectedItem;
 		}
 
 		private void FontSizeTb_TextChanged(object sender, TextChangedEventArgs e)
@@ -380,7 +385,7 @@ namespace TyperUWP
 			{
 				int size = int.Parse(fontSizeTb.Text);
 				if (size > 0)
-					typingSession.Settings.FontSize = size;
+					typingSession.FontSize = size;
 			}
 		}
 

@@ -6,12 +6,14 @@ using System.Diagnostics;
 using System.Threading;
 using System.Text;
 using System.Linq;
+using System.Runtime.Serialization;
 
 namespace TyperLib
 {
+	[Serializable]
 	public class TypingSession
 	{
-		enum RndEntity { Chars, Words, Lines, None};
+		enum RndEntity { Chars, Words, Lines, None };
 		const uint KeyCode_Enter = 13;
 		const uint KeyCode_Backspace = 8;
 		const uint KeyCode_Escape = 27;
@@ -19,7 +21,12 @@ namespace TyperLib
 		TextEntry textEntry = new TextEntry();
 		string[] rndElements;
 		int rndWordLength;
-		
+
+		public string StartText { get; private set; }
+		public bool Shuffle { get; set; } = true;
+		public TimeSpan TimeLimit { get; set; } = new TimeSpan(0, 1, 0);
+
+
 		public TextEntry TextEntry
 		{
 			get => textEntry;
@@ -61,7 +68,7 @@ namespace TyperLib
 					rndElements = text.Substring(9).Split(' ', '\n');
 				else if (text.StartsWith("__rndbr__"))
 					rndElements = text.Substring(9).Split('\n');
-							
+
 				reset();
 				text = text.Replace('\n', ' ');
 
@@ -75,9 +82,9 @@ namespace TyperLib
 		}
 
 		protected int currentCharIndex;
-		protected const int NumCharsFromCenter = 100;
+		public const int NumCharsFromCenter = 100;
 		protected int startDrawChar => Math.Max(currentCharIndex - NumCharsFromCenter, 0);
-		protected LinkedList<Tuple<bool, char>> writtenChars;
+		public LinkedList<Tuple<bool, char>> WrittenChars { get; private set; }
 		public int CorrectChars { get; private set; } = 0;
 		public int IncorrectChars { get; private set; } = 0;
 		public int TotalIncorrectChars { get; private set; } = 0;
@@ -89,7 +96,7 @@ namespace TyperLib
 			{
 				//If last typed chasactes was incorrect, don't apply WPM penalty for that character. Only apply pehalty if user keeps going without fixing.
 				var adjustedIncorrectChars = IncorrectChars;
-				if (IncorrectChars > 0 && !writtenChars.First.Value.Item1)
+				if (IncorrectChars > 0 && !WrittenChars.First.Value.Item1)
 					adjustedIncorrectChars--;
 
 				return Math.Max((int)((CorrectChars - adjustedIncorrectChars * 3) / ElapsedTime.TotalMinutes), 0) / 5;
@@ -99,7 +106,7 @@ namespace TyperLib
 		{
 			get
 			{
-				float totalChars = (float)(writtenChars.Count);
+				float totalChars = (float)(WrittenChars.Count);
 				if (totalChars == 0)
 					return 0;
 
@@ -109,7 +116,6 @@ namespace TyperLib
 			}
 		}
 		Stopwatch stopwatch = new Stopwatch();
-		public TimeSpan TimeLimit { get; set; } = new TimeSpan(0, 1, 0);
 		public TimeSpan RemainingTime
 		{
 			get
@@ -122,7 +128,7 @@ namespace TyperLib
 			}
 		}
 		public string RemainingTimeString => RemainingTime.Minutes + ":" + RemainingTime.Seconds.ToString("d2");
-			
+
 		public TimeSpan ElapsedTime => stopwatch.Elapsed;
 		public bool IsTextFinished => currentCharIndex >= text.Length;
 		public bool IsFinished => IsTextFinished || RemainingTime.Ticks == 0;
@@ -132,8 +138,32 @@ namespace TyperLib
 		public event EventHandler TimeChecked;
 		public event EventHandler Finished;
 
-		protected string writtenTextToDraw => text == null ? "" : text.Substring(startDrawChar, currentCharIndex - startDrawChar);
-		protected string unwrittenTextToDraw => text == null ? "" : text.Substring(currentCharIndex, Math.Min(text.Length - currentCharIndex, NumCharsFromCenter));
+		//public string WrittenTextToDraw => text == null ? "" : text.Substring(startDrawChar, currentCharIndex - startDrawChar);
+		public string UnwrittenTextToDraw => text == null ? "" : text.Substring(currentCharIndex, Math.Min(text.Length - currentCharIndex, NumCharsFromCenter));
+
+		public TypingSession()
+		{
+
+		}
+
+		public TypingSession(SerializationInfo info, StreamingContext context)
+		{
+			foreach (var entry in info)
+			{
+				if (entry.Name == "startText")
+				{
+					StartText = (string)entry.Value;
+					Shuffle = StartText == null;
+				}
+				else if (entry.Name == "timeLimit")
+					TimeLimit = (TimeSpan)entry.Value;
+			}
+		}
+		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("startText", Shuffle ? null : TextEntry.Title);
+			info.AddValue("timeLimit", TimeLimit);
+		}
 
 		protected virtual void OnTimeChecked()
 		{
@@ -181,17 +211,17 @@ namespace TyperLib
 					return false;
 
 				currentCharIndex--;
-				if (writtenChars.First.Value.Item1) 
+				if (WrittenChars.First.Value.Item1)
 					CorrectChars--; //Correct char deleted
 				else
 					IncorrectChars--; //Inorrect char deleted
-				writtenChars.RemoveFirst();
+				WrittenChars.RemoveFirst();
 			}
 			else //Not backspace
 			{
 				char currentChar = text[currentCharIndex++];
 				bool isCorrect = currentChar == c;
-				writtenChars.AddFirst(new Tuple<bool, char>(isCorrect, currentChar));
+				WrittenChars.AddFirst(new Tuple<bool, char>(isCorrect, currentChar));
 				if (isCorrect)
 					CorrectChars++;
 				else
@@ -222,10 +252,10 @@ namespace TyperLib
 			OnTimeChecked();
 		}
 
-		protected void reset()
+		public void reset()
 		{
 			stopTime(true);
-			writtenChars = new LinkedList<Tuple<bool, char>>();
+			WrittenChars = new LinkedList<Tuple<bool, char>>();
 			CorrectChars = IncorrectChars = TotalIncorrectChars = 0;
 			currentCharIndex = 0;
 
@@ -243,6 +273,11 @@ namespace TyperLib
 				}
 				text = sb.ToString();
 			}
+		}
+
+		public virtual void applyStyle()
+		{
+
 		}
 	}
 }

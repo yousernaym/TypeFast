@@ -28,6 +28,8 @@ namespace TyperLib
 
 		internal bool containsKey(string title)
 		{
+			if (title == null)
+				return false;
 			return entries.ContainsKey(title);
 		}
 
