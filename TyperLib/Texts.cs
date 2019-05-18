@@ -40,8 +40,7 @@ namespace TyperLib
 			if (presetsDir != null)
 				presetsPath = Path.Combine(presetsDir, "presets.typertexts");
 			//saveUserData();
-			//loadUserData(presetsPath);
-			
+						
 			if (File.Exists(userDataPath))
 				loadUserData(userDataPath);
 			else if (File.Exists(presetsPath))
@@ -61,15 +60,18 @@ namespace TyperLib
 		public void loadUserData(Stream stream)
 		{
 			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
-			var data = (UserData)dcs.ReadObject(stream);
-			foreach (var text in data.TextEntries)
-				userData.TextEntries.add(text);
-			foreach (var rec in data.Records)
-				userData.Records.Add(rec);
+			userData = (UserData)dcs.ReadObject(stream);
+			
+			//foreach (var text in data.TextEntries)
+			//	userData.TextEntries.add(text);
+			//foreach (var rec in data.Records)
+			//	userData.Records.Add(rec);
 		}
 
 		public void saveUserData()
 		{
+			if (userDataPath == null)
+				return;
 			string tempPath = userDataPath + "_";
 			try
 			{
@@ -97,7 +99,7 @@ namespace TyperLib
 		void saveUserData(Stream stream, UserData data)
 		{
 			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
-			dcs.WriteObject(stream, userData);
+			dcs.WriteObject(stream, data);
 		}
 
 		public void saveUserData(Stream stream)
@@ -183,9 +185,14 @@ namespace TyperLib
 			return Current;
 		}
 
-		public void addRecord(int wpm, float accuracy, TimeSpan time, string title)
+		public void addRecord(TypingSession session)
 		{
-			userData.Records.Add(new Record(wpm, accuracy, time, title));
+			addRecord(new Record(session.Wpm, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, Current.Text.Length));
+		}
+
+		public void addRecord(Record rec)
+		{
+			userData.Records.Add(rec);
 			saveUserData();
 		}
 
@@ -193,18 +200,15 @@ namespace TyperLib
 		{
 			Record[] records = new Record[userData.Records.Count];
 			userData.Records.CopyTo(records);
-			if (type == RecordType.RT_WorstTexts)
-				Array.Sort(records, Record.reverseSort);
-			else
-				Array.Sort(records);
+			Array.Sort(records);
 
 			if (type != RecordType.RT_ALL)
 			{
 				var dict = new Dictionary<string, Record>();
 				foreach (var rec in records)
 				{
-					//Add record to dictionary if it doesn't already contain a record with this text title or if its recorD with this text title has a lower wpm
-					if (!dict.ContainsKey(rec.TextTitle) || dict[rec.TextTitle].WPM < rec.WPM)
+					//Add record to dictionary if it doesn't already contain a record with this text title
+					if (!dict.ContainsKey(rec.TextTitle))
 						dict[rec.TextTitle] = rec;
 				}
 				records = new Record[dict.Count];
@@ -236,7 +240,10 @@ namespace TyperLib
 		{
 			loadUserData(stream);
 			saveUserData();
-			select(Current.Title);
+
+			//Update text of current selection in case it was altered
+			if (Current != null)
+				select(Current.Title);
 		}
 	}
 

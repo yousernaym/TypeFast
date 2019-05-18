@@ -116,6 +116,7 @@ namespace TyperUWP
 				{
 					table.getCell<TextBlock>(i + 1, WpmCol).Text = "";
 					table.getCell<TextBlock>(i + 1, AccCol).Text = "";
+					table.getCell<TextBlock>(i + 1, TimeCol).Text = "";
 					setLinkText(table.getCell<TextBlock>(i + 1, TextCol), "");
 				}
 			}

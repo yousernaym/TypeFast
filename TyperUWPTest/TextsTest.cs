@@ -20,12 +20,12 @@ namespace TyperUWPTest
         public void getRecords()
         {
 			var time = TimeSpan.FromSeconds(60);
-			texts.addRecord(100, 90, time, "title1");
-			texts.addRecord(50, 95, time, "title2");
-			texts.addRecord(50, 100, time, "title4");
-			texts.addRecord(200, 10, time, "title3");
-			texts.addRecord(250, 50, time, "title3");
-			texts.addRecord(250, 50, time + TimeSpan.FromSeconds(1), "title3");
+			texts.addRecord(new Record(100, 90, time, "title1", false, 0));
+			texts.addRecord(new Record(50, 95, time, "title2", false, 0));
+			texts.addRecord(new Record(50, 100, time, "title4", false, 0));
+			texts.addRecord(new Record(200, 10, time, "title3", false, 0));
+			texts.addRecord(new Record(250, 50, time, "title3", false, 0));
+			texts.addRecord(new Record(250, 50, time + TimeSpan.FromSeconds(1), "title3", false, 0));
 			
 			//Get 3 records
 			var records = texts.getRecords(RecordType.RT_ALL, 3);
@@ -68,27 +68,27 @@ namespace TyperUWPTest
 			}
 
 			//Check that the first (worst) 2 records are 50
-			Assert.AreEqual(records[0].WPM, 50);
-			Assert.AreEqual(records[1].WPM, 50);
+			Assert.AreEqual(50, records[0].WPM);
+			Assert.AreEqual(50, records[1].WPM);
 
 			//Check that the first (worst) record has an accuracy of 95, since 95 is lower than 100
-			Assert.AreEqual(records[0].Accuracy, 95);
+			Assert.AreEqual(95, records[0].Accuracy);
 			//Check that the second worst record has an accuracy of 100
-			Assert.AreEqual(records[1].Accuracy, 100);
+			Assert.AreEqual(100, records[1].Accuracy);
 
 			//Get all records, highest to lowest
 			records = texts.getRecords(RecordType.RT_ALL, 0);
 			//Check that we got all 6
 			Assert.IsTrue(records.Length == 6);
 			//Check that last 2 records are 50
-			Assert.AreEqual(records[3].WPM, 50);
-			Assert.AreEqual(records[4].WPM, 50);
+			Assert.AreEqual(50, records[4].WPM);
+			Assert.AreEqual(50, records[5].WPM);
 			//Check that the second last record has an accuracy of 100
-			Assert.AreEqual(records[3].Accuracy, 100);
+			Assert.AreEqual(100, records[4].Accuracy);
 			//Check that the last record has an accuracy of 95, since 95 is lower than 100
-			Assert.AreEqual(records[4].Accuracy, 95);
+			Assert.AreEqual(95, records[5].Accuracy);
 			//Check that the first record has a time of 61 since 61 is greater than 60
-			Assert.AreEqual(records[0].Time, TimeSpan.FromSeconds(61));
+			Assert.AreEqual(TimeSpan.FromSeconds(61), records[0].Time);
 		}
 	}
 }

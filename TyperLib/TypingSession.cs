@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace TyperLib
 {
-	abstract public class TypingSession
+	public class TypingSession
 	{
 		enum RndEntity { Chars, Words, Lines, None};
 		const uint KeyCode_Enter = 13;
@@ -124,8 +124,10 @@ namespace TyperLib
 		public string RemainingTimeString => RemainingTime.Minutes + ":" + RemainingTime.Seconds.ToString("d2");
 			
 		public TimeSpan ElapsedTime => stopwatch.Elapsed;
-		public bool IsFinished => RemainingTime.Ticks == 0 || currentCharIndex >= text.Length;
+		public bool IsTextFinished => currentCharIndex >= text.Length;
+		public bool IsFinished => IsTextFinished || RemainingTime.Ticks == 0;
 		public bool IsRunning => stopwatch.IsRunning;
+
 		Timer checkTimeTimer;
 		public event EventHandler TimeChecked;
 		public event EventHandler Finished;

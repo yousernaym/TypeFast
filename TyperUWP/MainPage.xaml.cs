@@ -146,7 +146,7 @@ namespace TyperUWP
 		private void Text_Finished(object sender, EventArgs e)
 		{
 			if (texts.Current != null)
-				texts.addRecord(typingSession.Wpm, typingSession.Accuracy, typingSession.ElapsedTime, texts.Current.Title);
+				texts.addRecord(typingSession);
 		}
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
@@ -521,6 +521,7 @@ namespace TyperUWP
 
 				//Todo: save complete user data (texts + records) before releasing app (or not?)
 				texts.saveUserTexts(stream);
+				stream.Dispose();
 				//texts.saveUserData(stream); 
 			}
 		}
@@ -533,9 +534,16 @@ namespace TyperUWP
 			if (file != null)
 			{
 				var stream = await file.OpenStreamForReadAsync();
-				texts.importUserData(stream);
+				try
+				{
+					texts.importUserData(stream);
+				}
+				catch
+				{
+					var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Incorrect file format." }.ShowAsync();
+				}
 				stream.Dispose();
-				selectText(texts.Current.Title);
+				selectText(texts.Current?.Title);
 			}
 		}
 

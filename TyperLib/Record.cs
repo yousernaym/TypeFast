@@ -11,13 +11,17 @@ namespace TyperLib
 		public float Accuracy { get; set; }
 		public TimeSpan Time { get; set; }
 		public string TextTitle { get; set; }
+		public bool IsTextFinished { get; set; }
+		public int CharCount { get; set; }
 		
-		public Record(int wpm, float accuracy, TimeSpan time, string textTitle)
+		public Record(int wpm, float accuracy, TimeSpan time, string textTitle, bool isTextFinished, int charCount)
 		{
 			WPM = wpm;
 			Accuracy = accuracy;
 			Time = time;
 			TextTitle = textTitle;
+			IsTextFinished = isTextFinished;
+			CharCount = charCount;
 		}
 
 		public Record(SerializationInfo info, StreamingContext context)
@@ -32,6 +36,8 @@ namespace TyperLib
 					Time = (TimeSpan)entry.Value;
 				else if (entry.Name == "textTitle")
 					TextTitle = (string)entry.Value;
+				else if (entry.Name == "isTextFinished")
+					IsTextFinished = (bool)entry.Value;
 			}
 		}
 
@@ -41,6 +47,7 @@ namespace TyperLib
 			info.AddValue("time", Time);
 			info.AddValue("accuracy", Accuracy);
 			info.AddValue("textTitle", TextTitle);
+			info.AddValue("isTextFinished", IsTextFinished);
 		}
 
 		public static int reverseSort(Record x, Record y)
@@ -63,10 +70,11 @@ namespace TyperLib
 					return -1;
 				else //Same accuracy, compare time
 				{
+					var reverse = IsTextFinished && rec.IsTextFinished && CharCount == rec.CharCount ? -1 : 1; //If both records finished typing the whole text and both texts have the same length, shorter times are better, otherwise worse
 					if (Time < rec.Time)
-						return 1;
+						return 1 * reverse;
 					else if (Time > rec.Time)
-						return -1;
+						return -1 * reverse;
 					return 0;
 				}
 			}
