@@ -20,7 +20,8 @@ namespace TyperLib
 
 		TextEntry textEntry = new TextEntry();
 		string[] rndElements;
-		int rndWordLength;
+		int minWordLength;
+		int maxWordLength;
 
 		public string StartText { get; private set; }
 		public bool Shuffle { get; set; } = true;
@@ -55,18 +56,23 @@ namespace TyperLib
 				text = regex.Replace(text, " ");
 
 				rndElements = null;
-				rndWordLength = -1; //-1 means a space is inserted  between everry element
-				if (text.StartsWith("__rnd__"))
+				minWordLength = maxWordLength = 1;
+				Match match;
+				if ((match = Regex.Match(text, "__rnd [0-9]-?[0-9]?__")).Success)
 				{
-					text = text.Replace(" ", "");
-					text = text.Replace("\n", "");
-					rndElements = text.Substring(7).Select(x => x.ToString()).ToArray();
-					rndWordLength = 0; //0 means a space is inserted between a random number of elements
+					if (int.TryParse(text[6].ToString(), out minWordLength))
+					{
+						if (!(text[7] == '-' && int.TryParse(text[8].ToString(), out maxWordLength)))
+							maxWordLength = minWordLength;
+						text = text.Replace(" ", "");
+						text = text.Replace("\n", "");
+						rndElements = text.Substring(match.Length).Select(x => x.ToString()).ToArray();
+					}
 				}
-				else if (text.StartsWith("__rndws__"))
-					rndElements = text.Substring(9).Split(' ', '\n');
-				else if (text.StartsWith("__rndbr__"))
-					rndElements = text.Substring(9).Split('\n');
+				else if (text.StartsWith("__rnd ws__"))
+					rndElements = text.Substring(10).Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
+				else if (text.StartsWith("__rnd br__"))
+					rndElements = text.Substring(10).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
 				reset();
 				text = text.Replace('\n', ' ');
@@ -263,12 +269,13 @@ namespace TyperLib
 			{
 				var rnd = new Random();
 				var sb = new StringBuilder();
+				int remainingCharsInWord = 0;
 				while (sb.Length < 10000)
 				{
-					if (rndWordLength == 0)
-						rndWordLength = rnd.Next(1, 7);
+					if (remainingCharsInWord == 0)
+						remainingCharsInWord = rnd.Next(minWordLength, maxWordLength + 1);
 					sb.Append(rndElements[rnd.Next(rndElements.Length)]);
-					if (--rndWordLength <= 0)
+					if (--remainingCharsInWord <= 0)
 						sb.Append(' ');
 				}
 				text = sb.ToString();

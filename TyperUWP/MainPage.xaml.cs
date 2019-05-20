@@ -525,16 +525,17 @@ namespace TyperUWP
 			{
 				var stream = await file.OpenStreamForWriteAsync();
 				stream.SetLength(0);
-				//Todo: save complete user data (texts + records) before releasing app (or not?)
 				texts.saveUserTexts(stream);
-				stream.Dispose();
+				//Todo: save complete user data (texts + records) before releasing app (or not?)
 				//texts.saveUserData(stream); 
+				stream.Dispose();
 			}
 		}
 
 		async private void TextsOptionsImport_Click(object sender, RoutedEventArgs e)
 		{
 			var fop = new FileOpenPicker();
+			//fop.FileTypeFilter.Add("*");
 			fop.FileTypeFilter.Add(".tts");
 			StorageFile file = await fop.PickSingleFileAsync();
 			if (file != null)
