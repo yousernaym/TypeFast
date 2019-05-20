@@ -64,11 +64,8 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
 			texts = new Texts(LocalDataDir, Package.Current.InstalledLocation.Path);
-			SettingsPath = Path.Combine(LocalDataDir, "settings");
+			SettingsPath = Path.Combine(RoamingDataDir, "settings");
 
-			//text.TimeLimit = TimeSpan.FromSeconds(60);
-			//text.Foreground = Colors.White;
-			//text.Background = Colors.Black;
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
 			foreach (string font in fonts)
 				fontCombo.Items.Add(font);
@@ -113,7 +110,7 @@ namespace TyperUWP
 					typingSessionView.Session = session;
 				}
 			}
-			catch (FileNotFoundException e)
+			catch (FileNotFoundException)
 			{
 				//It''s probably the first time the app is opened, meaning no settings file has been created yet.
 				//Use default settings
@@ -147,6 +144,8 @@ namespace TyperUWP
 			{
 				if (args.VirtualKey == VirtualKey.R)
 					clickResetBtn();
+				else if (args.VirtualKey == VirtualKey.T)
+					textsAsb.Focus(FocusState.Programmatic);
 			}
 		}
 
@@ -320,8 +319,7 @@ namespace TyperUWP
 				timeLimitTb.Text = "00:30";
 				typingSession.TimeLimit = TimeSpan.FromSeconds(30);
 			}
-			if (typingSession.IsRunning)
-				reset();
+			reset();
 		}
 
 		private void TimeLimitTb_CharacterReceived(UIElement sender, CharacterReceivedRoutedEventArgs args)
@@ -526,7 +524,7 @@ namespace TyperUWP
 			if (file != null)
 			{
 				var stream = await file.OpenStreamForWriteAsync();
-
+				stream.SetLength(0);
 				//Todo: save complete user data (texts + records) before releasing app (or not?)
 				texts.saveUserTexts(stream);
 				stream.Dispose();
@@ -563,6 +561,11 @@ namespace TyperUWP
 			texts.importUserData(stream);
 			stream.Dispose();
 			selectText(texts.Current.Title);
+		}
+
+		private void TextsAsb_AccessKeyInvoked(UIElement sender, AccessKeyInvokedEventArgs args)
+		{
+			textsAsb.Focus(FocusState.Programmatic);
 		}
 	}
 }

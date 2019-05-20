@@ -132,6 +132,7 @@ namespace TyperLib
 		public bool IsTextFinished => currentCharIndex >= text.Length;
 		public bool IsFinished => IsTextFinished || RemainingTime.Ticks == 0;
 		public bool IsRunning => stopwatch.IsRunning;
+		public bool IsReset => !IsFinished && !IsRunning;
 
 		Timer checkTimeTimer;
 		public event EventHandler TimeChecked;
