@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 namespace TyperLib
 {
 	[Serializable]
-	public class TypingSession
+	public class TypingSession : ISerializable
 	{
 		enum RndEntity { Chars, Words, Lines, None };
 		const uint KeyCode_Enter = 13;
@@ -25,8 +25,7 @@ namespace TyperLib
 		public string StartText { get; private set; }
 		public bool Shuffle { get; set; } = true;
 		public TimeSpan TimeLimit { get; set; } = new TimeSpan(0, 1, 0);
-
-
+		
 		public TextEntry TextEntry
 		{
 			get => textEntry;
@@ -84,7 +83,7 @@ namespace TyperLib
 		protected int currentCharIndex;
 		public const int NumCharsFromCenter = 100;
 		protected int startDrawChar => Math.Max(currentCharIndex - NumCharsFromCenter, 0);
-		public LinkedList<Tuple<bool, char>> WrittenChars { get; private set; }
+		public LinkedList<Tuple<bool, char>> WrittenChars { get; private set; } = new LinkedList<Tuple<bool, char>>();
 		public int CorrectChars { get; private set; } = 0;
 		public int IncorrectChars { get; private set; } = 0;
 		public int TotalIncorrectChars { get; private set; } = 0;
@@ -273,11 +272,6 @@ namespace TyperLib
 				}
 				text = sb.ToString();
 			}
-		}
-
-		public virtual void applyStyle()
-		{
-
 		}
 	}
 }

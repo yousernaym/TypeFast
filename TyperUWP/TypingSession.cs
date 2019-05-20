@@ -14,10 +14,11 @@ using Windows.UI.Xaml.Media;
 
 namespace TyperUWP
 {
-	public class TypingSession : TyperLib.TypingSession
+	[Serializable]
+	public class TypingSession : TyperLib.TypingSession, ISerializable
 	{
 		public static readonly Type[] SerializeTypes = new Type[] { typeof(Color) };
-
+		public TypingSessionView View { get; set; }
 		public SolidColorBrush BackgroundBrush { get; private set; }
 		public Color Background
 		{
@@ -25,7 +26,7 @@ namespace TyperUWP
 			set
 			{
 				BackgroundBrush = new SolidColorBrush(value);
-				applyStyle();
+				View?.applyStyle();
 			}
 		}
 		public SolidColorBrush ForegroundBrush { get; private set; }
@@ -35,7 +36,7 @@ namespace TyperUWP
 			set
 			{
 				ForegroundBrush = new SolidColorBrush(value);
-				applyStyle();
+				View?.applyStyle();
 			}
 		}
 		public SolidColorBrush CorrectForegroundBrush { get; private set; }
@@ -45,7 +46,7 @@ namespace TyperUWP
 			set
 			{
 				CorrectForegroundBrush = new SolidColorBrush(value);
-				applyStyle();
+				View?.applyStyle();
 			}
 		}
 
@@ -56,7 +57,7 @@ namespace TyperUWP
 			set
 			{
 				ErrorForegroundBrush = new SolidColorBrush(value);
-				applyStyle();
+				View?.applyStyle();
 			}
 		}
 
@@ -67,7 +68,7 @@ namespace TyperUWP
 			set
 			{
 				fontSize = value;
-				applyStyle();
+				View?.applyStyle();
 			}
 		}
 
@@ -78,7 +79,7 @@ namespace TyperUWP
 			set
 			{
 				FontFamily = new FontFamily(value);
-				applyStyle();
+				View?.applyStyle();
 			}
 		}
 
@@ -130,11 +131,20 @@ namespace TyperUWP
 		TextBlockEx currentCharControl;
 		TextBlock unwrittenTextControl;
 		double spaceWidth;
-		public TypingSession Session { get; set; }
+		TypingSession session;
+		public TypingSession Session
+		{
+			get => session;
+			set
+			{
+				session = value;
+				session.View = this;
+				applyStyle();
+			}
+		}
 
 		public TypingSessionView(Panel _textPanel, StackPanel writtenTextPanel, TextBlockEx _currentCharControl, TextBlock _unwrittenTextControl, TypingSession session)
 		{
-			Session = session;
 			writtenTextControls = new TextBlockEx[TypingSession.NumCharsFromCenter];
 			textPanel = _textPanel;
 			for (int i = writtenTextControls.Length - 1; i >= 0; i--)
@@ -145,6 +155,7 @@ namespace TyperUWP
 			
 			currentCharControl = _currentCharControl;
 			unwrittenTextControl = _unwrittenTextControl;
+			Session = session;
 		}
 
 		public void applyStyle()

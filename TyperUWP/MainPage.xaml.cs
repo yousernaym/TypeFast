@@ -40,8 +40,8 @@ namespace TyperUWP
 		readonly string RoamingDataDir = ApplicationData.Current.RoamingFolder.Path;
 		readonly string LocalDataDir = ApplicationData.Current.LocalFolder.Path;
 		readonly string SettingsPath;
-		TypingSession typingSession;
 		TypingSessionView typingSessionView;
+		TypingSession typingSession => typingSessionView.Session;
 		Texts texts;
 		private bool dialogOpen = false;
 
@@ -66,21 +66,15 @@ namespace TyperUWP
 			texts = new Texts(LocalDataDir, Package.Current.InstalledLocation.Path);
 			SettingsPath = Path.Combine(LocalDataDir, "settings");
 
-			typingSession = new TypingSession();
-			typingSessionView = new TypingSessionView(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, typingSession);
 			//text.TimeLimit = TimeSpan.FromSeconds(60);
-			typingSession.TimeChecked += Text_TimeChecked;
-			typingSession.Finished += Text_Finished;
 			//text.Foreground = Colors.White;
 			//text.Background = Colors.Black;
-			textColorBtn.Background = typingSession.ForegroundBrush;
-			textBkgColorBtn.Background = typingSession.BackgroundBrush;
-			typingSession.FontSize = 50;
-			selectText(null);  //Select random text
-
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
 			foreach (string font in fonts)
 				fontCombo.Items.Add(font);
+
+			typingSessionView = new TypingSessionView(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, new TypingSession());
+			
 			//saveSettings();
 			loadSettings();
 		}
@@ -92,18 +86,18 @@ namespace TyperUWP
 
 		private void saveSettings()
 		{
-			try
-			{
+			//try
+			//{
 				using (var stream = File.Open(SettingsPath, FileMode.Create))
 				{
 					var dcs = new DataContractSerializer(typeof(TypingSession), TypingSession.SerializeTypes);
 					dcs.WriteObject(stream, typingSession);
 				}
-			}
-			catch 
-			{
+			//}
+			//catch 
+			//{
 				
-			}
+			//}
 
 		}
 
@@ -116,17 +110,25 @@ namespace TyperUWP
 				{
 					var dcs = new DataContractSerializer(typeof(TypingSession), TypingSession.SerializeTypes);
 					session = (TypingSession)dcs.ReadObject(stream);
+					typingSessionView.Session = session;
 				}
 			}
-			catch 
+			catch (FileNotFoundException e)
 			{
-				return;
+				//It''s probably the first time the app is opened, meaning no settings file has been created yet.
+				//Use default settings
+				textColorBtn.Background = typingSession.ForegroundBrush;
+				textBkgColorBtn.Background = typingSession.BackgroundBrush;
+				typingSession.FontSize = 50;
 			}
-			typingSession = session;
 			fontCombo.SelectedItem = typingSession.FontName;
 			fontSizeTb.Text = typingSession.FontSize.ToString();
+			typingSession.TimeChecked += Text_TimeChecked;
+			typingSession.Finished += Text_Finished;
 			if (texts.containsTitle(typingSession.StartText))
-				selectText(typingSession.StartText);
+				selectText(typingSession.StartText); //Text from last time app was used
+			else
+				selectText(null); //Random text
 		}
 
 		private void DataChangeHandler(ApplicationData sender, object args)
@@ -230,7 +232,7 @@ namespace TyperUWP
 			if (dialogOpen)
 				return;
 
-			typingSession.reset();
+			typingSessionView.reset();
 			updateTypingStats();
 			//focusOnTyping();
 		}
@@ -318,7 +320,8 @@ namespace TyperUWP
 				timeLimitTb.Text = "00:30";
 				typingSession.TimeLimit = TimeSpan.FromSeconds(30);
 			}
-			reset();
+			if (typingSession.IsRunning)
+				reset();
 		}
 
 		private void TimeLimitTb_CharacterReceived(UIElement sender, CharacterReceivedRoutedEventArgs args)
