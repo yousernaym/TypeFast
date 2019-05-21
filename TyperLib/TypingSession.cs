@@ -104,7 +104,7 @@ namespace TyperLib
 				if (IncorrectChars > 0 && !WrittenChars.First.Value.Item1)
 					adjustedIncorrectChars--;
 
-				return Math.Max((int)((CorrectChars - adjustedIncorrectChars * 3) / ElapsedTime.TotalMinutes), 0) / 5;
+				return Math.Max((int)((CorrectChars - adjustedIncorrectChars * 2) / ElapsedTime.TotalMinutes), 0) / 5;
 			}
 		}
 		public float Accuracy

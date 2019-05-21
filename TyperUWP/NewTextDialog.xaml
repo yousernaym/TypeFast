@@ -13,7 +13,7 @@
 	Opened="ContentDialog_Opened"
 	>
 
-	<StackPanel Width="600">
+	<StackPanel x:Name="stackPanel" Width="600">
 		<FlyoutBase.AttachedFlyout>
 			<Flyout x:Name="errorFlyout">
 				<TextBlock x:Name="errorText" TextWrapping="Wrap" Text="Title Error"/>

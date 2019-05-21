@@ -32,8 +32,8 @@ namespace TyperUWP
 			addRow("Ctrl + F", "Change font settings.");
 			addRow("Ctrl + R", "Restart the typing session.");
 			addRow("Alt + S", "Toggle whether to select a random text when restarting the typing session.");
-			addRow("Ctrl + T", "Select text.");
-			addRow("Ctrl + N", "Add a new text.");
+			addRow("Ctrl + T", "Open text list.");
+			addRow("Ctrl + N", "Add new text.");
 			addRow("Ctrl + E", "Edit the currently selected text.");
 			addRow("Ctrl + D", "Delete the currently selected text.");
 		}

@@ -13,7 +13,7 @@
 	<Grid Background="Black" BorderThickness="1">
 		<StackPanel>
 			<StackPanel Orientation="Horizontal" Margin="15">
-				<RadioButton x:Name="allRBtn" Content="All attempts" IsChecked="True" Margin="10,0,0,0" Click="AllRBtn_Click"/>
+				<RadioButton x:Name="allRBtn" Content="Best attempts" IsChecked="True" Margin="10,0,0,0" Click="AllRBtn_Click"/>
 				<RadioButton x:Name="bestTextsRBtn" Content="Best texts" Margin="10,0,0,0" Click="BestTextsRBtn_Click"/>
 				<RadioButton x:Name="worstTextsRBtn" Content="Worst texts" Margin="10,0,0,0" Click="WorstTextsRBtn_Click" />
 			</StackPanel>

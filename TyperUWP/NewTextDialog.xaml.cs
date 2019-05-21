@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using TyperLib;
 using System.Globalization;
+using Windows.UI;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -41,7 +42,14 @@ namespace TyperUWP
 			this.InitializeComponent();
 			this.textList = textList;
 			if (edit)
+			{
+				var notes = new TextBlock();
+				notes.Text = "Editing a text will erase all associated records.";
+				notes.Margin = new Thickness(0, 10, 0, 0);
+				notes.Foreground = new SolidColorBrush(Colors.Yellow);
+				stackPanel.Children.Add(notes);
 				this.editExisting = textList.Current.Title;
+			}
 		}
 		
 		private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
