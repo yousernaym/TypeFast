@@ -8,8 +8,8 @@
     <None Update="presetTexts.typtexts.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>
-    <None Update="textToType.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Update="texts\KJV.xml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

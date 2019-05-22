@@ -74,6 +74,7 @@ namespace TyperUWP
 			
 			//saveSettings();
 			loadSettings();
+
 		}
 
 		private void Current_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
@@ -236,9 +237,15 @@ namespace TyperUWP
 			//focusOnTyping();
 		}
 
-		private void Page_Loaded(object sender, RoutedEventArgs e)
+		async private void Page_Loaded(object sender, RoutedEventArgs e)
 		{
 			currentCharControl.Focus(FocusState.Programmatic);
+
+			var uri = new Uri("ms-appx:///texts/kjv.xml");
+			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
+			var stream = await sampleFile.OpenStreamForReadAsync();
+			Bible.Init(stream);
+			stream.Dispose();
 		}
 
 		async private void TextsOptionsNew_Click(object sender, RoutedEventArgs e)
@@ -556,7 +563,7 @@ namespace TyperUWP
 
 		async private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
 		{
-			var uri = new Uri("ms-appx:///presets.tts");
+			var uri = new Uri("ms-appx:///texts/presets.tts");
 			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
 			var stream = await sampleFile.OpenStreamForReadAsync();
 			texts.importUserData(stream);
