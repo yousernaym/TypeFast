@@ -34,6 +34,28 @@ namespace TyperLib
 			{
 				textEntry = new TextEntry(value);
 
+				rndElements = null;
+				minWordLength = maxWordLength = 1;
+				Match match;
+				if ((match = Regex.Match(text, "__rnd [0-9]-?[0-9]?__")).Success)
+				{
+					if (int.TryParse(text[6].ToString(), out minWordLength))
+					{
+						if (!(text[7] == '-' && int.TryParse(text[8].ToString(), out maxWordLength)))
+							maxWordLength = minWordLength;
+						text = text.Replace(" ", "");
+						text = text.Replace("\n", "");
+						text = text.Replace("\r", "");
+						rndElements = text.Substring(match.Length).Select(x => x.ToString()).ToArray();
+					}
+				}
+				else if (text.StartsWith("__rnd ws__"))
+					rndElements = text.Substring(10).Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
+				else if (text.StartsWith("__rnd br__"))
+					rndElements = text.Substring(10).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+				//else if (text.StartsWith("__rnd bible__"))
+				//	text = Bible.getRandomText(500);
+
 				//Replace whitespace with space
 				text = text.Replace('\r', ' ');
 				text = text.Replace('\t', ' ');
@@ -54,26 +76,6 @@ namespace TyperLib
 				//Replace repeating line breaks with single break
 				regex = new Regex("[\n]{2,}", RegexOptions.None);
 				text = regex.Replace(text, " ");
-
-				rndElements = null;
-				minWordLength = maxWordLength = 1;
-				Match match;
-				if ((match = Regex.Match(text, "__rnd [0-9]-?[0-9]?__")).Success)
-				{
-					if (int.TryParse(text[6].ToString(), out minWordLength))
-					{
-						if (!(text[7] == '-' && int.TryParse(text[8].ToString(), out maxWordLength)))
-							maxWordLength = minWordLength;
-						text = text.Replace(" ", "");
-						text = text.Replace("\n", "");
-						rndElements = text.Substring(match.Length).Select(x => x.ToString()).ToArray();
-					}
-				}
-				else if (text.StartsWith("__rnd ws__"))
-					rndElements = text.Substring(10).Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
-				else if (text.StartsWith("__rnd br__"))
-					rndElements = text.Substring(10).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
 				reset();
 				text = text.Replace('\n', ' ');
 
