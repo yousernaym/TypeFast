@@ -9,22 +9,27 @@ namespace TyperLib
 {
 	static public class Bible
 	{
-		public abstract class Element<T>
+		public class ColleCtion<T>
 		{
 			Random rnd = new Random();
-			protected T content = new T;
-			Element<T> Next;
-			public Element(Element<T> previous)
+			protected List<T> items = new List<T>();
+			ColleCtion<T> Next;
+			public ColleCtion(ColleCtion<T> previous)
 			{
 				previous.Next = this;
 			}
-
-			public int getRandomIndex()
+			public T getRandom()
 			{
-				return rnd.Next(0, items.Count);
+				return items[rnd.Next(0, items.Count)];
 			}
 		}
-		public class Book : Element<Chapter>
+		public class Books : ColleCtion<Book>
+		{
+			public Books(Books previous) : base(previous)
+			{
+			}
+		}
+		public class Book : ColleCtion<Chapter>
 		{
 			public string Name { get; private set; }
 			public string ShortName { get; private set; }
@@ -40,9 +45,9 @@ namespace TyperLib
 				}
 			}
 		}
-		public class Chapter : Element<string>
+		public class Chapter : ColleCtion<Verse>
 		{
-			public List<string> Verses => items;
+			public List<Verse> Verses => items;
 			public Chapter(XElement chapterTag, Chapter previous) : base(previous)
 			{
 				foreach (var verseTag in chapterTag.Descendants("VERS"))
@@ -53,11 +58,15 @@ namespace TyperLib
 			}
 		}
 
-		public class Verse
+		public class Verse : ColleCtion<string>
 		{
-			public string Text;
-			Verse Nex
+			public string Text => items[0];
+			public Verse(string text, Verse previous) : base(previous)
+			{
+				items.Add(text);
+			}
 		}
+
 		static public List<Book> Books { get; private set; }
 		static XElement content;
 		
@@ -69,15 +78,12 @@ namespace TyperLib
 			{
 				var prevBook = Books.Count > 0 ? Books[Books.Count - 1] : null;
 				Books.Add(new Book(bookTag, prevBook));
+			}
 		}
 
 		public static string getRandomText(int numVerses)
 		{
-			var bookNumber = rnd.Next(0, Books.Count);
-			var chapterNumber = rnd.Next(0, Books.Count);
-
-			var book = Books[bookNumber];
-			var chapter = book.Chapters[)];
+			var book = Books
 			var verse = chapter.Verses[rnd.Next(0, chapter.Verses.Count)];]
 
 			StringBuilder text = "";
