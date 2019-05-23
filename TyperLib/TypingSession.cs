@@ -56,6 +56,21 @@ namespace TyperLib
 				else if (text.StartsWith("__bible__"))
 					text = Bible.getRandomText(10000);
 
+				if (rndElements != null)
+				{
+					var rnd = new Random();
+					var sb = new StringBuilder();
+					int remainingCharsInWord = 0;
+					while (sb.Length < 10000)
+					{
+						if (remainingCharsInWord == 0)
+							remainingCharsInWord = rnd.Next(minWordLength, maxWordLength + 1);
+						sb.Append(rndElements[rnd.Next(rndElements.Length)]);
+						if (--remainingCharsInWord <= 0)
+							sb.Append(' ');
+					}
+					text = sb.ToString();
+				}
 				reset();
 
 				//Replace whitespace with space
@@ -270,22 +285,6 @@ namespace TyperLib
 			WrittenChars = new LinkedList<Tuple<bool, char>>();
 			CorrectChars = IncorrectChars = TotalIncorrectChars = 0;
 			currentCharIndex = 0;
-
-			if (rndElements != null)
-			{
-				var rnd = new Random();
-				var sb = new StringBuilder();
-				int remainingCharsInWord = 0;
-				while (sb.Length < 10000)
-				{
-					if (remainingCharsInWord == 0)
-						remainingCharsInWord = rnd.Next(minWordLength, maxWordLength + 1);
-					sb.Append(rndElements[rnd.Next(rndElements.Length)]);
-					if (--remainingCharsInWord <= 0)
-						sb.Append(' ');
-				}
-				text = sb.ToString();
-			}
 		}
 	}
 }

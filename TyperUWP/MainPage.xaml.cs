@@ -44,7 +44,6 @@ namespace TyperUWP
 		TypingSession typingSession => typingSessionView.Session;
 		Texts texts;
 		bool dialogOpen = false;
-		Bible bible;
 
 		public MainPage()
 		{
@@ -72,8 +71,9 @@ namespace TyperUWP
 				fontCombo.Items.Add(font);
 
 			typingSessionView = new TypingSessionView(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, new TypingSession());
-			
+
 			//saveSettings();
+			loadSettings();
 		}
 
 		private void Current_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
@@ -230,11 +230,13 @@ namespace TyperUWP
 		{
 			if (typingSession.Shuffle)
 			{
-				//selectText(null);
-				selectText(texts.Current.Title);
+				selectText(null);
 			}
 			else
+			{
+				typingSession.TextEntry = texts.Current;
 				reset();
+			}
 		}
 
 		void reset()
@@ -247,11 +249,9 @@ namespace TyperUWP
 			//focusOnTyping();
 		}
 
-		async private void Page_Loaded(object sender, RoutedEventArgs e)
+		private void Page_Loaded(object sender, RoutedEventArgs e)
 		{
 			currentCharControl.Focus(FocusState.Programmatic);
-
-			loadSettings();
 		}
 
 		async private void TextsOptionsNew_Click(object sender, RoutedEventArgs e)
