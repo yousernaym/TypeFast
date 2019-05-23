@@ -187,7 +187,7 @@ namespace TyperLib
 
 		public void addRecord(TypingSession session)
 		{
-			addRecord(new Record(session.Wpm, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, Current.Text.Length));
+			addRecord(new Record(session.Wpm, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count));
 		}
 
 		public void addRecord(Record rec)

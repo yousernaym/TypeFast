@@ -74,8 +74,6 @@ namespace TyperUWP
 			typingSessionView = new TypingSessionView(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, new TypingSession());
 			
 			//saveSettings();
-			loadSettings();
-
 		}
 
 		private void Current_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
@@ -100,7 +98,7 @@ namespace TyperUWP
 
 		}
 
-		private void loadSettings()
+		async private void loadSettings()
 		{
 			TypingSession session;
 			try
@@ -120,6 +118,14 @@ namespace TyperUWP
 				textBkgColorBtn.Background = typingSession.BackgroundBrush;
 				typingSession.FontSize = 50;
 			}
+
+			//Load bible
+			var uri = new Uri("ms-appx:///texts/kjv.xml");
+			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
+			var xmlStream = await sampleFile.OpenStreamForReadAsync();
+			typingSession.Bible = new Bible(xmlStream);
+			xmlStream.Dispose();
+
 			fontCombo.SelectedItem = typingSession.FontName;
 			fontSizeTb.Text = typingSession.FontSize.ToString();
 			typingSession.TimeChecked += Text_TimeChecked;
@@ -223,7 +229,10 @@ namespace TyperUWP
 		private void clickResetBtn()
 		{
 			if (typingSession.Shuffle)
-				selectText(null);
+			{
+				//selectText(null);
+				selectText(texts.Current.Title);
+			}
 			else
 				reset();
 		}
@@ -242,11 +251,7 @@ namespace TyperUWP
 		{
 			currentCharControl.Focus(FocusState.Programmatic);
 
-			var uri = new Uri("ms-appx:///texts/kjv.xml");
-			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
-			var stream = await sampleFile.OpenStreamForReadAsync();
-			typingSession.Bible = new Bible(stream);
-			stream.Dispose();
+			loadSettings();
 		}
 
 		async private void TextsOptionsNew_Click(object sender, RoutedEventArgs e)

@@ -56,6 +56,8 @@ namespace TyperLib
 				else if (text.StartsWith("__bible__"))
 					text = Bible.getRandomText(10000);
 
+				reset();
+
 				//Replace whitespace with space
 				text = text.Replace('\r', ' ');
 				text = text.Replace('\t', ' ');
@@ -76,7 +78,7 @@ namespace TyperLib
 				//Replace repeating line breaks with single break
 				regex = new Regex("[\n]{2,}", RegexOptions.None);
 				text = regex.Replace(text, " ");
-				reset();
+		
 				text = text.Replace('\n', ' ');
 
 			}
