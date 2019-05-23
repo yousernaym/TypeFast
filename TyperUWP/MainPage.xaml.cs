@@ -43,7 +43,8 @@ namespace TyperUWP
 		TypingSessionView typingSessionView;
 		TypingSession typingSession => typingSessionView.Session;
 		Texts texts;
-		private bool dialogOpen = false;
+		bool dialogOpen = false;
+		Bible bible;
 
 		public MainPage()
 		{
@@ -244,7 +245,7 @@ namespace TyperUWP
 			var uri = new Uri("ms-appx:///texts/kjv.xml");
 			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
 			var stream = await sampleFile.OpenStreamForReadAsync();
-			Bible.Init(stream);
+			typingSession.Bible = new Bible(stream);
 			stream.Dispose();
 		}
 

@@ -26,7 +26,7 @@ namespace TyperLib
 		public string StartText { get; private set; }
 		public bool Shuffle { get; set; } = true;
 		public TimeSpan TimeLimit { get; set; } = new TimeSpan(0, 1, 0);
-		
+
 		public TextEntry TextEntry
 		{
 			get => textEntry;
@@ -53,8 +53,8 @@ namespace TyperLib
 					rndElements = text.Substring(10).Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
 				else if (text.StartsWith("__rnd br__"))
 					rndElements = text.Substring(10).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-				//else if (text.StartsWith("__rnd bible__"))
-				//	text = Bible.getRandomText(500);
+				else if (text.StartsWith("__bible__"))
+					text = Bible.getRandomText(10000);
 
 				//Replace whitespace with space
 				text = text.Replace('\r', ' ');
@@ -143,6 +143,8 @@ namespace TyperLib
 		public bool IsReset => !IsFinished && !IsRunning;
 
 		Timer checkTimeTimer;
+		public Bible Bible { get; set; }
+
 		public event EventHandler TimeChecked;
 		public event EventHandler Finished;
 
