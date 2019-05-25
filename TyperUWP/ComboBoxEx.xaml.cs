@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -19,6 +20,7 @@ namespace TyperUWP
 {
 	public sealed partial class ComboBoxEx : UserControl
 	{
+		bool updatingTextFromSelection;
 		IEnumerable<string> itemSource;
 		public IEnumerable<string> ItemSource
 		{
@@ -30,6 +32,14 @@ namespace TyperUWP
 			}
 		}
 
+		public string SelectedItem
+		{
+			get => (string)list.SelectedItem;
+			set => list.SelectedItem = value;
+		}
+
+		public event EventHandler SelectionSubmitted;
+		
 		public ComboBoxEx()
 		{
 			this.InitializeComponent();
@@ -37,8 +47,15 @@ namespace TyperUWP
 
 		private void TextBox_GotFocus(object sender, RoutedEventArgs e)
 		{
-			buildFilteredList();
-			Flyout.ShowAttachedFlyout(textBox);
+			//buildFilteredList();
+			list.Visibility = Visibility.Visible;
+			textBox.SelectionStart = 0;
+			textBox.SelectionLength = textBox.Text.Length;
+		}
+
+		private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+		{
+			onSelectionSubmitted();
 		}
 
 		private void buildFilteredList()
@@ -55,14 +72,50 @@ namespace TyperUWP
 			
 		}
 
-		private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
+			if (!updatingTextFromSelection)
+				buildFilteredList();
+			updatingTextFromSelection = false;
+		}
+
+		private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
+		{
+			if (e.Key == VirtualKey.Up)
+			{
+				if (list.SelectedIndex > 0)
+					list.SelectedIndex--;
+			}
+			else if (e.Key == VirtualKey.Down)
+			{
+				if (list.SelectedIndex < list.Items.Count - 1)
+					list.SelectedIndex++;
+			}
+			else if (e.Key == VirtualKey.Enter)
+				onSelectionSubmitted();
 
 		}
 
-		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+		private void List_ItemClick(object sender, ItemClickEventArgs e)
 		{
-			buildFilteredList();
+			onSelectionSubmitted();
+		}
+
+		void onSelectionSubmitted()
+		{
+			list.Visibility = Visibility.Collapsed;
+			SelectionSubmitted?.Invoke(this, new EventArgs());
+			textBox.PlaceholderText = textBox.Text;
+			textBox.Text = "";
+		}
+
+		private void List_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (list.SelectedIndex == -1)
+				return;
+			updatingTextFromSelection = true;
+			textBox.Text = SelectedItem;
+			textBox.SelectionStart = textBox.Text.Length;
 		}
 	}
 }

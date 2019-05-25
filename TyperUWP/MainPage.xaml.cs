@@ -53,7 +53,8 @@ namespace TyperUWP
 			//var exportIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEDE2" };
 			//textsOptionsExport.Icon = exportIcon;
 
-			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 500));
+			//ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 500));
+			
 			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
 			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
@@ -64,6 +65,7 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
 			texts = new Texts(LocalDataDir, Package.Current.InstalledLocation.Path);
+			textsCombo.ItemSource = texts.Titles;
 			SettingsPath = Path.Combine(RoamingDataDir, "settings");
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
@@ -580,6 +582,31 @@ namespace TyperUWP
 		private void TextsAsb_AccessKeyInvoked(UIElement sender, AccessKeyInvokedEventArgs args)
 		{
 			textsAsb.Focus(FocusState.Programmatic);
+		}
+
+		private void TextsCombo_SelectionSubmitted(object sender, EventArgs args)
+		{
+			string title = (string)((ComboBoxEx)sender).SelectedItem;
+			if (title == "")
+			{
+				focusOnTyping();
+				return;
+			}
+			if (texts.containsTitle(title))
+			{
+				focusOnTyping();
+				selectText(title);
+			}
+		}
+
+		private void TextsCombo_GotFocus(object sender, RoutedEventArgs e)
+		{
+			dialogOpen = true;
+		}
+
+		private void TextsCombo_LostFocus(object sender, RoutedEventArgs e)
+		{
+			dialogOpen = false;
 		}
 	}
 }

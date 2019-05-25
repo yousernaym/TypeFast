@@ -17,7 +17,6 @@
 			<Setter Property="MaxWidth" Value="2000" />
 			<!--<Setter Property="Padding" Value="4" />-->
 			<!--<Setter Property="Background" Value="Blue" />-->
-
 		</Style>
 	</Page.Resources>
 	
@@ -115,7 +114,8 @@
 				<AppBarButton Icon="Refresh" x:Name="restartBtn" Label="Restart" Click="RestartBtn_Click" AllowFocusOnInteraction="False" IsTabStop="True" Margin="0,0,0,0" HorizontalAlignment="Center"/>
 				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="True" VerticalAlignment="Center" IsChecked="{x:Bind typingSession.Shuffle, Mode=TwoWay}"/>
 			</StackPanel>
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0" >
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0">
+				<local:ComboBoxEx x:Name="textsCombo" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
 				<AutoSuggestBox x:Name="textsAsb" IsTabStop="False" Width="300" PlaceholderText="" Header="Text list" AccessKey="L" AccessKeyInvoked="TextsAsb_AccessKeyInvoked" TextChanged="TextsASB_TextChanged" QuerySubmitted="TextsAsb_QuerySubmitted" SuggestionChosen="TextsAsb_SuggestionChosen" GotFocus="TextsAsb_GotFocus" LostFocus="TextsAsb_LostFocus" />
 				<Button  x:Name="textsOptionsBtn" IsTabStop="True" VerticalAlignment="Bottom" >
 					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE712;"/>
@@ -145,6 +145,7 @@
 					</Button.Flyout>
 				</Button>
 			</StackPanel>
+
 			<!--<TextBlock x:Name="selectedTextTbk" Foreground="White" VerticalAlignment="Center"/>-->
 		</StackPanel>
 	</Grid>
