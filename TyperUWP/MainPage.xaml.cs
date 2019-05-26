@@ -65,7 +65,6 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
 			texts = new Texts(LocalDataDir, Package.Current.InstalledLocation.Path);
-			textsCombo.ItemSource = texts.Titles;
 			SettingsPath = Path.Combine(RoamingDataDir, "settings");
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
@@ -254,6 +253,7 @@ namespace TyperUWP
 		private void Page_Loaded(object sender, RoutedEventArgs e)
 		{
 			currentCharControl.Focus(FocusState.Programmatic);
+			textsCombo.ItemSource = texts.Titles;
 		}
 
 		async private void TextsOptionsNew_Click(object sender, RoutedEventArgs e)
@@ -465,6 +465,7 @@ namespace TyperUWP
 			typingSession.TextEntry = texts.Current;
 			textsAsb.PlaceholderText = texts.Current == null ? "" : texts.Current.Title;
 			textsAsb.Text = "";
+			textsCombo.SelectedItem = texts.Current.Title;
 			reset();
 		}
 

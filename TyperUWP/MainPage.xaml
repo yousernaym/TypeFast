@@ -9,14 +9,13 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	Loaded="Page_Loaded"
 	xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
+	Height="Auto"
 	>
 	<!--xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"-->
 	<Page.Resources>
 		<local:TimeLimitConverter x:Key="TimeLimitConverter"/>
 		<Style TargetType="FlyoutPresenter" x:Key="flyoutStyle">
 			<Setter Property="MaxWidth" Value="2000" />
-			<!--<Setter Property="Padding" Value="4" />-->
-			<!--<Setter Property="Background" Value="Blue" />-->
 		</Style>
 	</Page.Resources>
 	
@@ -27,7 +26,7 @@
 					<Button x:Name="recordsBtn" AccessKey="R" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True">
 						<FontIcon FontFamily="Webdings" FontSize="35" Glyph="&#38;"/>
 						<Button.Flyout>
-							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed" FlyoutPresenterStyle="{StaticResource flyoutStyle}">
+							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed" FlyoutPresenterStyle="{StaticResource flyoutStyle}" LightDismissOverlayMode="On">
 								<local:RecordsView x:Name="recordsView" TextTitleClick="RecordsView_TextTitleClick"/>
 							</Flyout>
 						</Button.Flyout>
@@ -37,7 +36,7 @@
 					<Button x:Name="helpBtn" AccessKey="H" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True">
 						<FontIcon FontFamily="WebDings" FontSize="35" Glyph="s"/>
 						<Button.Flyout>
-							<Flyout FlyoutPresenterStyle="{StaticResource flyoutStyle}">
+							<Flyout FlyoutPresenterStyle="{StaticResource flyoutStyle}" LightDismissOverlayMode="On">
 								<local:Help/>
 							</Flyout>
 						</Button.Flyout>
@@ -115,7 +114,7 @@
 				<AppBarToggleButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="S" Label="Shuffle" IsTabStop="True" VerticalAlignment="Center" IsChecked="{x:Bind typingSession.Shuffle, Mode=TwoWay}"/>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0">
-				<local:ComboBoxEx x:Name="textsCombo" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
+				<local:ComboBoxEx x:Name="textsCombo" MinWidth="300" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
 				<AutoSuggestBox x:Name="textsAsb" IsTabStop="False" Width="300" PlaceholderText="" Header="Text list" AccessKey="L" AccessKeyInvoked="TextsAsb_AccessKeyInvoked" TextChanged="TextsASB_TextChanged" QuerySubmitted="TextsAsb_QuerySubmitted" SuggestionChosen="TextsAsb_SuggestionChosen" GotFocus="TextsAsb_GotFocus" LostFocus="TextsAsb_LostFocus" />
 				<Button  x:Name="textsOptionsBtn" IsTabStop="True" VerticalAlignment="Bottom" >
 					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE712;"/>

@@ -7,10 +7,14 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     d:DesignHeight="300"
-    d:DesignWidth="400">
-
+    d:DesignWidth="400"
+	Loaded="UserControl_Loaded"
+	>
+	
     <StackPanel Orientation="Vertical">
-		<TextBox x:Name="textBox" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown"/>
-		<ListView x:Name="list" VerticalAlignment="Stretch" BorderBrush="LightGray" BorderThickness="1" ItemClick="List_ItemClick" SelectionChanged="List_SelectionChanged"/>
+		<Popup x:Name="listPopup" Opened="ListPopup_Opened">
+			<ListView x:Name="list" Background="Black" BorderBrush="DarkGray" BorderThickness="1" ItemClick="List_ItemClick" SelectionChanged="List_SelectionChanged"/>
+		</Popup>
+		<TextBox x:Name="textBox" Height="Auto" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown"/>
 	</StackPanel>
 </UserControl>

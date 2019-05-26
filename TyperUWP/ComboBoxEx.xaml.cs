@@ -20,7 +20,8 @@ namespace TyperUWP
 {
 	public sealed partial class ComboBoxEx : UserControl
 	{
-		bool updatingTextFromSelection;
+		bool updatingText;
+		bool programmaticItemSelection;
 		IEnumerable<string> itemSource;
 		public IEnumerable<string> ItemSource
 		{
@@ -28,14 +29,34 @@ namespace TyperUWP
 			set
 			{
 				itemSource = value;
-				buildFilteredList();
+				buildFilteredList("");
 			}
 		}
 
+		string selectedItem;
 		public string SelectedItem
 		{
-			get => (string)list.SelectedItem;
-			set => list.SelectedItem = value;
+			get => selectedItem == null ? "" : selectedItem;
+			set
+			{
+				selectedItem = value;
+				list.SelectionChanged -= List_SelectionChanged;
+				list.SelectedItem = value;
+				list.SelectionChanged += List_SelectionChanged;
+				if (value != null)
+					list.ScrollIntoView(selectedItem, ScrollIntoViewAlignment.Default);
+			}
+		}
+
+		public int SelectedIndex
+		{
+			get => list.SelectedIndex;
+			set
+			{
+				SelectedItem = (string)list.Items[value];
+				//list.SelectedIndex = value;
+				//list.SelectedItem = list.SelectedItem;
+			}
 		}
 
 		public event EventHandler SelectionSubmitted;
@@ -48,9 +69,13 @@ namespace TyperUWP
 		private void TextBox_GotFocus(object sender, RoutedEventArgs e)
 		{
 			//buildFilteredList();
-			list.Visibility = Visibility.Visible;
-			textBox.SelectionStart = 0;
-			textBox.SelectionLength = textBox.Text.Length;
+			//list.Visibility = Visibility.Visible;
+			listPopup.IsOpen = true;
+			//textBox.SelectionStart = 0;
+			//textBox.SelectionLength = textBox.Text.Length;
+			buildFilteredList("");
+			textBox.PlaceholderText = textBox.Text;
+			setText("");
 		}
 
 		private void TextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -58,38 +83,50 @@ namespace TyperUWP
 			onSelectionSubmitted();
 		}
 
-		private void buildFilteredList()
+		private void buildFilteredList(string query)
 		{
-				var matchingTexts = new LinkedList<string>();
-				foreach (var item in ItemSource)
-				{
-					if (item.ToLower().Contains(textBox.Text.ToLower()))
-						matchingTexts.AddFirst(item);
-				}
-				if (matchingTexts.Count == 0)
-					matchingTexts.AddFirst("No matching titles found.");
-				list.ItemsSource = matchingTexts;
+			query = query.ToLower();
+			var matchingTexts = new LinkedList<string>();
+			foreach (var item in ItemSource)
+			{
+				if (item.ToLower().Contains(query))
+					matchingTexts.AddFirst(item);
+			}
+			if (matchingTexts.Count == 0)
+				matchingTexts.AddFirst("No matching titles found.");
+			list.ItemsSource = matchingTexts;
+			programmaticItemSelection = true;
+			//list.SelectedItem = selectedItem;
+			SelectedItem = selectedItem;
 			
+			list.UpdateLayout();
+			if (list.ActualWidth > 0)
+				textBox.Width = list.ActualWidth;
+			listPopup.VerticalOffset = -list.ActualHeight;
 		}
 
 		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			if (!updatingTextFromSelection)
-				buildFilteredList();
-			updatingTextFromSelection = false;
+			//if (!updatingText)
+				buildFilteredList(textBox.Text);
+			//updatingText = false;
 		}
 
 		private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
 		{
 			if (e.Key == VirtualKey.Up)
 			{
-				if (list.SelectedIndex > 0)
-					list.SelectedIndex--;
+				if (SelectedIndex > 0)
+					SelectedIndex--;
+				else
+					SelectedIndex = list.Items.Count - 1;
 			}
 			else if (e.Key == VirtualKey.Down)
 			{
-				if (list.SelectedIndex < list.Items.Count - 1)
-					list.SelectedIndex++;
+				if (SelectedIndex < list.Items.Count - 1)
+					SelectedIndex++;
+				else
+					SelectedIndex = 0;
 			}
 			else if (e.Key == VirtualKey.Enter)
 				onSelectionSubmitted();
@@ -103,19 +140,55 @@ namespace TyperUWP
 
 		void onSelectionSubmitted()
 		{
-			list.Visibility = Visibility.Collapsed;
+			//list.Visibility = Visibility.Collapsed;
+			if (!listPopup.IsOpen)
+				return;
+			listPopup.IsOpen = false;
+			setText(SelectedItem);
 			SelectionSubmitted?.Invoke(this, new EventArgs());
-			textBox.PlaceholderText = textBox.Text;
-			textBox.Text = "";
+			//updatingText = true;
+		}
+
+		private void setText(string text)
+		{
+			textBox.TextChanged -= TextBox_TextChanged;
+			textBox.Text = text;
+			textBox.TextChanged += TextBox_TextChanged;
 		}
 
 		private void List_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (list.SelectedIndex == -1)
 				return;
-			updatingTextFromSelection = true;
-			textBox.Text = SelectedItem;
-			textBox.SelectionStart = textBox.Text.Length;
+			selectedItem = (string)list.SelectedItem;
+			//list.ScrollIntoView(list.SelectedItem, ScrollIntoViewAlignment.Default);
+			//updatingText = true;
+			//if (!programmaticItemSelection)
+			//{
+				setText(selectedItem);
+				textBox.SelectionStart = textBox.Text.Length;
+			//}
+			programmaticItemSelection = false;
+		}
+
+		private void UserControl_Loaded(object sender, RoutedEventArgs e)
+		{
+			var ttv = listPopup.TransformToVisual(Window.Current.Content);
+			Point popupPos = ttv.TransformPoint(new Point(0, 0));
+			list.MaxHeight = popupPos.Y;
+			list.UpdateLayout();
+			if (list.ActualWidth > 0)
+				textBox.Width = list.ActualWidth;
+			listPopup.VerticalOffset = -list.ActualHeight;
+
+		}
+
+		private void ListPopup_Opened(object sender, object e)
+		{
+			list.UpdateLayout();
+			if (list.ActualWidth > 0)
+				textBox.Width = list.ActualWidth;
+			listPopup.VerticalOffset = -list.ActualHeight;
 		}
 	}
 }
