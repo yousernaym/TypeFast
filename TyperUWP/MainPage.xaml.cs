@@ -154,7 +154,7 @@ namespace TyperUWP
 				if (args.VirtualKey == VirtualKey.R)
 					clickResetBtn();
 				else if (args.VirtualKey == VirtualKey.T)
-					textsAsb.Focus(FocusState.Programmatic);
+					textsCombo.Focus(FocusState.Programmatic);
 			}
 		}
 
@@ -463,66 +463,8 @@ namespace TyperUWP
 			else
 				texts.select(title);
 			typingSession.TextEntry = texts.Current;
-			textsAsb.PlaceholderText = texts.Current == null ? "" : texts.Current.Title;
-			textsAsb.Text = "";
 			textsCombo.SelectedItem = texts.Current.Title;
 			reset();
-		}
-
-		private void TextsASB_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
-		{
-			if (!dialogOpen)
-				return;
-			if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-				findAsbTitleMatches();
-		}
-
-		void findAsbTitleMatches()
-		{
-			var matchingTexts = new LinkedList<string>();
-			foreach (var text in texts)
-			{
-				if (text.Title.ToLower().Contains(textsAsb.Text.ToLower()))
-					matchingTexts.AddFirst(text.Title);
-			}
-			if (matchingTexts.Count == 0)
-				matchingTexts.AddFirst("No matching titles found.");
-			textsAsb.ItemsSource = matchingTexts;
-		}
-
-		private void TextsAsb_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-		{
-			string title = (string)args.ChosenSuggestion;
-			if (title == null)
-				title = args.QueryText;
-			if (title == "")
-			{
-				focusOnTyping();
-				return;
-			}
-			if (texts.containsTitle(title))
-			{
-				focusOnTyping();
-				selectText(title);
-			}
-		}
-
-		private void TextsAsb_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-		{
-			sender.Text = (string)args.SelectedItem;
-		}
-
-		private void TextsAsb_GotFocus(object sender, RoutedEventArgs e)
-		{
-			dialogOpen = true;
-			findAsbTitleMatches();
-		}
-
-		private void TextsAsb_LostFocus(object sender, RoutedEventArgs e)
-		{
-			dialogOpen = false;
-			textsAsb.ItemsSource = null;
-			textsAsb.Text = "";
 		}
 
 		void focusOnTyping()
@@ -578,11 +520,6 @@ namespace TyperUWP
 			texts.importUserData(stream);
 			stream.Dispose();
 			selectText(texts.Current.Title);
-		}
-
-		private void TextsAsb_AccessKeyInvoked(UIElement sender, AccessKeyInvokedEventArgs args)
-		{
-			textsAsb.Focus(FocusState.Programmatic);
 		}
 
 		private void TextsCombo_SelectionSubmitted(object sender, EventArgs args)
