@@ -9,7 +9,6 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	Loaded="Page_Loaded"
 	xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
-	Height="Auto"
 	>
 	<!--xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"-->
 	<Page.Resources>

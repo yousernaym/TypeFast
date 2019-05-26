@@ -20,6 +20,15 @@ namespace TyperUWP
 {
 	public sealed partial class ComboBoxEx : UserControl
 	{
+		new public double MinWidth
+		{
+			get => textBox.MinWidth;
+			set
+			{
+				textBox.MinWidth = list.MinWidth = value;
+			}
+		}
+
 		IEnumerable<string> itemSource;
 		public IEnumerable<string> ItemSource
 		{
@@ -31,6 +40,7 @@ namespace TyperUWP
 			}
 		}
 
+		string submittedItem;
 		string selectedItem;
 		public string SelectedItem
 		{
@@ -86,12 +96,14 @@ namespace TyperUWP
 				if (item.ToLower().Contains(query))
 					matchingTexts.AddFirst(item);
 			}
-			if (matchingTexts.Count == 0)
-				matchingTexts.AddFirst("No matching titles found.");
+			//if (matchingTexts.Count == 0)
+			//	matchingTexts.AddFirst("No matching titles found.");
 			list.ItemsSource = matchingTexts;
-			programmaticItemSelection = true;
-			setSelection(selectedItem);
-			
+			//setSelection(selectedItem);
+			list.SelectionChanged -= List_SelectionChanged;
+			SelectedItem = selectedItem;
+			list.SelectionChanged += List_SelectionChanged;
+
 			list.UpdateLayout();
 			if (list.ActualWidth > 0)
 				textBox.Width = list.ActualWidth;
@@ -108,31 +120,40 @@ namespace TyperUWP
 			if (e.Key == VirtualKey.Up)
 			{
 				if (SelectedIndex > 0)
-					SelectedIndex--;
+					highlightItem(SelectedIndex-1);
 				else
-					SelectedIndex = list.Items.Count - 1;
+					highlightItem(list.Items.Count - 1);
 			}
 			else if (e.Key == VirtualKey.Down)
 			{
 				if (SelectedIndex < list.Items.Count - 1)
-					SelectedIndex++;
+					highlightItem(SelectedIndex + 1);
 				else
-					SelectedIndex = 0;
+					highlightItem(0);
 			}
 			else if (e.Key == VirtualKey.Enter)
 				onSelectionSubmitted();
+			else if (e.Key == VirtualKey.Escape)
+			{
+				SelectedItem = submittedItem;
+				//setText(SelectedItem);
+				listPopup.IsOpen = false;
+			}
 
 		}
 
-		private void List_ItemClick(object sender, ItemClickEventArgs e)
+		private void highlightItem(int index)
 		{
-			onSelectionSubmitted();
+			var tempSubmittedItem = submittedItem;
+			SelectedIndex = index;
+			submittedItem = tempSubmittedItem;
 		}
 
 		void onSelectionSubmitted()
 		{
 			if (!listPopup.IsOpen)
 				return;
+			submittedItem = selectedItem;
 			listPopup.IsOpen = false;
 			setText(SelectedItem);
 			SelectionSubmitted?.Invoke(this, new EventArgs());
@@ -150,6 +171,7 @@ namespace TyperUWP
 			if (list.SelectedIndex == -1)
 				return;
 			selectedItem = (string)list.SelectedItem;
+			submittedItem = selectedItem;
 			setText(selectedItem);
 			textBox.SelectionStart = textBox.Text.Length;
 		}
