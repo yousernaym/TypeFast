@@ -20,8 +20,6 @@ namespace TyperUWP
 {
 	public sealed partial class ComboBoxEx : UserControl
 	{
-		bool updatingText;
-		bool programmaticItemSelection;
 		IEnumerable<string> itemSource;
 		public IEnumerable<string> ItemSource
 		{
@@ -40,23 +38,23 @@ namespace TyperUWP
 			set
 			{
 				selectedItem = value;
-				list.SelectionChanged -= List_SelectionChanged;
 				list.SelectedItem = value;
-				list.SelectionChanged += List_SelectionChanged;
 				if (value != null)
 					list.ScrollIntoView(selectedItem, ScrollIntoViewAlignment.Default);
 			}
 		}
 
+		void setSelection(string value)
+		{
+			list.SelectionChanged -= List_SelectionChanged;
+			SelectedItem = value;
+			list.SelectionChanged += List_SelectionChanged;
+		}
+
 		public int SelectedIndex
 		{
 			get => list.SelectedIndex;
-			set
-			{
-				SelectedItem = (string)list.Items[value];
-				//list.SelectedIndex = value;
-				//list.SelectedItem = list.SelectedItem;
-			}
+			set => SelectedItem = (string)list.Items[value];
 		}
 
 		public event EventHandler SelectionSubmitted;
@@ -68,11 +66,7 @@ namespace TyperUWP
 
 		private void TextBox_GotFocus(object sender, RoutedEventArgs e)
 		{
-			//buildFilteredList();
-			//list.Visibility = Visibility.Visible;
 			listPopup.IsOpen = true;
-			//textBox.SelectionStart = 0;
-			//textBox.SelectionLength = textBox.Text.Length;
 			buildFilteredList("");
 			textBox.PlaceholderText = textBox.Text;
 			setText("");
@@ -96,8 +90,7 @@ namespace TyperUWP
 				matchingTexts.AddFirst("No matching titles found.");
 			list.ItemsSource = matchingTexts;
 			programmaticItemSelection = true;
-			//list.SelectedItem = selectedItem;
-			SelectedItem = selectedItem;
+			setSelection(selectedItem);
 			
 			list.UpdateLayout();
 			if (list.ActualWidth > 0)
@@ -107,9 +100,7 @@ namespace TyperUWP
 
 		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			//if (!updatingText)
-				buildFilteredList(textBox.Text);
-			//updatingText = false;
+			buildFilteredList(textBox.Text);
 		}
 
 		private void TextBox_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -140,13 +131,11 @@ namespace TyperUWP
 
 		void onSelectionSubmitted()
 		{
-			//list.Visibility = Visibility.Collapsed;
 			if (!listPopup.IsOpen)
 				return;
 			listPopup.IsOpen = false;
 			setText(SelectedItem);
 			SelectionSubmitted?.Invoke(this, new EventArgs());
-			//updatingText = true;
 		}
 
 		private void setText(string text)
@@ -161,14 +150,8 @@ namespace TyperUWP
 			if (list.SelectedIndex == -1)
 				return;
 			selectedItem = (string)list.SelectedItem;
-			//list.ScrollIntoView(list.SelectedItem, ScrollIntoViewAlignment.Default);
-			//updatingText = true;
-			//if (!programmaticItemSelection)
-			//{
-				setText(selectedItem);
-				textBox.SelectionStart = textBox.Text.Length;
-			//}
-			programmaticItemSelection = false;
+			setText(selectedItem);
+			textBox.SelectionStart = textBox.Text.Length;
 		}
 
 		private void UserControl_Loaded(object sender, RoutedEventArgs e)
