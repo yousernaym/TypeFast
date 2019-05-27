@@ -18,7 +18,6 @@ namespace TyperLib
 		const uint KeyCode_Backspace = 8;
 		const uint KeyCode_Escape = 27;
 
-		TextEntry textEntry = new TextEntry();
 		string[] rndElements;
 		int minWordLength;
 		int maxWordLength;
@@ -27,11 +26,15 @@ namespace TyperLib
 		public bool Shuffle { get; set; } = true;
 		public TimeSpan TimeLimit { get; set; } = new TimeSpan(0, 1, 0);
 
+		public TextEntry TextEntrySource { get; private set; }
+
+		TextEntry textEntry = new TextEntry();
 		public TextEntry TextEntry
 		{
 			get => textEntry;
 			set
 			{
+				TextEntrySource = value;
 				textEntry = new TextEntry(value);
 				
 				rndElements = null;
@@ -88,14 +91,14 @@ namespace TyperLib
 				
 				text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen to two ascii hyphens
 				text = text.Trim();
-
+				
 				//Replace repeating spaces with single space
-				Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
-				text = regex.Replace(text, " ");
+				//Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
+				text = Regex.Replace(text, "[ ]{2,}", " ");
 
 				//Replace repeating line breaks with single break
-				regex = new Regex("[\n]{2,}", RegexOptions.None);
-				text = regex.Replace(text, " ");
+				//regex = new Regex("[\n]{2,}", RegexOptions.None);
+				text = Regex.Replace(text, "[\n]{2,}", " ");
 		
 				text = text.Replace('\n', ' ');
 
@@ -197,7 +200,7 @@ namespace TyperLib
 		}
 		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("startText", Shuffle ? null : TextEntry.Title);
+			info.AddValue("startText", Shuffle ? null : TextEntrySource.Title);
 			info.AddValue("timeLimit", TimeLimit);
 		}
 

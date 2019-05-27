@@ -48,7 +48,7 @@ namespace TyperLib
 			var text = new StringBuilder("");
 			while (text.Length < 10000 && verse.Next != null)
 			{
-				text.Append(Currentverse.Text);
+				text.Append(verse.Text);
 				text.Append(' ');
 				verse = (Verse)verse.Next;
 			}
