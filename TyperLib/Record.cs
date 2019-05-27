@@ -62,30 +62,26 @@ namespace TyperLib
 				return 1;
 			else if (WPM > rec.WPM)
 				return -1;
-			else //Same WPM, compare accuracy
+			else //Same wpm, compare time
 			{
-				if (Accuracy < rec.Accuracy)
-					return 1;
-				else if (Accuracy > rec.Accuracy)
-					return -1;
-				else //Same accuracy, compare time
+				var reverse = IsTextFinished && rec.IsTextFinished && CharCount == rec.CharCount ? -1 : 1; //If both records finished typing the whole text and both texts have the same length, shorter times are better, otherwise worse
+				var roundedTime = Math.Round(Time.TotalSeconds, Time.TotalSeconds < 10 ? 2 : 0);
+				var roundedTime2 = Math.Round(rec.Time.TotalSeconds, rec.Time.TotalSeconds < 10 ? 2 : 0);
+
+				if (roundedTime < roundedTime2)
+					return 1 * reverse;
+				else if (roundedTime > roundedTime2)
+					return -1 * reverse;
+				else //Same time, compare accuracy
 				{
-					var reverse = IsTextFinished && rec.IsTextFinished && CharCount == rec.CharCount ? -1 : 1; //If both records finished typing the whole text and both texts have the same length, shorter times are better, otherwise worse
-					if (Time < rec.Time)
-						return 1 * reverse;
-					else if (Time > rec.Time)
-						return -1 * reverse;
-					return 0;
+					if (Accuracy < rec.Accuracy)
+						return 1;
+					else if (Accuracy > rec.Accuracy)
+						return -1;
+					else
+						return 0;
 				}
 			}
 		}
-
-		//class ReverseComparer : IComparer
-		//{
-		//	public int Compare(object x, object y)
-		//	{
-		//		return ((Record)x).CompareTo((Record)y) * -1;
-		//	}
-		//}
 	}
 }
