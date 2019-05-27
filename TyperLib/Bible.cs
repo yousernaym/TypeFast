@@ -29,7 +29,7 @@ namespace TyperLib
 	{
 		public List<Book> Books => items;
 
-		public Verse CurrentWerse { get; private set; }
+		public Verse Currentverse { get; private set; }
 
 		public Bible(Stream xmlStream) : base(-1, null)
 		{
@@ -44,13 +44,13 @@ namespace TyperLib
 		{
 			var book = getRandomItem();
 			var chapter = book.getRandomItem();
-			CurrentWerse = chapter.getRandomItem();
+			var verse = Currentverse = chapter.getRandomItem();
 			var text = new StringBuilder("");
-			while (text.Length < 10000 && CurrentWerse.Next != null)
+			while (text.Length < 10000 && verse.Next != null)
 			{
-				text.Append(CurrentWerse.Text);
+				text.Append(Currentverse.Text);
 				text.Append(' ');
-				CurrentWerse = (Verse)CurrentWerse.Next;
+				verse = (Verse)verse.Next;
 			}
 			return text.ToString();
 		}
@@ -69,7 +69,7 @@ namespace TyperLib
 			foreach (var chapterTag in bookTag.Descendants("CHAPTER"))
 			{
 				var prevChapter = Chapters.Count > 0 ? Chapters[Chapters.Count - 1] : previous?.Chapters[previous.Chapters.Count - 1];
-				Chapters.Add(new Chapter(chapterTag, this, Chapters.Count, prevChapter));
+				Chapters.Add(new Chapter(chapterTag, this, Chapters.Count + 1, prevChapter));
 			}
 		}
 	}
@@ -77,13 +77,13 @@ namespace TyperLib
 	{
 		public List<Verse> Verses => items;
 		public Book Book {get; set; }
-		public Chapter(XElement chapterTag, Book parent, int chapterNumber, Chapter previous) : base(chapterNumber, previous)
+		public Chapter(XElement chapterTag, Book book, int chapterNumber, Chapter previous) : base(chapterNumber, previous)
 		{
 			foreach (var verseTag in chapterTag.Descendants("VERS"))
 			{
-				Book = Book;
+				Book = book;
 				var prevVerse = Verses.Count > 0 ? Verses[Verses.Count - 1] : previous?.Verses[previous.Verses.Count - 1];
-				Verses.Add(new Verse(verseTag.Value, this, Verses.Count, prevVerse));
+				Verses.Add(new Verse(verseTag.Value, this, Verses.Count + 1, prevVerse));
 			}
 		}
 	}
@@ -96,6 +96,10 @@ namespace TyperLib
 		{
 			Chapter = chapter;
 			items.Add(text);
+		}
+		new public string ToString()
+		{
+			return $"{Chapter.Book.ShortName} {Chapter.Number}:{Number}";
 		}
 	}
 }

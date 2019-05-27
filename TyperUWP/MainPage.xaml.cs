@@ -121,7 +121,7 @@ namespace TyperUWP
 			}
 
 			//Load bible
-			var uri = new Uri("ms-appx:///texts/kjv.xml");
+			var uri = new Uri("ms-appx:///texts/EN.xml");
 			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
 			var xmlStream = await sampleFile.OpenStreamForReadAsync();
 			typingSession.Bible = new Bible(xmlStream);
@@ -161,7 +161,7 @@ namespace TyperUWP
 		private void Text_Finished(object sender, EventArgs e)
 		{
 			if (texts.Current != null)
-				texts.addRecord(typingSession);
+				 texts.addRecord(typingSession);
 		}
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
@@ -262,6 +262,8 @@ namespace TyperUWP
 				return;
 			NewTextDialog newTextDialog = new NewTextDialog(texts, false, textsCombo);
 			newTextDialog.Title = "Add new text";
+			newTextDialog.TitleEntry = typingSession.TextEntry.Title;
+			newTextDialog.TextEntry = typingSession.TextEntry.Text;
 			dialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
 			dialogOpen = false;

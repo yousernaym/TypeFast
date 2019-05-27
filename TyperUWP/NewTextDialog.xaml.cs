@@ -101,5 +101,21 @@ namespace TyperUWP
 			string remainingChars = String.Format("{0:n0}", textTb.MaxLength - textTb.Text.Length).Replace(NumberFormatInfo.CurrentInfo.NumberGroupSeparator, " ");
 			textCharCount.Text = $"{remainingChars} characters remaining";
 		}
+
+		private void TitleTb_GotFocus(object sender, RoutedEventArgs e)
+		{
+			selectAllText((TextBox)sender);
+		}
+
+		private void TextTb_GotFocus(object sender, RoutedEventArgs e)
+		{
+			selectAllText((TextBox)sender);
+		}
+
+		void selectAllText(TextBox tb)
+		{
+			tb.SelectionStart = 0;
+			tb.SelectionLength = tb.Text.Length;
+		}
 	}
 }

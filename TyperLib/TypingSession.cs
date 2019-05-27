@@ -33,7 +33,7 @@ namespace TyperLib
 			set
 			{
 				textEntry = new TextEntry(value);
-
+				
 				rndElements = null;
 				minWordLength = maxWordLength = 1;
 				Match match;
@@ -54,7 +54,10 @@ namespace TyperLib
 				else if (text.StartsWith("__rnd br__"))
 					rndElements = text.Substring(10).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 				else if (text.StartsWith("__bible__"))
+				{
 					text = Bible.getRandomText(10000);
+					title = Bible.Currentverse.ToString();
+				}
 
 				if (rndElements != null)
 				{
@@ -97,6 +100,12 @@ namespace TyperLib
 				text = text.Replace('\n', ' ');
 
 			}
+		}
+
+		string title
+		{
+			get => textEntry.Title;
+			set => textEntry.Title = value;
 		}
 
 		string text
