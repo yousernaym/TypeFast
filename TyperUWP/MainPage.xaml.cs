@@ -466,6 +466,7 @@ namespace TyperUWP
 			else
 				texts.select(title);
 			typingSession.TextEntry = texts.Current;
+			textsCombo.resetFilter();
 			textsCombo.SelectedItem = texts.Current.Title;
 			reset();
 		}

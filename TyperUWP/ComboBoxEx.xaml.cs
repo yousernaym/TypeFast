@@ -113,7 +113,8 @@ namespace TyperUWP
 				}
 			}
 			list.ItemsSource = matchingTexts;
-			setSelection(textBox.Text == "" ? selectedItem : earliestMatch);
+			if (!string.IsNullOrEmpty(query))
+				setSelection(earliestMatch);
 			
 			list.UpdateLayout();
 			if (list.ActualWidth > 0)
@@ -198,6 +199,12 @@ namespace TyperUWP
 			if (list.ActualWidth > 0)
 				textBox.Width = list.ActualWidth;
 			listPopup.VerticalOffset = -list.ActualHeight;
+		}
+
+		public void resetFilter()
+		{
+			list.ItemsSource = itemSource;
+			setSelection(selectedItem);
 		}
 	}
 }
