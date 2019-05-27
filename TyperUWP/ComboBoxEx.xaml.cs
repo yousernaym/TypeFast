@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
@@ -77,33 +78,43 @@ namespace TyperUWP
 		private void TextBox_GotFocus(object sender, RoutedEventArgs e)
 		{
 			listPopup.IsOpen = true;
-			buildFilteredList("");
 			textBox.PlaceholderText = textBox.Text;
 			setText("");
+			buildFilteredList("");
 		}
 
 		private void TextBox_LostFocus(object sender, RoutedEventArgs e)
 		{
-			onSelectionSubmitted();
+			if (string.IsNullOrEmpty(SelectedItem))
+				selectedItem = submittedItem;
+			else
+				submit();
+			listPopup.IsOpen = false;
+			setText(SelectedItem);
 		}
 
 		private void buildFilteredList(string query)
 		{
-			query = query.ToLower();
+			int earliestMatchIndex = 1000;
+			string earliestMatch = "";
 			var matchingTexts = new LinkedList<string>();
 			foreach (var item in ItemSource)
 			{
-				if (item.ToLower().Contains(query))
-					matchingTexts.AddFirst(item);
+				//var lowerItem = item.ToLower();
+				int matchIndex;
+				if ((matchIndex = item.IndexOf(query, StringComparison.OrdinalIgnoreCase)) >= 0)
+				{
+					if (earliestMatchIndex > matchIndex)
+					{
+						earliestMatchIndex = matchIndex;
+						earliestMatch = item;
+					}
+					matchingTexts.AddLast(item);
+				}
 			}
-			//if (matchingTexts.Count == 0)
-			//	matchingTexts.AddFirst("No matching titles found.");
 			list.ItemsSource = matchingTexts;
-			//setSelection(selectedItem);
-			list.SelectionChanged -= List_SelectionChanged;
-			SelectedItem = selectedItem;
-			list.SelectionChanged += List_SelectionChanged;
-
+			setSelection(textBox.Text == "" ? selectedItem : earliestMatch);
+			
 			list.UpdateLayout();
 			if (list.ActualWidth > 0)
 				textBox.Width = list.ActualWidth;
@@ -120,7 +131,7 @@ namespace TyperUWP
 			if (e.Key == VirtualKey.Up)
 			{
 				if (SelectedIndex > 0)
-					highlightItem(SelectedIndex-1);
+					highlightItem(SelectedIndex - 1);
 				else
 					highlightItem(list.Items.Count - 1);
 			}
@@ -131,15 +142,10 @@ namespace TyperUWP
 				else
 					highlightItem(0);
 			}
-			else if (e.Key == VirtualKey.Enter)
-				onSelectionSubmitted();
+			else if (e.Key == VirtualKey.Enter && !string.IsNullOrEmpty(SelectedItem))
+				submit();
 			else if (e.Key == VirtualKey.Escape)
-			{
-				SelectedItem = submittedItem;
-				//setText(SelectedItem);
-				listPopup.IsOpen = false;
-			}
-
+				setSelection(submittedItem);
 		}
 
 		private void highlightItem(int index)
@@ -149,13 +155,11 @@ namespace TyperUWP
 			submittedItem = tempSubmittedItem;
 		}
 
-		void onSelectionSubmitted()
+		void submit()
 		{
 			if (!listPopup.IsOpen)
 				return;
 			submittedItem = selectedItem;
-			listPopup.IsOpen = false;
-			setText(SelectedItem);
 			SelectionSubmitted?.Invoke(this, new EventArgs());
 		}
 
