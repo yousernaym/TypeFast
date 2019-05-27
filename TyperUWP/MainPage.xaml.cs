@@ -260,7 +260,7 @@ namespace TyperUWP
 		{
 			if (dialogOpen)
 				return;
-			NewTextDialog newTextDialog = new NewTextDialog(texts, false);
+			NewTextDialog newTextDialog = new NewTextDialog(texts, false, textsCombo);
 			newTextDialog.Title = "Add new text";
 			dialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
@@ -274,7 +274,7 @@ namespace TyperUWP
 		{
 			if (dialogOpen)
 				return;
-			NewTextDialog newTextDialog = new NewTextDialog(texts, true);
+			NewTextDialog newTextDialog = new NewTextDialog(texts, true, textsCombo);
 			newTextDialog.Title = "Edit text";
 			newTextDialog.TitleEntry = texts.Current.Title;
 			newTextDialog.TextEntry = texts.Current.Text;
@@ -295,6 +295,7 @@ namespace TyperUWP
 			if (result == ContentDialogResult.Primary)
 			{
 				texts.removeCurrent();
+				textsCombo.ItemSource = texts.Titles;
 				selectText(texts.Current?.Title);
 			}
 		}

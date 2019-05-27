@@ -82,7 +82,7 @@ namespace TyperLib
 				text = text.Replace('”', '"');
 				text = text.Replace('‘', '\'');
 				text = text.Replace('’', '\'');
-
+				
 				text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen to two ascii hyphens
 				text = text.Trim();
 

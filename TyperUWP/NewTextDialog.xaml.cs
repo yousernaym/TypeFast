@@ -36,11 +36,13 @@ namespace TyperUWP
 
 		Texts textList;
 		string editExisting;
+		ComboBoxEx textListControl;
 
-		public NewTextDialog(Texts textList, bool edit)
+		public NewTextDialog(Texts textList, bool edit, ComboBoxEx textListControl)
 		{
 			this.InitializeComponent();
 			this.textList = textList;
+			this.textListControl = textListControl;
 			if (edit)
 			{
 				var notes = new TextBlock();
@@ -74,6 +76,7 @@ namespace TyperUWP
 				if (!string.IsNullOrEmpty(editExisting))
 					textList.remove(editExisting);
 				textList.add(new TextEntry(TitleEntry, TextEntry));
+				textListControl.ItemSource = textList.Titles;
 			}
 		}
 
