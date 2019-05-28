@@ -42,7 +42,8 @@ namespace TyperUWP
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			
+			//var recordCM = new MenuFlyout();
+			//recordCM.Items.Add(new MenuFlyoutItem { Text = "Delete this record" });
 			for (int r = 0; r < Rows; r++)
 			{
 				table.addRow();
@@ -54,6 +55,7 @@ namespace TyperUWP
 					cell.Foreground = new SolidColorBrush(Colors.White);
 					cell.FontSize = 20;
 					cell.Padding = new Thickness(20, 5, 7, 5);
+					//cell.ContextFlyout = recordCM;
 					if (c == TextCol)
 						cell.Padding = new Thickness(7, 5, 7, 5);
 

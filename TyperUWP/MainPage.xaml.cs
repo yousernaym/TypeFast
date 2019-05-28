@@ -42,7 +42,11 @@ namespace TyperUWP
 		readonly string LocalDataDir = ApplicationData.Current.LocalFolder.Path;
 		readonly string SettingsPath;
 		TypingSessionView typingSessionView;
-		TypingSession typingSession => typingSessionView.Session;
+		TypingSession typingSession
+		{
+			get => typingSessionView.Session;
+			set => typingSessionView.Session = value;
+		}
 		Texts texts;
 		bool dialogOpen = false;
 
@@ -116,7 +120,7 @@ namespace TyperUWP
 				{
 					var dcs = new DataContractSerializer(typeof(TypingSession), TypingSession.SerializeTypes);
 					session = (TypingSession)dcs.ReadObject(stream);
-					typingSessionView.Session = session;
+					typingSession = session;
 				}
 			}
 			catch (FileNotFoundException)
@@ -130,9 +134,6 @@ namespace TyperUWP
 
 			//Load bible
 			var bibleStream = await getResourceStream("texts/bible_EN.xml");
-			//var uri = new Uri("ms-appx:///texts/EN.xml");
-			//var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
-			//var xmlStream = await sampleFile.OpenStreamForReadAsync();
 			typingSession.Bible = new Bible(bibleStream);
 			bibleStream.Dispose();
 
