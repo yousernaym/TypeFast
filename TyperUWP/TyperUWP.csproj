@@ -149,9 +149,8 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="..\TyperLib\texts\EN.xml">
-      <Link>Texts\EN.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="..\TyperLib\texts\bible_EN.xml">
+      <Link>Texts\bible_EN.xml</Link>
     </Content>
     <Content Include="Texts\presets.tts">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

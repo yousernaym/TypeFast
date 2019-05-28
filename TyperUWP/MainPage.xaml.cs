@@ -27,6 +27,7 @@ using Microsoft.Graphics.Canvas.Text;
 using Windows.Storage.Pickers;
 using System.Runtime.Serialization;
 using Windows.ApplicationModel;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -64,7 +65,7 @@ namespace TyperUWP
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
-			texts = new Texts(LocalDataDir, Package.Current.InstalledLocation.Path);
+			texts = new Texts(LocalDataDir, ()=>loadPresets());
 			SettingsPath = Path.Combine(RoamingDataDir, "settings");
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
@@ -75,6 +76,13 @@ namespace TyperUWP
 
 			//saveSettings();
 			loadSettings();
+		}
+
+		async Task<Stream> getResourceStream(string path)
+		{
+			var uri = new Uri("ms-appx:///"+path);
+			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
+			return await sampleFile.OpenStreamForReadAsync();
 		}
 
 		private void Current_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
@@ -121,11 +129,12 @@ namespace TyperUWP
 			}
 
 			//Load bible
-			var uri = new Uri("ms-appx:///texts/EN.xml");
-			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
-			var xmlStream = await sampleFile.OpenStreamForReadAsync();
-			typingSession.Bible = new Bible(xmlStream);
-			xmlStream.Dispose();
+			var bibleStream = await getResourceStream("texts/bible_EN.xml");
+			//var uri = new Uri("ms-appx:///texts/EN.xml");
+			//var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
+			//var xmlStream = await sampleFile.OpenStreamForReadAsync();
+			typingSession.Bible = new Bible(bibleStream);
+			bibleStream.Dispose();
 
 			fontCombo.SelectedItem = typingSession.FontName;
 			fontSizeTb.Text = typingSession.FontSize.ToString();
@@ -467,7 +476,7 @@ namespace TyperUWP
 				texts.select(title);
 			typingSession.TextEntry = texts.Current;
 			textsCombo.resetFilter();
-			textsCombo.SelectedItem = texts.Current.Title;
+			textsCombo.SelectedItem = texts.Current?.Title;
 			reset();
 		}
 
@@ -505,25 +514,30 @@ namespace TyperUWP
 				var stream = await file.OpenStreamForReadAsync();
 				try
 				{
-					texts.importUserData(stream);
+					texts.importUserData(stream, false);
 				}
 				catch
 				{
 					var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Incorrect file format." }.ShowAsync();
 				}
 				stream.Dispose();
+				textsCombo.ItemSource = texts.Titles;
 				selectText(texts.Current?.Title);
 			}
 		}
 
-		async private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
+		private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
 		{
-			var uri = new Uri("ms-appx:///texts/presets.tts");
-			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
-			var stream = await sampleFile.OpenStreamForReadAsync();
-			texts.importUserData(stream);
+			loadPresets();
+		}
+
+		async void loadPresets()
+		{
+			var stream = await getResourceStream("texts/presets.tts");
+			texts.importUserData(stream, false);
 			stream.Dispose();
-			selectText(texts.Current.Title);
+			textsCombo.ItemSource = texts.Titles;
+			selectText(texts.Current?.Title);
 		}
 
 		private void TextsCombo_SelectionSubmitted(object sender, EventArgs args)

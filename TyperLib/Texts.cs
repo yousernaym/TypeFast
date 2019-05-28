@@ -33,18 +33,20 @@ namespace TyperLib
 			}
 		}
 		
-		public Texts(string userDataDir, string presetsDir)
+		public Texts(string userDataDir, Action loadPresets)
 		{
 			if (userDataDir != null)
-				userDataPath = Path.Combine(userDataDir, "texts");
-			if (presetsDir != null)
-				presetsPath = Path.Combine(presetsDir, "presets.typertexts");
+				userDataPath = Path.Combine(userDataDir, "texts.tts");
+			//if (presetsDir != null)
+			//	presetsPath = Path.Combine(presetsDir, "presets.tts");
 			//saveUserData();
-						
+
 			if (File.Exists(userDataPath))
 				loadUserData(userDataPath);
-			else if (File.Exists(presetsPath))
-				loadUserData(presetsPath);
+			else
+				loadPresets();
+			//else if (File.Exists(presetsPath))
+			//loadUserData(presetsPath);
 		}
 
 		public void loadUserData(string loadPath)
@@ -236,14 +238,24 @@ namespace TyperLib
 			remove(Current.Title);
 		}
 
-		public void importUserData(Stream stream)
+		public void importUserData(Stream stream, bool importRecords)
 		{
-			loadUserData(stream);
+			if (importRecords)
+				loadUserData(stream);
+			else
+				loadUserTexts(stream);
 			saveUserData();
 
 			//Update text of current selection in case it was altered
 			if (Current != null)
 				select(Current.Title);
+		}
+
+		private void loadUserTexts(Stream stream)
+		{
+			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
+			var data = (UserData)dcs.ReadObject(stream);
+			userData.TextEntries = data.TextEntries;
 		}
 	}
 

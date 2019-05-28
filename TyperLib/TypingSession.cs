@@ -88,7 +88,7 @@ namespace TyperLib
 				text = text.Replace('”', '"');
 				text = text.Replace('‘', '\'');
 				text = text.Replace('’', '\'');
-				text = text.Replace(((char)8212).ToString(), " - "); //Convert wide non-ascii hyphen to an ascii hyphens surrounded by spaces
+				text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen
 				text = text.Trim();
 				
 				//Replace repeating spaces with single space
