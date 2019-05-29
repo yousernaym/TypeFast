@@ -520,8 +520,12 @@ namespace TyperUWP
 				catch
 				{
 					var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Incorrect file format." }.ShowAsync();
+					return;
 				}
-				stream.Dispose();
+				finally
+				{
+					stream.Dispose();
+				}
 				textsCombo.ItemSource = texts.Titles;
 				selectText(texts.Current?.Title);
 			}

@@ -117,6 +117,8 @@ namespace TyperUWP
 			list.ItemsSource = matchingTexts;
 			if (!string.IsNullOrEmpty(query))
 				setSelection(earliestMatch);
+			else
+				setSelection(SelectedItem);
 			
 			list.UpdateLayout();
 			if (list.ActualWidth > 0)
