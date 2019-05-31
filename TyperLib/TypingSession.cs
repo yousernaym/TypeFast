@@ -46,10 +46,11 @@ namespace TyperLib
 					{
 						if (!(text[7] == '-' && int.TryParse(text[8].ToString(), out maxWordLength)))
 							maxWordLength = minWordLength;
+						text = text.Substring(match.Length);
 						text = text.Replace(" ", "");
 						text = text.Replace("\n", "");
 						text = text.Replace("\r", "");
-						rndElements = text.Substring(match.Length).Select(x => x.ToString()).ToArray();
+						rndElements = text.Select(x => x.ToString()).ToArray();
 					}
 				}
 				else if (text.StartsWith("__rnd ws__"))
