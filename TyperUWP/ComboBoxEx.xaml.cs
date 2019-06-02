@@ -51,19 +51,23 @@ namespace TyperUWP
 				selectedItem = value;
 				if (string.IsNullOrEmpty(value))
 				{
-					setText("");
-					textBox.PlaceholderText = "";
-					submittedItem = null;
-				}
-					
-				list.SelectedItem = value;
-				if (value != null)
+				//list.SelectedIndex = -1;
+			//}
+						setText("");
+						textBox.PlaceholderText = "";
+						submittedItem = null;
+					}
+
+					list.SelectedItem = value;
+				if (!string.IsNullOrEmpty(value))
 					list.ScrollIntoView(selectedItem, ScrollIntoViewAlignment.Default);
 			}
 		}
 
 		void setSelection(string value)
 		{
+			//if (string.IsNullOrEmpty(value))
+			//	return;
 			list.SelectionChanged -= List_SelectionChanged;
 			SelectedItem = value;
 			list.SelectionChanged += List_SelectionChanged;
@@ -120,9 +124,9 @@ namespace TyperUWP
 				}
 			}
 			list.ItemsSource = matchingTexts;
-			if (!string.IsNullOrEmpty(query))
+			if (!string.IsNullOrEmpty(query) && !string.IsNullOrEmpty(earliestMatch))
 				setSelection(earliestMatch);
-			else
+			else if(!string.IsNullOrEmpty(selectedItem))
 				setSelection(SelectedItem);
 			
 			list.UpdateLayout();
@@ -185,8 +189,8 @@ namespace TyperUWP
 			if (list.SelectedIndex == -1)
 				return;
 			selectedItem = (string)list.SelectedItem;
-			submittedItem = selectedItem;
-			setText(selectedItem);
+			submittedItem = textBox.PlaceholderText = SelectedItem;
+			setText(SelectedItem);
 			textBox.SelectionStart = textBox.Text.Length;
 		}
 
