@@ -210,7 +210,7 @@ namespace TyperUWP
 		{
 			if (args.KeyCode == 27) //Esc key should remove focus from the AutoSuggestBox
 				focusOnTyping();
-			if (DialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu) || args.KeyCode == 13)
+			if (DialogOpen)
 				return;
 
 			//Ignore spaces if in the beginning of a text
