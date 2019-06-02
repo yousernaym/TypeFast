@@ -68,9 +68,9 @@
 				</Grid.ColumnDefinitions>
 				<Grid.ContextFlyout>
 					<MenuFlyout>
-						<MenuFlyoutItem x:Name="textCmPaste" Text="Paste" Click="TextCmPaste_Click" >
+						<MenuFlyoutItem x:Name="textCmPractice" Text="Practice keys" Click="TextCmPractice_Click" >
 							<MenuFlyoutItem.KeyboardAccelerators>
-								<KeyboardAccelerator Modifiers="Control" Key="V" />
+								<KeyboardAccelerator Modifiers="Control" Key="P" />
 							</MenuFlyoutItem.KeyboardAccelerators>
 						</MenuFlyoutItem>
 						<MenuFlyoutItem x:Name="fontMFI" Text="Font settings..." Click="FontMFI_Click">

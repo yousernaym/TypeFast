@@ -42,32 +42,32 @@ namespace TyperLib
 			//saveUserData();
 
 			if (File.Exists(userDataPath))
-				loadUserData(userDataPath);
+				loadUserData(userDataPath, true);
 			else
 				loadPresets();
 			//else if (File.Exists(presetsPath))
 			//loadUserData(presetsPath);
 		}
 
-		public void loadUserData(string loadPath)
+		void loadUserData(string loadPath, bool loadRecords)
 		{
 			if (string.IsNullOrEmpty(loadPath))
 				return;
 			using (var stream = File.Open(loadPath, FileMode.Open))
 			{
-				loadUserData(stream);
+				loadUserData(stream, loadRecords);
 			}
 		}
 
-		public void loadUserData(Stream stream)
+		void loadUserData(Stream stream, bool loadRecords)
 		{
 			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
-			userData = (UserData)dcs.ReadObject(stream);
+			var data = (UserData)dcs.ReadObject(stream);
 			
-			//foreach (var text in data.TextEntries)
-			//	userData.TextEntries.add(text);
-			//foreach (var rec in data.Records)
-			//	userData.Records.Add(rec);
+			foreach (var text in data.TextEntries)
+				userData.TextEntries.add(text);
+			foreach (var rec in data.Records)
+				userData.Records.Add(rec);
 		}
 
 		public void saveUserData()
@@ -240,10 +240,7 @@ namespace TyperLib
 
 		public void importUserData(Stream stream, bool importRecords)
 		{
-			if (importRecords)
-				loadUserData(stream);
-			else
-				loadUserTexts(stream);
+			loadUserData(stream, importRecords);
 			saveUserData();
 
 			//Update text of current selection in case it was altered
@@ -251,12 +248,6 @@ namespace TyperLib
 				select(Current.Title);
 		}
 
-		private void loadUserTexts(Stream stream)
-		{
-			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
-			var data = (UserData)dcs.ReadObject(stream);
-			userData.TextEntries = data.TextEntries;
-		}
 	}
 
 	[Serializable]

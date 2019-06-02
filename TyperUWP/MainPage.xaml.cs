@@ -48,7 +48,7 @@ namespace TyperUWP
 			set => typingSessionView.Session = value;
 		}
 		Texts texts;
-		bool dialogOpen = false;
+		public bool DialogOpen = false;
 
 		public MainPage()
 		{
@@ -170,7 +170,7 @@ namespace TyperUWP
 
 		private void Text_Finished(object sender, EventArgs e)
 		{
-			if (texts.Current != null)
+			if (texts.Current != null && !string.IsNullOrEmpty(texts.Current.Title))
 				 texts.addRecord(typingSession);
 		}
 
@@ -210,14 +210,13 @@ namespace TyperUWP
 		{
 			if (args.KeyCode == 27) //Esc key should remove focus from the AutoSuggestBox
 				focusOnTyping();
-			if (dialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu) || args.KeyCode == 13)
+			if (DialogOpen || isKeyDown(VirtualKey.Control) || isKeyDown(VirtualKey.Menu) || args.KeyCode == 13)
 				return;
 
 			//Ignore spaces if in the beginning of a text
 			if (!typingSession.IsRunning && args.KeyCode == (uint)' ')
 				return;
 
-			//args.Handled = true; //needed?
 			if (!typingSession.typeChar(args.KeyCode))
 				return;
 			focusOnTyping();
@@ -240,21 +239,18 @@ namespace TyperUWP
 		private void clickResetBtn()
 		{
 			if (typingSession.Shuffle)
-			{
 				selectText(null);
-			}
 			else
-			{
-				typingSession.TextEntry = texts.Current;
 				reset();
-			}
 		}
 
 		void reset()
 		{
-			if (dialogOpen)
+			if (DialogOpen)
 				return;
-
+			typingSession.TextEntry = texts.Current;
+			textsCombo.resetFilter();
+			textsCombo.SelectedItem = texts.Current?.Title;
 			typingSessionView.reset();
 			updateTypingStats();
 			//focusOnTyping();
@@ -268,15 +264,15 @@ namespace TyperUWP
 
 		async private void TextsOptionsNew_Click(object sender, RoutedEventArgs e)
 		{
-			if (dialogOpen)
+			if (DialogOpen)
 				return;
 			NewTextDialog newTextDialog = new NewTextDialog(texts, false, textsCombo);
 			newTextDialog.Title = "Add new text";
 			newTextDialog.TitleEntry = typingSession.TextEntry.Title;
 			newTextDialog.TextEntry = typingSession.TextEntry.Text;
-			dialogOpen = true;
+			DialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
-			dialogOpen = false;
+			DialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
 				selectText(newTextDialog.TitleEntry);
@@ -284,15 +280,15 @@ namespace TyperUWP
 
 		async private void TextsOptionsEdit_Click(object sender, RoutedEventArgs e)
 		{
-			if (dialogOpen)
+			if (DialogOpen)
 				return;
 			NewTextDialog newTextDialog = new NewTextDialog(texts, true, textsCombo);
 			newTextDialog.Title = "Edit text";
 			newTextDialog.TitleEntry = texts.Current.Title;
 			newTextDialog.TextEntry = texts.Current.Text;
-			dialogOpen = true;
+			DialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
-			dialogOpen = false;
+			DialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
 				selectText(newTextDialog.TitleEntry);
@@ -300,7 +296,7 @@ namespace TyperUWP
 
 		async private void TextsOptionsDelete_Click(object sender, RoutedEventArgs e)
 		{
-			if (dialogOpen)
+			if (DialogOpen)
 				return;
 			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to permanently delete this text and all its associated records?" };
 			ContentDialogResult result = await dlg.ShowAsync();
@@ -314,7 +310,7 @@ namespace TyperUWP
 
 		async private void TextCmPaste_Click(object sender, RoutedEventArgs e)
 		{
-			if (dialogOpen)
+			if (DialogOpen)
 				return;
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
@@ -334,14 +330,14 @@ namespace TyperUWP
 
 		private void TimeLimitFlyout_Opened(object sender, object e)
 		{
-			dialogOpen = true;
+			DialogOpen = true;
 			timeLimitTb.SelectionStart = 1;
 			timeLimitTb.SelectionLength = 1;
 		}
 
 		private void TimeLimitFlyout_Closed(object sender, object e)
 		{
-			dialogOpen = false;
+			DialogOpen = false;
 			if (typingSession.TimeLimit.TotalSeconds < 30)
 			{
 				timeLimitTb.Text = "00:30";
@@ -425,12 +421,12 @@ namespace TyperUWP
 
 		private void FontStyleFlyout_Opened(object sender, object e)
 		{
-			dialogOpen = true;
+			DialogOpen = true;
 		}
 
 		private void FontStyleFlyout_Closed(object sender, object e)
 		{
-			dialogOpen = false;
+			DialogOpen = false;
 		}
 
 		private void TextColorPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
@@ -454,18 +450,18 @@ namespace TyperUWP
 		private void RecordsFlyout_Opened(object sender, object e)
 		{
 			recordsView.syncGrid(texts);
-			dialogOpen = true;
+			DialogOpen = true;
 		}
 
 		private void RecordsFlyout_Closed(object sender, object e)
 		{
-			dialogOpen = false;
+			DialogOpen = false;
 		}
 
 		private void RecordsView_TextTitleClick(RecordsView recordsView, TextTitleClickEventArgs e)
 		{
 			recordsFlyout.Hide();
-			dialogOpen = false;
+			DialogOpen = false;
 			selectText(e.Title);
 		}
 
@@ -475,15 +471,12 @@ namespace TyperUWP
 				texts.selectRandom();
 			else
 				texts.select(title);
-			typingSession.TextEntry = texts.Current;
-			textsCombo.resetFilter();
-			textsCombo.SelectedItem = texts.Current?.Title;
 			reset();
 		}
 
 		void focusOnTyping()
 		{
-			dialogOpen = false;
+			DialogOpen = false;
 			currentCharControl.Focus(FocusState.Programmatic);
 		}
 
@@ -562,12 +555,27 @@ namespace TyperUWP
 
 		private void TextsCombo_GotFocus(object sender, RoutedEventArgs e)
 		{
-			dialogOpen = true;
+			DialogOpen = true;
 		}
 
 		private void TextsCombo_LostFocus(object sender, RoutedEventArgs e)
 		{
-			dialogOpen = false;
+			DialogOpen = false;
+		}
+
+		async private void TextCmPractice_Click(object sender, RoutedEventArgs e)
+		{
+			if (DialogOpen)
+				return;
+			var dlg = new PracticeDialog();
+			DialogOpen = true;
+			var result = await dlg.ShowAsync();
+			DialogOpen = false;
+			if (result == ContentDialogResult.Primary)
+			{
+				texts.Current = new TextEntry("", "__rnd 1-5__ " + dlg.Chars); ;
+				reset();
+			}
 		}
 	}
 }

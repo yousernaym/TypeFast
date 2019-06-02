@@ -49,8 +49,13 @@ namespace TyperUWP
 			set
 			{
 				selectedItem = value;
-				if (value == null)
-					list.SelectedIndex = -1;
+				if (string.IsNullOrEmpty(value))
+				{
+					setText("");
+					textBox.PlaceholderText = "";
+					submittedItem = null;
+				}
+					
 				list.SelectedItem = value;
 				if (value != null)
 					list.ScrollIntoView(selectedItem, ScrollIntoViewAlignment.Default);
