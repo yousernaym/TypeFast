@@ -208,7 +208,8 @@ namespace TyperUWP
 
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
-			if (args.KeyCode == 27) //Esc key should remove focus from the AutoSuggestBox
+			const uint Esc = 27;
+			if (args.KeyCode == Esc) //Esc should remove focus from the AutoSuggestBox
 				focusOnTyping();
 			if (DialogOpen)
 				return;
