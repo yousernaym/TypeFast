@@ -14,7 +14,9 @@ namespace TyperLib
 	public class TypingSession : ISerializable
 	{
 		enum RndEntity { Chars, Words, Lines, None };
+		const uint KeyCode_Enter = 13;
 		const uint KeyCode_Backspace = 8;
+		const uint KeyCode_Escape = 27;
 
 		string[] rndElements;
 		int minWordLength;
@@ -230,7 +232,7 @@ namespace TyperLib
 		public bool typeChar(uint keyCode)
 		{
 			char c = (char)keyCode;
-			if (IsFinished || keyCode < 0x20 && keyCode != KeyCode_Backspace || keyCode > 0x7e)
+			if (IsFinished || keyCode == KeyCode_Enter || keyCode == KeyCode_Escape || c == '\t')
 				return false;
 
 			if (!stopwatch.IsRunning)
