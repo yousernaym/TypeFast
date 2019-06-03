@@ -270,7 +270,11 @@ namespace TyperUWP
 			NewTextDialog newTextDialog = new NewTextDialog(texts, false, textsCombo);
 			newTextDialog.Title = "Add new text";
 			newTextDialog.TitleEntry = typingSession.TextEntry.Title;
-			newTextDialog.TextEntry = typingSession.TextEntry.Text;
+			if (texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
+				newTextDialog.TextEntry = typingSession.TextEntry.Text;
+			else
+				newTextDialog.TextEntry = texts.Current.Text;
+
 			DialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
 			DialogOpen = false;
@@ -300,7 +304,9 @@ namespace TyperUWP
 			if (DialogOpen)
 				return;
 			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to permanently delete this text and all its associated records?" };
+			DialogOpen = true;
 			ContentDialogResult result = await dlg.ShowAsync();
+			DialogOpen = false;
 			if (result == ContentDialogResult.Primary)
 			{
 				texts.removeCurrent();
@@ -574,9 +580,15 @@ namespace TyperUWP
 			DialogOpen = false;
 			if (result == ContentDialogResult.Primary)
 			{
-				texts.Current = new TextEntry("", "__rnd 1-5__ " + dlg.Chars); ;
+				texts.Current = new TextEntry("", "__rnd 1-7__ " + dlg.Chars); ;
 				reset();
 			}
+		}
+
+		private void FontSizeTb_GotFocus(object sender, RoutedEventArgs e)
+		{
+			fontSizeTb.SelectionStart = 0;
+			fontSizeTb.SelectionLength = fontSizeTb.Text.Length;
 		}
 	}
 }

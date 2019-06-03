@@ -81,7 +81,7 @@
 							<Flyout x:Name="fontStyleFlyout" Opened="FontStyleFlyout_Opened" Closed="FontStyleFlyout_Closed">
 								<StackPanel Orientation="Horizontal" RelativePanel.AlignRightWithPanel="True" VerticalAlignment="Center" RelativePanel.AlignVerticalCenterWithPanel="True">
 									<ComboBox x:Name="fontCombo" VerticalAlignment="Center" SelectionChanged="FontCombo_SelectionChanged" AllowFocusOnInteraction="True"/>
-									<TextBox x:Name="fontSizeTb" VerticalAlignment="Center" Width="70" MaxLength="3" TextChanged="FontSizeTb_TextChanged" BeforeTextChanging="FontSizeTb_BeforeTextChanging" AllowFocusOnInteraction="True"/>
+									<TextBox x:Name="fontSizeTb" VerticalAlignment="Center" Width="70" MaxLength="3" TextChanged="FontSizeTb_TextChanged" BeforeTextChanging="FontSizeTb_BeforeTextChanging" AllowFocusOnInteraction="True" GotFocus="FontSizeTb_GotFocus"/>
 									<Button x:Name="textColorBtn" Margin="10,0,0,0" Background="White"  Width="40" Height="30">
 										<Button.Flyout>
 											<Flyout>

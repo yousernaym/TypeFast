@@ -11,7 +11,7 @@
     PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
-    <Grid>
+    <StackPanel>
 		<TextBox x:Name="charsTb" Header="Type characters to practice"/>
-	</Grid>
+	</StackPanel>
 </ContentDialog>
