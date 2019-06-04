@@ -140,13 +140,9 @@ namespace TyperLib
 		{
 			get
 			{
-				float totalChars = (float)(WrittenChars.Count);
-				if (totalChars == 0)
+				if (WrittenChars.Count == 0)
 					return 0;
-
-				//Total correct characters can be less than 0 if there has been multiple incorrect attempts at the same character, so clamp at 0
-				float totalCorrect = Math.Max(totalChars - TotalIncorrectChars, 0);
-				return totalCorrect / totalChars * 100;
+				return (float)CorrectChars / (CorrectChars + TotalIncorrectChars) * 100;
 			}
 		}
 		Stopwatch stopwatch = new Stopwatch();
