@@ -10,15 +10,16 @@ using System.Runtime.CompilerServices;
 namespace TyperLib
 {
 	using Records = List<Record>;
-	public enum RecordType { RT_ALL, RT_BestTexts, RT_WorstTexts };
+	public enum RecordType { RT_BestSessions, RT_BestTexts, RT_WorstTexts, RT_BestOfText};
 	
 	[Serializable]
 	public class Texts : IEnumerable<TextEntry>
 	{
 		TextEntries presets = new TextEntries();
 		UserData userData = new UserData();
+		const int MaxRecordsPerText = 6;
 		readonly string userDataPath;
-		readonly string presetsPath;
+		//readonly string presetsPath;
 		
 		public TextEntry Current { get; set; }
 		public int Count => userData.TextEntries.Count;
@@ -194,8 +195,26 @@ namespace TyperLib
 
 		public void addRecord(Record rec)
 		{
-			userData.Records.Add(rec);
-			saveUserData();
+			var records = getRecordsOfText(rec.TextTitle);
+			if (records.Length < MaxRecordsPerText || rec > records[records.Length - 1])
+			{
+				//If the maximum number of records afready has been recorded, remove the lowest record.
+				if (records.Length >= MaxRecordsPerText)
+					userData.Records.Remove(records[records.Length - 1]);
+
+				//Add the new record
+				userData.Records.Add(rec);
+
+				//Save to disk
+				saveUserData();
+			}
+		}
+
+		public Record[] getRecordsOfText(string title, int count = 0)
+		{
+			var textRecords = userData.Records.Where(p => p.TextTitle == title).ToArray();
+			Array.Sort(textRecords);
+			return textRecords.ToArray();
 		}
 
 		public Record[] getRecords(RecordType type, int count = 0)
@@ -204,7 +223,7 @@ namespace TyperLib
 			userData.Records.CopyTo(records);
 			Array.Sort(records);
 
-			if (type != RecordType.RT_ALL)
+			if (type != RecordType.RT_BestSessions)
 			{
 				var dict = new Dictionary<string, Record>();
 				foreach (var rec in records)

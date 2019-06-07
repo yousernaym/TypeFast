@@ -57,7 +57,7 @@ namespace TyperLib
 
 		public int CompareTo(object obj)
 		{
-			Record rec = (Record)obj;
+			 Record rec = (Record)obj;
 			if (WPM < rec.WPM)
 				return 1;
 			else if (WPM > rec.WPM)
@@ -82,6 +82,26 @@ namespace TyperLib
 						return 0;
 				}
 			}
+		}
+
+		static public bool operator<(Record rec1, Record rec2)
+		{
+			return rec1.CompareTo(rec2) == 1;
+		}
+
+		static public bool operator >(Record rec1, Record rec2)
+		{
+			return rec1.CompareTo(rec2) == -1;
+		}
+
+		static public bool operator <=(Record rec1, Record rec2)
+		{
+			return rec1.CompareTo(rec2) >= 0;
+		}
+
+		static public bool operator >=(Record rec1, Record rec2)
+		{
+			return rec1.CompareTo(rec2) <= 0 ;
 		}
 	}
 }

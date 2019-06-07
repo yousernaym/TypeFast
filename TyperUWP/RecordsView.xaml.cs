@@ -33,7 +33,7 @@ namespace TyperUWP
 			TextCol = 3;
 		
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
-		RecordType currentRecordType = RecordType.RT_ALL;
+		RecordType currentRecordType = RecordType.RT_BestSessions;
 		Texts texts;
 
 		public delegate void TextTitleClickEH(RecordsView recordsView, TextTitleClickEventArgs e);
@@ -133,7 +133,7 @@ namespace TyperUWP
 
 		private void AllRBtn_Click(object sender, RoutedEventArgs e)
 		{
-			currentRecordType = RecordType.RT_ALL;
+			currentRecordType = RecordType.RT_BestSessions;
 			syncGrid();
 		}
 

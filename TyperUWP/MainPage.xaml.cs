@@ -161,9 +161,9 @@ namespace TyperUWP
 		{
 			if (isKeyDown(VirtualKey.Control))
 			{
-				if (args.VirtualKey == VirtualKey.R)
-					clickResetBtn();
-				else if (args.VirtualKey == VirtualKey.T)
+				//if (args.VirtualKey == VirtualKey.R)
+				//	clickResetBtn();
+				if (args.VirtualKey == VirtualKey.T)
 					textsCombo.Focus(FocusState.Programmatic);
 			}
 		}
@@ -239,9 +239,9 @@ namespace TyperUWP
 
 		private void clickResetBtn()
 		{
-			if (typingSession.Shuffle)
-				selectText(null);
-			else
+			//if (typingSession.Shuffle)
+				//selectText(null);
+			//else
 				reset();
 		}
 
@@ -589,6 +589,11 @@ namespace TyperUWP
 		{
 			fontSizeTb.SelectionStart = 0;
 			fontSizeTb.SelectionLength = fontSizeTb.Text.Length;
+		}
+
+		private void ShuffleBtn_Click(object sender, RoutedEventArgs e)
+		{
+			selectText(null);
 		}
 	}
 }

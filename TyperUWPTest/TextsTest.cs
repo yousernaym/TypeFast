@@ -28,7 +28,7 @@ namespace TyperUWPTest
 			texts.addRecord(new Record(250, 50, time + TimeSpan.FromSeconds(1), "title3", false, 0));
 			
 			//Get 3 records
-			var records = texts.getRecords(RecordType.RT_ALL, 3);
+			var records = texts.getRecords(RecordType.RT_BestSessions, 3);
 			//Verify that we got 3 records
 			Assert.IsTrue(records.Length == 3);
 			//Verify that the records are sorted highest to lowest wpm
@@ -77,7 +77,7 @@ namespace TyperUWPTest
 			Assert.AreEqual(100, records[1].Accuracy);
 
 			//Get all records, highest to lowest
-			records = texts.getRecords(RecordType.RT_ALL, 0);
+			records = texts.getRecords(RecordType.RT_BestSessions, 0);
 			//Check that we got all 6
 			Assert.IsTrue(records.Length == 6);
 			//Check that last 2 records are 50

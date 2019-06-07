@@ -21,7 +21,7 @@ namespace TyperLib
 		int maxWordLength;
 
 		public string StartText { get; private set; }
-		public bool Shuffle { get; set; } = true;
+		public bool Shuffle { get; set; } = false;
 		public TimeSpan TimeLimit { get; set; } = new TimeSpan(0, 1, 0);
 
 		public TextEntry TextEntrySource { get; private set; }

@@ -27,11 +27,10 @@ namespace TyperUWP
 			addRow("Shortcut", "Description");
 			addRow("Alt + H", "Show this list.");
 			addRow("Alt + T", "Change time limit.");
-			addRow("Alt + R", "Show records.");
-			addRow("Ctrl + V", "Create a new typing session with the contents of the clipboard.");
+			addRow("Alt + E", "Show records.");
 			addRow("Ctrl + F", "Change font settings.");
 			addRow("Ctrl + R", "Restart the typing session.");
-			addRow("Alt + S", "Toggle whether to select a random text when restarting the typing session.");
+			addRow("Alt + R", "Toggle whether to select a random text when restarting the typing session.");
 			addRow("Ctrl + T", "Open text list.");
 			addRow("Ctrl + N", "Add new text.");
 			addRow("Ctrl + E", "Edit the currently selected text.");
