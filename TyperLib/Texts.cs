@@ -75,21 +75,22 @@ namespace TyperLib
 		{
 			if (userDataPath == null)
 				return;
-			string tempPath = userDataPath + "_";
-			try
-			{
+			//string tempPath = userDataPath + "_";
+			string tempPath = userDataPath;
+			//try
+			//{
 				using (var stream = File.Open(tempPath, FileMode.Create))
 				{
 					saveUserData(stream, userData);
 				}
-			}
-			catch
-			{
-				File.Delete(tempPath);
-				throw;
-			}
-			File.Delete(userDataPath);
-			File.Move(tempPath, userDataPath);
+			//}
+			//catch
+			//{
+			//	File.Delete(tempPath);
+			//	throw;
+			//}
+			//File.Delete(userDataPath);
+			//File.Move(tempPath, userDataPath);
 		}
 
 		public void saveUserTexts(Stream stream)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -8,7 +9,8 @@ namespace TyperLib
 {
 	internal class TextEntries : IEnumerable<TextEntry>
 	{
-		SortedDictionary<string, TextEntry> entries = new SortedDictionary<string, TextEntry>(StringComparer.InvariantCultureIgnoreCase);
+		SortedDictionary<string, TextEntry> entries = new SortedDictionary<string, TextEntry>(StringComparer.CurrentCultureIgnoreCase);
+		//SortedDictionary<string, TextEntry> entries = new SortedDictionary<string, TextEntry>(StringComparer.Create(new CultureInfo("sv-SE"), true));
 		public int Count => entries.Count;
 		internal void add(TextEntry entry)
 		{
