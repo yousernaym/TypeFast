@@ -38,6 +38,8 @@ namespace TyperLib
 					TextTitle = (string)entry.Value;
 				else if (entry.Name == "isTextFinished")
 					IsTextFinished = (bool)entry.Value;
+				else if (entry.Name == "charCount")
+					CharCount = (int)entry.Value;
 			}
 		}
 
@@ -48,6 +50,7 @@ namespace TyperLib
 			info.AddValue("accuracy", Accuracy);
 			info.AddValue("textTitle", TextTitle);
 			info.AddValue("isTextFinished", IsTextFinished);
+			info.AddValue("charCount", CharCount);
 		}
 
 		public static int reverseSort(Record x, Record y)
