@@ -13,7 +13,7 @@
 	
     <StackPanel Orientation="Vertical">
 		<Popup x:Name="listPopup" Opened="ListPopup_Opened">
-			<ListView x:Name="list" Background="Black" BorderBrush="DarkGray" BorderThickness="1" SelectionChanged="List_SelectionChanged" GotFocus="List_GotFocus"/>
+			<ListView x:Name="list" Background="Black" BorderBrush="DarkGray" BorderThickness="1" SelectionChanged="List_SelectionChanged"/>
 		</Popup>
 		<TextBox x:Name="textBox" Height="Auto" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown"/>
 	</StackPanel>

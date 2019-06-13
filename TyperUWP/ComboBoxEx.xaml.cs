@@ -95,11 +95,6 @@ namespace TyperUWP
 			buildFilteredList("");
 		}
 
-		private void List_GotFocus(object sender, RoutedEventArgs e)
-		{
-			//submit();
-		}
-
 		void submit()
 		{
 			if (!listPopup.IsOpen)
@@ -163,16 +158,16 @@ namespace TyperUWP
 			if (e.Key == VirtualKey.Up)
 			{
 				if (SelectedIndex > 0)
-					highlightItem(SelectedIndex - 1);
+					SelectedIndex--;
 				else
-					highlightItem(list.Items.Count - 1);
+					SelectedIndex = list.Items.Count - 1;
 			}
 			else if (e.Key == VirtualKey.Down)
 			{
 				if (SelectedIndex < list.Items.Count - 1)
-					highlightItem(SelectedIndex + 1);
+					SelectedIndex++;
 				else
-					highlightItem(0);
+					SelectedIndex = 0;
 			}
 			else if (e.Key == VirtualKey.Enter && !string.IsNullOrEmpty(SelectedItem))
 				close();
@@ -186,13 +181,6 @@ namespace TyperUWP
 		void close()
 		{
 			list.Focus(FocusState.Programmatic);
-		}
-
-		private void highlightItem(int index)
-		{
-			var tempSubmittedItem = submittedItem;
-			SelectedIndex = index;
-			submittedItem = tempSubmittedItem;
 		}
 
 		private void setText(string text)
