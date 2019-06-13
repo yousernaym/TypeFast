@@ -29,6 +29,8 @@ namespace TyperUWP
 			addRow("Alt + T", "Change time limit.");
 			addRow("Alt + R", "Show records.");
 			addRow("Ctrl + F", "Change font settings.");
+			addRow("Ctrl + V", "Start a new typing session with the clipbbard contents.");
+			addRow("Ctrl + P", "Practice specified characters.");
 			addRow("Alt + E", "Restart the typing session.");
 			addRow("Alt + A", "Restart the typing session with a random text.");
 			addRow("Ctrl + T", "Open text list.");

@@ -12,6 +12,6 @@
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick">
 
     <StackPanel>
-		<TextBox x:Name="charsTb" Header="Type characters to practice"/>
+		<TextBox x:Name="charsTb" Header="Enter characters to practice"/>
 	</StackPanel>
 </ContentDialog>

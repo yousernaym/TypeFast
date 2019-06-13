@@ -322,7 +322,7 @@ namespace TyperUWP
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
 			{
-				typingSession.TextEntry = new TextEntry("", await dataPackageView.GetTextAsync());
+				texts.Current = new TextEntry("", await dataPackageView.GetTextAsync());
 				reset();
 			}
 		}
