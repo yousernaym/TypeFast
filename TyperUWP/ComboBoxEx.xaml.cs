@@ -89,9 +89,25 @@ namespace TyperUWP
 		private void TextBox_GotFocus(object sender, RoutedEventArgs e)
 		{
 			listPopup.IsOpen = true;
+			submittedItem = selectedItem;
 			textBox.PlaceholderText = textBox.Text;
 			setText("");
 			buildFilteredList("");
+		}
+
+		private void List_GotFocus(object sender, RoutedEventArgs e)
+		{
+			//submit();
+		}
+
+		void submit()
+		{
+			if (!listPopup.IsOpen)
+				return;
+			if (submittedItem == selectedItem)
+				return;
+			submittedItem = selectedItem;
+			SelectionSubmitted?.Invoke(this, new EventArgs());
 		}
 
 		private void TextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -100,6 +116,8 @@ namespace TyperUWP
 				selectedItem = submittedItem;
 			else
 				submit();
+			//if (!listPopup.IsOpen)
+			//	return;
 			listPopup.IsOpen = false;
 			setText(SelectedItem);
 		}
@@ -157,9 +175,17 @@ namespace TyperUWP
 					highlightItem(0);
 			}
 			else if (e.Key == VirtualKey.Enter && !string.IsNullOrEmpty(SelectedItem))
-				submit();
+				close();
 			else if (e.Key == VirtualKey.Escape)
+			{
 				setSelection(submittedItem);
+				close();
+			}
+		}
+
+		void close()
+		{
+			list.Focus(FocusState.Programmatic);
 		}
 
 		private void highlightItem(int index)
@@ -167,14 +193,6 @@ namespace TyperUWP
 			var tempSubmittedItem = submittedItem;
 			SelectedIndex = index;
 			submittedItem = tempSubmittedItem;
-		}
-
-		void submit()
-		{
-			if (!listPopup.IsOpen)
-				return;
-			submittedItem = selectedItem;
-			SelectionSubmitted?.Invoke(this, new EventArgs());
 		}
 
 		private void setText(string text)
@@ -189,7 +207,7 @@ namespace TyperUWP
 			if (list.SelectedIndex == -1)
 				return;
 			selectedItem = (string)list.SelectedItem;
-			submittedItem = textBox.PlaceholderText = SelectedItem;
+			//submittedItem = textBox.PlaceholderText = SelectedItem;
 			setText(SelectedItem);
 			textBox.SelectionStart = textBox.Text.Length;
 		}

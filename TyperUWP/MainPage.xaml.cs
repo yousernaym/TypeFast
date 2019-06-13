@@ -159,7 +159,7 @@ namespace TyperUWP
 
 		private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
 		{
-			if (isKeyDown(VirtualKey.Control))
+			if (isKeyDown(VirtualKey.Control) && !DialogOpen)
 			{
 				//if (args.VirtualKey == VirtualKey.R)
 				//	clickResetBtn();
@@ -208,9 +208,9 @@ namespace TyperUWP
 
 		private void CoreWindow_CharacterReceived(CoreWindow sender, CharacterReceivedEventArgs args)
 		{
-			const uint Esc = 27;
-			if (args.KeyCode == Esc) //Esc should remove focus from the AutoSuggestBox
-				focusOnTyping();
+			//const uint Esc = 27;
+			//if (args.KeyCode == Esc) //Esc should remove focus from the AutoSuggestBox
+			//	focusOnTyping();
 			if (DialogOpen)
 				return;
 
