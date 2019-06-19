@@ -139,8 +139,8 @@
 								</MenuFlyoutItem.KeyboardAccelerators>
 							</MenuFlyoutItem>
 							<MenuFlyoutSeparator />
-							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import list..." Click="TextsOptionsImport_Click"/>
-							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export list..." Click="TextsOptionsExport_Click"/>
+							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import texts..." Click="TextsOptionsImport_Click"/>
+							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export texts..." Click="TextsOptionsExport_Click"/>
 							<MenuFlyoutSeparator/>
 							<MenuFlyoutItem x:Name="textsOptionsRestore" Text="Restore preset texts" Click="TextsOptionsRestore_Click"/>
 						</MenuFlyout>

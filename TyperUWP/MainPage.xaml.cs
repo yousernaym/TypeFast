@@ -322,7 +322,7 @@ namespace TyperUWP
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
 			{
-				texts.Current = new TextEntry("", await dataPackageView.GetTextAsync());
+				selectTempText(await dataPackageView.GetTextAsync());
 				reset();
 			}
 		}
@@ -478,6 +478,7 @@ namespace TyperUWP
 				texts.selectRandom();
 			else
 				texts.select(title);
+			textsOptionsEdit.IsEnabled = true;
 			reset();
 		}
 
@@ -490,16 +491,15 @@ namespace TyperUWP
 		async private void TextsOptionsExport_Click(object sender, RoutedEventArgs e)
 		{
 			var fsp = new FileSavePicker();
-			fsp.FileTypeChoices.Add("Typer Texts", new List<string>() { ".tts" });
-			fsp.SuggestedFileName = "Typer Texts";
+			fsp.FileTypeChoices.Add("Typer text list", new List<string>() { ".ttl" });
+			fsp.SuggestedFileName = "My text list";
 			StorageFile file = await fsp.PickSaveFileAsync();
 			if (file != null)
 			{
 				var stream = await file.OpenStreamForWriteAsync();
 				stream.SetLength(0);
-				texts.saveUserTexts(stream);
-				//Todo: save complete user data (texts + records) before releasing app (or not?)
-				//texts.saveUserData(stream); 
+				//texts.saveUserTexts(stream);
+				texts.saveUserData(stream); 
 				stream.Dispose();
 			}
 		}
@@ -508,18 +508,18 @@ namespace TyperUWP
 		{
 			var fop = new FileOpenPicker();
 			//fop.FileTypeFilter.Add("*");
-			fop.FileTypeFilter.Add(".tts");
+			fop.FileTypeFilter.Add(".ttl");
 			StorageFile file = await fop.PickSingleFileAsync();
 			if (file != null)
 			{
 				var stream = await file.OpenStreamForReadAsync();
 				try
 				{
-					texts.importUserData(stream, false);
+					texts.importUserData(stream, true);
 				}
 				catch
 				{
-					var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Incorrect file format." }.ShowAsync();
+					var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Couldn't load file." }.ShowAsync();
 					return;
 				}
 				finally
@@ -580,9 +580,15 @@ namespace TyperUWP
 			DialogOpen = false;
 			if (result == ContentDialogResult.Primary)
 			{
-				texts.Current = new TextEntry("", "__rnd 1-7__ " + dlg.Chars); ;
+				selectTempText("__rnd 1-7__ " + dlg.Chars);
 				reset();
 			}
+		}
+
+		private void selectTempText(string text)
+		{
+			texts.Current = new TextEntry("", text); ;
+			textsOptionsEdit.IsEnabled = false;
 		}
 
 		private void FontSizeTb_GotFocus(object sender, RoutedEventArgs e)

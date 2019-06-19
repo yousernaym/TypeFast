@@ -155,9 +155,9 @@
     <Content Include="..\TyperLib\texts\bible_EN.xml">
       <Link>Texts\bible_EN.xml</Link>
     </Content>
-    <Content Include="Texts\presets.tts">
+    <None Include="Texts\presets.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
     <None Include="TyperUWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

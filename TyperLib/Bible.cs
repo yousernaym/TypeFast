@@ -46,7 +46,7 @@ namespace TyperLib
 			var chapter = book.getRandomItem();
 			var verse = Currentverse = chapter.getRandomItem();
 			var text = new StringBuilder("");
-			while (text.Length < 10000 && verse.Next != null)
+			while (text.Length + verse.Text.Length < length && verse.Next != null)
 			{
 				text.Append(verse.Text);
 				text.Append(' ');

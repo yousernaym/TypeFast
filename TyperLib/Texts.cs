@@ -170,10 +170,9 @@ namespace TyperLib
 			//	userData.TextEntries.add(text);
 		}
 
-		public string select(string title)
+		public void select(string title)
 		{
 			Current = userData.TextEntries[title];
-			return Current.Text;
 		}
 
 		public TextEntry selectRandom()
