@@ -17,7 +17,7 @@ namespace TyperLib
 	{
 		TextEntries presets = new TextEntries();
 		UserData userData = new UserData();
-		const int MaxRecordsPerText = 6;
+		public const int MaxRecordsPerText = 10;
 		readonly string userDataPath;
 		//readonly string presetsPath;
 		

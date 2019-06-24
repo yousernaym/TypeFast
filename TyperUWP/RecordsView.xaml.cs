@@ -24,7 +24,7 @@ namespace TyperUWP
 	public sealed partial class RecordsView : UserControl
 	{
 		const int
-			NumRecords = 6,
+			NumRecords = Texts.MaxRecordsPerText,
 			Rows = NumRecords + 1,
 			Columns = 4,
 			WpmCol = 0,

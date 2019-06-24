@@ -23,33 +23,39 @@ namespace TyperUWP
 		public Help()
 		{
 			this.InitializeComponent();
+			addRow(statsTable, "Name", "Description");
+			addRow(statsTable, "Correct", "Number of correctly typed characters.");
+			addRow(statsTable, "Incorrect", "Number of incorrectly typed characters left uncorrected.");
+			addRow(statsTable, "Fixed", "Number of corrected characters.");
+			addRow(statsTable, "WPM", "Words Per Minute. Assumes 5 characters per word. Incorrect charaacters left uncorrected incur a penalty to encourage correcting mistakes.");
+			addRow(statsTable, "Accuracy", "Percentage of correct characters relative to the total number of characters. Total number of characters = Correct + Incorrect + Fixed.");
 
-			addRow("Shortcut", "Description");
-			addRow("Alt + H", "Show this list.");
-			addRow("Alt + T", "Change time limit.");
-			addRow("Alt + R", "Show records.");
-			addRow("Ctrl + F", "Change font settings.");
-			addRow("Ctrl + V", "Start a new typing session with the clipbbard contents.");
-			addRow("Ctrl + P", "Practice specified characters.");
-			addRow("Alt + E", "Restart the typing session.");
-			addRow("Alt + A", "Restart the typing session with a random text.");
-			addRow("Ctrl + T", "Open text list.");
-			addRow("Ctrl + N", "Add new text.");
-			addRow("Ctrl + E", "Edit the currently selected text.");
-			addRow("Ctrl + D", "Delete the currently selected text.");
+			addRow(shortcutsTable, "Shortcut", "Description");
+			addRow(shortcutsTable, "Alt + H", "Show this page.");
+			addRow(shortcutsTable, "Alt + T", "Change time limit.");
+			addRow(shortcutsTable, "Alt + R", "Show records.");
+			addRow(shortcutsTable, "Ctrl + F", "Change font settings.");
+			addRow(shortcutsTable, "Ctrl + V", "Start new typing session with clipbbard contents.");
+			addRow(shortcutsTable, "Ctrl + P", "Practice specific characters.");
+			addRow(shortcutsTable, "Alt + E", "Restart typing session.");
+			addRow(shortcutsTable, "Alt + A", "Restart typing session with a random text.");
+			addRow(shortcutsTable, "Ctrl + T", "Open text list.");
+			addRow(shortcutsTable, "Ctrl + N", "Add new text.");
+			addRow(shortcutsTable, "Ctrl + E", "Edit the currently selected text.");
+			addRow(shortcutsTable, "Ctrl + D", "Delete the currently selected text.");
 		}
 
-		public void addRow(params string[] cellTexts)
+		public void addRow(Table table, params string[] cellTexts)
 		{
-			int rowNumber = shortcutsTable.RowCount;
-			shortcutsTable.addRow();
+			int rowNumber = table.RowCount;
+			table.addRow();
 			for (int colNumber = 0; colNumber < cellTexts.Length; colNumber++)
 			{
 				var cell = new TextBlock();
 				cell.Text = cellTexts[colNumber];
 				cell.VerticalAlignment = VerticalAlignment.Center;
 				cell.Foreground = new SolidColorBrush(Colors.White);
-				cell.FontSize = 20;
+				cell.FontSize = 18;
 				cell.Padding = new Thickness(7, 7, 20, 7);
 				cell.TextWrapping = TextWrapping.Wrap;
 
@@ -60,7 +66,7 @@ namespace TyperUWP
 				}
 				if (colNumber == 1)
 					cell.MaxWidth = 600;
-				shortcutsTable.addCell(cell);
+				table.addCell(cell);
 			}
 		}
 	}

@@ -9,7 +9,10 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <Grid Background="Black">
-		<local:Table x:Name="shortcutsTable"/>
-	</Grid>
+    <StackPanel Background="Black" Padding="20">
+		<TextBlock Text="Shortcuts" FontSize="30" HorizontalAlignment="Center" Margin="0 0 0 10"/>
+		<local:Table x:Name="shortcutsTable" HorizontalAlignment="Center"/>
+		<TextBlock Text="Stats" FontSize="30" HorizontalAlignment="Center" Margin="0 30 0 10"/>
+		<local:Table x:Name="statsTable"/>
+	</StackPanel>
 </UserControl>
