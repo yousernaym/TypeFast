@@ -42,10 +42,11 @@ namespace TyperLib
 			//	presetsPath = Path.Combine(presetsDir, "presets.tts");
 			//saveUserData();
 
-			if (File.Exists(userDataPath))
-				loadUserData(userDataPath, true);
-			else
+			//if (File.Exists(userDataPath))
+			//	loadUserData(userDataPath, true);
+			//else
 				loadPresets();
+
 			//else if (File.Exists(presetsPath))
 			//loadUserData(presetsPath);
 		}

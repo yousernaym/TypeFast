@@ -22,61 +22,81 @@ namespace TyperUWP
 {
 	public sealed partial class NewTextDialog : ContentDialog
 	{
-		public string TitleEntry
+		public string TitleField
 		{
 			get => titleTb.Text;
 			set => titleTb.Text = value;
 		}
 		
-		public string TextEntry
+		public string TextField
 		{
 			get => textTb.Text;
 			set => textTb.Text = value;
 		}
 
-		Texts textList;
-		string editExisting;
-		ComboBoxEx textListControl;
+		public bool AsciiLetters
+		{
+			get => (bool)asciiLettersCb.IsChecked;
+			set => asciiLettersCb.IsChecked = value;
+		}
 
-		public NewTextDialog(Texts textList, bool edit, ComboBoxEx textListControl)
+		Texts texts;
+		string editTitle;
+		ComboBoxEx textsControl;
+
+		public NewTextDialog(Texts texts, TypingSession typingSession, bool edit, ComboBoxEx textsControl)
 		{
 			this.InitializeComponent();
-			this.textList = textList;
-			this.textListControl = textListControl;
+			this.texts = texts;
+			this.textsControl = textsControl;
+			TitleField = texts.Current.Title;
+			TextField = texts.Current.Text;
+			AsciiLetters = texts.Current.AsciiLetters;
+
 			if (edit)
 			{
+				Title = "Edit text";
 				var notes = new TextBlock();
 				notes.Text = "Editing a text will erase all associated records.";
 				notes.Margin = new Thickness(0, 10, 0, 0);
 				notes.Foreground = new SolidColorBrush(Colors.Yellow);
 				stackPanel.Children.Add(notes);
-				this.editExisting = textList.Current.Title;
+				this.editTitle = texts.Current.Title;
+			}
+			else
+			{
+				Title = "Add new text";
+				if (texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
+				{
+					TitleField = typingSession.TextEntry.Title;
+					TextField = typingSession.TextEntry.Text;
+				}
 			}
 		}
 		
 		private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
 		{
-			if (string.IsNullOrWhiteSpace(TitleEntry))
+			if (string.IsNullOrWhiteSpace(TitleField))
 			{
 				displayError(titleTb, "Title can't be empty");
 				args.Cancel = true;
 			}
-			else if (string.IsNullOrWhiteSpace(TextEntry))
+			else if (string.IsNullOrWhiteSpace(TextField))
 			{
 				displayError(textTb, "Text can't be empty.");
 				args.Cancel = true;
 			}
-			else if (editExisting != TitleEntry && textList.containsTitle(TitleEntry))
+			else if (editTitle != TitleField && texts.containsTitle(TitleField))
 			{
 				displayError(titleTb, "Another text with this title already exists.");
 				args.Cancel = true;
 			}
 			else
 			{
-				if (!string.IsNullOrEmpty(editExisting))
-					textList.remove(editExisting);
-				textList.add(new TextEntry(TitleEntry, TextEntry));
-				textListControl.ItemSource = textList.Titles;
+				if (!string.IsNullOrEmpty(editTitle))
+					texts.remove(editTitle);
+				texts.add(new TextEntry(TitleField, TextField, AsciiLetters));
+				textsControl.ItemSource = texts.Titles;
 			}
 		}
 

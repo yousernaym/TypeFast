@@ -57,21 +57,27 @@ namespace TyperLib
 	{
 		public string Title { get; set; }
 		public string Text { get; set; }
+		public bool AsciiLetters { get; set; }
 		public TextEntry(TextEntry source = null)
 		{
 			if (source == null)
+			{
 				Title = Text = "";
+				AsciiLetters = false;
+			}
 			else
 			{
 				Title = source.Title;
 				Text = source.Text;
+				AsciiLetters = source.AsciiLetters;
 			}
 		}
 
-		public TextEntry(string title, string text)
+		public TextEntry(string title, string text, bool asciiLetters)
 		{
 			Title = title;
 			Text = text;
+			AsciiLetters = asciiLetters;
 		}
 
 		public TextEntry(SerializationInfo info, StreamingContext context)
@@ -82,6 +88,8 @@ namespace TyperLib
 					Title = (string)entry.Value;
 				else if (entry.Name == "text")
 					Text = (string)entry.Value;
+				else if (entry.Name == "asciiLetters")
+					AsciiLetters = (bool)entry.Value;
 			}
 		}
 
@@ -89,6 +97,7 @@ namespace TyperLib
 		{
 			info.AddValue("title", Title);
 			info.AddValue("text", Text);
+			info.AddValue("asciiLetters", AsciiLetters);
 		}
 	}
 }

@@ -83,12 +83,16 @@ namespace TyperLib
 				text = text.Replace('\r', ' ');
 				text = text.Replace('\t', ' ');
 
-				//text = text.Replace((char)160, ' '); //Convert non-breaking space to regular space
-				//text = text.Replace('“', '"');
-				//text = text.Replace('”', '"');
-				//text = text.Replace('‘', '\'');
-				//text = text.Replace('’', '\'');
-				//text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen
+				foreach (var charMapping in symbolMap)
+					foreach (var source in charMapping.Value)
+						text = text.Replace(source, charMapping.Key);
+				if (textEntry.AsciiLetters)
+				{
+					foreach (var charMapping in letterMap)
+						foreach (var source in charMapping.Value)
+							text = text.Replace(source, charMapping.Key);
+				}
+
 				text = text.Trim();
 				
 				//Replace repeating spaces with single space
@@ -165,8 +169,8 @@ namespace TyperLib
 		public bool IsReset => !IsFinished && !IsRunning;
 
 		Timer checkTimeTimer;
-		Dictionary<string, string[]> symbolMap;
-		Dictionary<string, string[]> letterMap;
+		Dictionary<string, string[]> symbolMap = new Dictionary<string, string[]>();
+		Dictionary<string, string[]> letterMap = new Dictionary<string, string[]>();
 		
 		public Bible Bible { get; set; }
 
@@ -196,29 +200,39 @@ namespace TyperLib
 		}
 		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("startText", Shuffle ? null : TextEntrySource.Title);
+			info.AddValue("startText", Shuffle || TextEntrySource == null ? null : TextEntrySource.Title);
 			info.AddValue("timeLimit", TimeLimit);
 		}
 
-		public void createCharMap(StringReader charMapReader)
+		public void loadCharMap(Stream stream)
 		{
+			var reader = new StreamReader(stream);
 			string line;
 			string section = null;
-			while ((line = charMapReader.ReadLine()) != null)
+			while ((line = reader.ReadLine()) != null)
 			{
 				Match match;
-				if ((match = Regex.Match(line, "[.*]")).Success)
+				if ((match = Regex.Match(line, "\\[.*\\]")).Success)
+				{
 					section = match.Value;
-				var split = line.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries);
+					continue;
+				}
+				if (string.IsNullOrWhiteSpace(line))
+					continue;
+				var split = line.Split(new char[]{','}, 2);
 				var sources = split[0].Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
+				for (int i = 0; i < sources.Length; i++)
+					if (sources[i][0] == '#')
+						sources[i] = ((char)int.Parse(sources[i].Substring(1))).ToString();
+
 				var dest = split[1].Trim();
+				if (dest.Count(c => c == '"') == 2)
+					dest = dest.Replace("\"", "");
+
 				if (section == "[Symbols]")
 					symbolMap.Add(dest, sources);
 				else if (section == "[Letters]")
 					letterMap.Add(dest, sources);
-				else
-					throw new FormatException("Incorrect section: " + section);
-
 			}
 		}
 		protected virtual void OnTimeChecked()

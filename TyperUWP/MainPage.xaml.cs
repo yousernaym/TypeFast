@@ -137,14 +137,19 @@ namespace TyperUWP
 			typingSession.Bible = new Bible(bibleStream);
 			bibleStream.Dispose();
 
+			//Misc init
 			fontCombo.SelectedItem = typingSession.FontName;
 			fontSizeTb.Text = typingSession.FontSize.ToString();
 			typingSession.TimeChecked += Text_TimeChecked;
 			typingSession.Finished += Text_Finished;
 			if (texts.containsTitle(typingSession.StartText))
-				selectText(typingSession.StartText); //Text from last time app was used
+				selectText(typingSession.StartText); //Text from last time the app was used
 			else
 				selectText(null); //Random text
+
+			//Load char mapping file
+			var charMapStream = await getResourceStream("charmap.txt");
+			typingSession.loadCharMap(charMapStream);
 		}
 
 		private void DataChangeHandler(ApplicationData sender, object args)
@@ -267,36 +272,28 @@ namespace TyperUWP
 		{
 			if (DialogOpen)
 				return;
-			NewTextDialog newTextDialog = new NewTextDialog(texts, false, textsCombo);
-			newTextDialog.Title = "Add new text";
-			newTextDialog.TitleEntry = typingSession.TextEntry.Title;
-			if (texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
-				newTextDialog.TextEntry = typingSession.TextEntry.Text;
-			else
-				newTextDialog.TextEntry = texts.Current.Text;
-
+			NewTextDialog newTextDialog = new NewTextDialog(texts, typingSession, false, textsCombo);
+						
 			DialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
 			DialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
-				selectText(newTextDialog.TitleEntry);
+				selectText(newTextDialog.TitleField);
 		}
 
 		async private void TextsOptionsEdit_Click(object sender, RoutedEventArgs e)
 		{
 			if (DialogOpen)
 				return;
-			NewTextDialog newTextDialog = new NewTextDialog(texts, true, textsCombo);
-			newTextDialog.Title = "Edit text";
-			newTextDialog.TitleEntry = texts.Current.Title;
-			newTextDialog.TextEntry = texts.Current.Text;
+			NewTextDialog newTextDialog = new NewTextDialog(texts, typingSession, true, textsCombo);
+
 			DialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
 			DialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
-				selectText(newTextDialog.TitleEntry);
+				selectText(newTextDialog.TitleField);
 		}
 
 		async private void TextsOptionsDelete_Click(object sender, RoutedEventArgs e)
@@ -321,10 +318,7 @@ namespace TyperUWP
 				return;
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
-			{
-				selectTempText(await dataPackageView.GetTextAsync());
-				reset();
-			}
+					selectTempText(await dataPackageView.GetTextAsync());
 		}
 
 		private void TimeLimitTb_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -538,7 +532,7 @@ namespace TyperUWP
 
 		async void loadPresets()
 		{
-			var stream = await getResourceStream("texts/presets.tts");
+			var stream = await getResourceStream("texts/presets.ttl");
 			texts.importUserData(stream, false);
 			stream.Dispose();
 			textsCombo.ItemSource = texts.Titles;
@@ -579,16 +573,14 @@ namespace TyperUWP
 			var result = await dlg.ShowAsync();
 			DialogOpen = false;
 			if (result == ContentDialogResult.Primary)
-			{
 				selectTempText("__rnd 1-7__ " + dlg.Chars);
-				reset();
 			}
-		}
 
 		private void selectTempText(string text)
 		{
-			texts.Current = new TextEntry("", text); ;
+			texts.Current = new TextEntry("", text, false); ;
 			textsOptionsEdit.IsEnabled = false;
+			reset();
 		}
 
 		private void FontSizeTb_GotFocus(object sender, RoutedEventArgs e)
