@@ -43,7 +43,7 @@ namespace TyperLib
 		{
 			if (userDataDir != null)
 				userDataPath = Path.Combine(userDataDir, "texts.tts");
-			//saveUserData();
+			saveUserData();
 
 			if (File.Exists(userDataPath))
 				loadUserData(userDataPath, true);

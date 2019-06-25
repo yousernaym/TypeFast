@@ -86,7 +86,7 @@ namespace TyperUWP
 				displayError(textTb, "Text can't be empty.");
 				args.Cancel = true;
 			}
-			else if (editTitle != TitleField && texts.containsTitle(TitleField))
+			else if (!editTitle.Equals(TitleField, StringComparison.OrdinalIgnoreCase) && texts.containsTitle(TitleField))
 			{
 				displayError(titleTb, "Another text with this title already exists.");
 				args.Cancel = true;
