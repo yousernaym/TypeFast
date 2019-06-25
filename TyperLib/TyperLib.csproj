@@ -5,6 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="charmap.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="charmap.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="presetTexts.typtexts.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
     </None>

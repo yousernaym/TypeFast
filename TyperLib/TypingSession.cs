@@ -79,23 +79,22 @@ namespace TyperLib
 				reset();
 
 				//Replace whitespace with space
+				var chars = text.ToCharArray();
 				text = text.Replace('\r', ' ');
 				text = text.Replace('\t', ' ');
-				text = text.Replace((char)160, ' '); //Convert non-breaking space to regular space
 
-				text = text.Replace('“', '"');
-				text = text.Replace('”', '"');
-				text = text.Replace('‘', '\'');
-				text = text.Replace('’', '\'');
-				text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen
+				//text = text.Replace((char)160, ' '); //Convert non-breaking space to regular space
+				//text = text.Replace('“', '"');
+				//text = text.Replace('”', '"');
+				//text = text.Replace('‘', '\'');
+				//text = text.Replace('’', '\'');
+				//text = text.Replace(((char)8212).ToString(), "--"); //Convert wide non-ascii hyphen
 				text = text.Trim();
 				
 				//Replace repeating spaces with single space
-				//Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
 				text = Regex.Replace(text, "[ ]{2,}", " ");
 
 				//Replace repeating line breaks with single break
-				//regex = new Regex("[\n]{2,}", RegexOptions.None);
 				text = Regex.Replace(text, "[\n]{2,}", " ");
 		
 				text = text.Replace('\n', ' ');
@@ -166,6 +165,9 @@ namespace TyperLib
 		public bool IsReset => !IsFinished && !IsRunning;
 
 		Timer checkTimeTimer;
+		Dictionary<string, string[]> symbolMap;
+		Dictionary<string, string[]> letterMap;
+		
 		public Bible Bible { get; set; }
 
 		public event EventHandler TimeChecked;
@@ -198,6 +200,27 @@ namespace TyperLib
 			info.AddValue("timeLimit", TimeLimit);
 		}
 
+		public void createCharMap(StringReader charMapReader)
+		{
+			string line;
+			string section = null;
+			while ((line = charMapReader.ReadLine()) != null)
+			{
+				Match match;
+				if ((match = Regex.Match(line, "[.*]")).Success)
+					section = match.Value;
+				var split = line.Split(new char[]{','}, StringSplitOptions.RemoveEmptyEntries);
+				var sources = split[0].Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
+				var dest = split[1].Trim();
+				if (section == "[Symbols]")
+					symbolMap.Add(dest, sources);
+				else if (section == "[Letters]")
+					letterMap.Add(dest, sources);
+				else
+					throw new FormatException("Incorrect section: " + section);
+
+			}
+		}
 		protected virtual void OnTimeChecked()
 		{
 			TimeChecked?.Invoke(this, new EventArgs());
