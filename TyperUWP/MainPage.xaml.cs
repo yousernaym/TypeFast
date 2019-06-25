@@ -69,7 +69,8 @@ namespace TyperUWP
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
-			texts = new Texts(LocalDataDir, ()=>loadPresets());
+			texts = new Texts();
+			texts.init(LocalDataDir, ()=>loadPresets());
 			SettingsPath = Path.Combine(RoamingDataDir, "settings");
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
@@ -142,10 +143,12 @@ namespace TyperUWP
 			fontSizeTb.Text = typingSession.FontSize.ToString();
 			typingSession.TimeChecked += Text_TimeChecked;
 			typingSession.Finished += Text_Finished;
-			if (texts.containsTitle(typingSession.StartText))
-				selectText(typingSession.StartText); //Text from last time the app was used
+			if (typingSession.StartText == null)
+				selectText(null); //No info saved about text from last session, so pick random text. Should only happet first time app starts.
+			else if (texts.containsTitle(typingSession.StartText.Title))
+				selectText(typingSession.StartText.Title); //Text-list text from last time the app was closed
 			else
-				selectText(null); //Random text
+				selectTempText(typingSession.StartText.Text); //Temporary text (practice session or from clipboard) from last time the app was closed, or text no longer exists for some reason.
 
 			//Load char mapping file
 			var charMapStream = await getResourceStream("charmap.txt");

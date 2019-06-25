@@ -20,7 +20,7 @@ namespace TyperLib
 		int minWordLength;
 		int maxWordLength;
 
-		public string StartText { get; private set; }
+		public TextEntry StartText { get; private set; }
 		public bool Shuffle { get; set; } = false;
 		public TimeSpan TimeLimit { get; set; } = new TimeSpan(0, 1, 0);
 
@@ -191,7 +191,7 @@ namespace TyperLib
 			{
 				if (entry.Name == "startText")
 				{
-					StartText = (string)entry.Value;
+					StartText = (TextEntry)entry.Value;
 					Shuffle = StartText == null;
 				}
 				else if (entry.Name == "timeLimit")
@@ -200,7 +200,7 @@ namespace TyperLib
 		}
 		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("startText", Shuffle || TextEntrySource == null ? null : TextEntrySource.Title);
+			info.AddValue("startText", TextEntrySource);
 			info.AddValue("timeLimit", TimeLimit);
 		}
 

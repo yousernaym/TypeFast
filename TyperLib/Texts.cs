@@ -18,7 +18,7 @@ namespace TyperLib
 		TextEntries presets = new TextEntries();
 		UserData userData = new UserData();
 		public const int MaxRecordsPerText = 10;
-		readonly string userDataPath;
+		string userDataPath;
 		//readonly string presetsPath;
 		
 		public TextEntry Current { get; set; }
@@ -34,21 +34,21 @@ namespace TyperLib
 			}
 		}
 		
-		public Texts(string userDataDir, Action loadPresets)
+		public Texts()
+		{
+			
+		}
+
+		public void init(string userDataDir, Action loadPresets)
 		{
 			if (userDataDir != null)
 				userDataPath = Path.Combine(userDataDir, "texts.tts");
-			//if (presetsDir != null)
-			//	presetsPath = Path.Combine(presetsDir, "presets.tts");
 			//saveUserData();
 
-			//if (File.Exists(userDataPath))
-			//	loadUserData(userDataPath, true);
-			//else
+			if (File.Exists(userDataPath))
+				loadUserData(userDataPath, true);
+			else
 				loadPresets();
-
-			//else if (File.Exists(presetsPath))
-			//loadUserData(presetsPath);
 		}
 
 		void loadUserData(string loadPath, bool loadRecords)
