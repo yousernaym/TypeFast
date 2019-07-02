@@ -43,7 +43,7 @@ namespace TyperLib
 		{
 			if (userDataDir != null)
 				userDataPath = Path.Combine(userDataDir, "texts.tts");
-			saveUserData();
+			//saveUserData();
 
 			if (File.Exists(userDataPath))
 				loadUserData(userDataPath, true);
@@ -69,7 +69,7 @@ namespace TyperLib
 			foreach (var text in data.TextEntries)
 				userData.TextEntries.add(text);
 			foreach (var rec in data.Records)
-				userData.Records.Add(rec);
+				addRecord(rec);
 		}
 
 		public void saveUserData()
@@ -192,8 +192,6 @@ namespace TyperLib
 		public void addRecord(TypingSession session)
 		{
 			addRecord(new Record(session.Wpm, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count));
-			if (session.WrittenChars.Count == 0)
-				throw new Exception();
 		}
 
 		public void addRecord(Record rec)
@@ -266,7 +264,7 @@ namespace TyperLib
 			saveUserData();
 
 			//Update text of current selection in case it was altered
-			if (Current != null)
+			if (Current != null && containsTitle(Current.Title))
 				select(Current.Title);
 		}
 

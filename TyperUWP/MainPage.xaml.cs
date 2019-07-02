@@ -524,7 +524,8 @@ namespace TyperUWP
 					stream.Dispose();
 				}
 				textsCombo.ItemSource = texts.Titles;
-				selectText(texts.Current?.Title);
+				reset();
+				//selectText(texts.Current?.Title);
 			}
 		}
 
@@ -539,7 +540,8 @@ namespace TyperUWP
 			texts.importUserData(stream, false);
 			stream.Dispose();
 			textsCombo.ItemSource = texts.Titles;
-			selectText(texts.Current?.Title);
+			reset();
+			//selectText(texts.Current?.Title);
 		}
 
 		private void TextsCombo_SelectionSubmitted(object sender, EventArgs args)

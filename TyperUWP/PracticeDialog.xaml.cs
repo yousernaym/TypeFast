@@ -27,7 +27,10 @@ namespace TyperUWP
 
 		private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
 		{
-			
+			if (string.IsNullOrWhiteSpace(Chars))
+			{
+				args.Cancel = true;
+			}
 		}
 
 		private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
