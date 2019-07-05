@@ -39,10 +39,10 @@ namespace TyperLib
 			
 		}
 
-		public void init(string userDataDir, Action loadPresets)
+		public void loadData(string userDataDir, Action loadPresets)
 		{
 			if (userDataDir != null)
-				userDataPath = Path.Combine(userDataDir, "texts.tts");
+				userDataPath = Path.Combine(userDataDir, "texts.ttl");
 			//saveUserData();
 
 			if (File.Exists(userDataPath))
@@ -76,22 +76,10 @@ namespace TyperLib
 		{
 			if (userDataPath == null)
 				return;
-			//string tempPath = userDataPath + "_";
-			string tempPath = userDataPath;
-			//try
-			//{
-				using (var stream = File.Open(tempPath, FileMode.Create))
-				{
-					saveUserData(stream, userData);
-				}
-			//}
-			//catch
-			//{
-			//	File.Delete(tempPath);
-			//	throw;
-			//}
-			//File.Delete(userDataPath);
-			//File.Move(tempPath, userDataPath);
+			using (var stream = File.Open(userDataPath, FileMode.Create))
+			{
+				saveUserData(stream, userData);
+			}
 		}
 
 		public void saveUserTexts(Stream stream)
@@ -205,9 +193,6 @@ namespace TyperLib
 
 				//Add the new record
 				userData.Records.Add(rec);
-
-				//Save to disk
-				saveUserData();
 			}
 		}
 

@@ -13,7 +13,7 @@ namespace TyperUWPTest
 		[TestInitialize]
 		public void init()
 		{
-			texts = new Texts(null, null);
+			texts = new Texts();
 		}
 
 		[TestMethod]

@@ -41,7 +41,7 @@ namespace TyperUWP
 		}
 
 		Texts texts;
-		string editTitle;
+		string editTitle = "";
 		ComboBoxEx textsControl;
 
 		public NewTextDialog(Texts texts, TypingSession typingSession, bool edit, ComboBoxEx textsControl)
@@ -76,6 +76,8 @@ namespace TyperUWP
 		
 		private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
 		{
+			TitleField = TitleField.Trim();
+			TextField = TextField.Trim();
 			if (string.IsNullOrWhiteSpace(TitleField))
 			{
 				displayError(titleTb, "Title can't be empty");

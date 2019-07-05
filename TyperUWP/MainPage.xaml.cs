@@ -70,7 +70,7 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
 			texts = new Texts();
-			texts.init(LocalDataDir, ()=>loadPresets());
+			texts.loadData(LocalDataDir, ()=>loadPresets());
 			SettingsPath = Path.Combine(RoamingDataDir, "settings");
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
@@ -143,12 +143,22 @@ namespace TyperUWP
 			fontSizeTb.Text = typingSession.FontSize.ToString();
 			typingSession.TimeChecked += Text_TimeChecked;
 			typingSession.Finished += Text_Finished;
+
+			//Restore text from last session 
 			if (typingSession.StartText == null)
-				selectText(null); //No info saved about text from last session, so pick random text. Should only happet first time app starts.
-			else if (texts.containsTitle(typingSession.StartText.Title))
-				selectText(typingSession.StartText.Title); //Text-list text from last time the app was closed
+			{
+				//No info saved about text from last session, so pick random text. Should only happen first time app starts.
+				selectText(null);
+			}
 			else
-				selectTempText(typingSession.StartText.Text); //Temporary text (practice session or from clipboard) from last time the app was closed, or text no longer exists for some reason.
+			{
+				if (string.IsNullOrWhiteSpace(typingSession.StartText.Title))
+					selectTempText(typingSession.StartText.Text); //Text without title = temporary text (practice session or from clipboard).
+				else if (texts.containsTitle(typingSession.StartText.Title))
+					selectText(typingSession.StartText.Title); //Use title to select text from list.
+				else
+					selectText(null); //Text list no longer contains the text from last session for some reason, so select random text.
+			}
 
 			//Load char mapping file
 			var charMapStream = await getResourceStream("charmap.txt");
@@ -179,8 +189,12 @@ namespace TyperUWP
 		private void Text_Finished(object sender, EventArgs e)
 		{
 			if (texts.Current != null && !string.IsNullOrEmpty(texts.Current.Title))
-				 texts.addRecord(typingSession);
+			{
+				texts.addRecord(typingSession);
+				texts.saveUserData();
+			}
 		}
+
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
 		{
