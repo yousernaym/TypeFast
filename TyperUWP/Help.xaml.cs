@@ -27,7 +27,7 @@ namespace TyperUWP
 			addRow(statsTable, "Correct", "Number of correctly typed characters.");
 			addRow(statsTable, "Incorrect", "Number of incorrectly typed characters left uncorrected.");
 			addRow(statsTable, "Fixed", "Number of corrected characters.");
-			addRow(statsTable, "WPM", "Words Per Minute. Assumes 5 characters per word. Incorrect charaacters left uncorrected incur a penalty to encourage correcting mistakes.");
+			addRow(statsTable, "WPM", "Words Per Minute. Assumes 5 characters per word. Uncorrected characters incur a penalty to encourage correcting mistakes.");
 			addRow(statsTable, "Accuracy", "Percentage of correct characters relative to the total number of characters. Total number of characters = Correct + Incorrect + Fixed.");
 
 			addRow(shortcutsTable, "Shortcut", "Description");

@@ -130,7 +130,7 @@ namespace TyperUWP
 				//Use default settings
 				textColorBtn.Background = typingSession.ForegroundBrush;
 				textBkgColorBtn.Background = typingSession.BackgroundBrush;
-				typingSession.FontSize = 50;
+				typingSession.FontSize = 35;
 			}
 
 			//Load bible
@@ -543,7 +543,7 @@ namespace TyperUWP
 			}
 		}
 
-		private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
+		async private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
 		{
 			loadPresets();
 		}
