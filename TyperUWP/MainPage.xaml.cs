@@ -58,10 +58,10 @@ namespace TyperUWP
 			//var exportIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEDE2" };
 			//textsOptionsExport.Icon = exportIcon;
 
-			//ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(1000, 500));
-			
-			//ApplicationView.PreferredLaunchViewSize = new Size(1000, );
-			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+			ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(700, 480));
+
+			//ApplicationView.PreferredLaunchViewSize = new Size(1000, 500);
+			//ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.Auto;
 
 			//ApplicationData.Current.DataChanged += Current_DataChanged;
 			//ApplicationData.Current.DataChanged += new TypedEventHandler<ApplicationData, object>(DataChangeHandler);
@@ -181,8 +181,8 @@ namespace TyperUWP
 			{
 				//if (args.VirtualKey == VirtualKey.R)
 				//	clickResetBtn();
-				if (args.VirtualKey == VirtualKey.T)
-					textsCombo.Focus(FocusState.Programmatic);
+				//if (args.VirtualKey == VirtualKey.T)
+				//	textsCombo.Focus(FocusState.Programmatic);
 			}
 		}
 
@@ -611,6 +611,16 @@ namespace TyperUWP
 		private void ShuffleBtn_Click(object sender, RoutedEventArgs e)
 		{
 			selectText(null);
+		}
+
+		private void RecordsBtn_AccessKeyDisplayRequested(UIElement sender, AccessKeyDisplayRequestedEventArgs args)
+		{
+			DialogOpen = true;
+		}
+
+		private void RecordsBtn_AccessKeyDisplayDismissed(UIElement sender, AccessKeyDisplayDismissedEventArgs args)
+		{
+			DialogOpen = false;
 		}
 	}
 }

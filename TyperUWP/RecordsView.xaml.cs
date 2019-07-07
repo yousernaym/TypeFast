@@ -53,7 +53,7 @@ namespace TyperUWP
 					cell.HorizontalAlignment = c == WpmCol || c == AccCol ? HorizontalAlignment.Right : HorizontalAlignment.Left;
 					cell.VerticalAlignment = VerticalAlignment.Center;
 					cell.Foreground = new SolidColorBrush(Colors.White);
-					cell.FontSize = 20;
+					cell.FontSize = 18;
 					cell.Padding = new Thickness(20, 5, 7, 5);
 					//cell.ContextFlyout = recordCM;
 					if (c == TextCol)

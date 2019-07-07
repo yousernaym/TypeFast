@@ -225,5 +225,10 @@ namespace TyperUWP
 			list.ItemsSource = itemSource;
 			setSelection(selectedItem);
 		}
+
+		private void UserControl_AccessKeyInvoked(UIElement sender, AccessKeyInvokedEventArgs args)
+		{
+			textBox.Focus(FocusState.Keyboard);
+		}
 	}
 }

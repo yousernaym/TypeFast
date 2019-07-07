@@ -9,6 +9,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400"
 	Loaded="UserControl_Loaded"
+	AccessKeyInvoked="UserControl_AccessKeyInvoked"
 	>
 	
     <StackPanel Orientation="Vertical">

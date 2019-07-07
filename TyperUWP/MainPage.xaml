@@ -24,7 +24,7 @@
 		<StackPanel Orientation="Vertical">
 			<RelativePanel Background="{StaticResource PrimaryColor}" Padding="7,7,7,7">
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal" >
-					<Button x:Name="recordsBtn" AccessKey="R" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True">
+					<Button x:Name="recordsBtn" AccessKey="R" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True" Width="50" Height="50" AccessKeyDisplayRequested="RecordsBtn_AccessKeyDisplayRequested" AccessKeyDisplayDismissed="RecordsBtn_AccessKeyDisplayDismissed">
 						<FontIcon FontFamily="Webdings" FontSize="35" Glyph="&#38;"/>
 						<Button.Flyout>
 							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed" FlyoutPresenterStyle="{StaticResource flyoutStyle}" LightDismissOverlayMode="On">
@@ -34,23 +34,59 @@
 					</Button>
 				</StackPanel>
 				<StackPanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal">
-					<Button x:Name="helpBtn" AccessKey="H" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True">
-						<FontIcon FontFamily="WebDings" FontSize="35" Glyph="s"/>
+					<Button x:Name="optionsBtn" AccessKey="O" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True" Width="50" Height="50">
+						<SymbolIcon Symbol="More"/>
 						<Button.Flyout>
-							<Flyout FlyoutPresenterStyle="{StaticResource flyoutStyle}" LightDismissOverlayMode="On">
-								<local:Help/>
-							</Flyout>
+							<MenuFlyout>
+								<MenuFlyoutItem x:Name="fontMFI" Icon="Font" Text="Font settings..." Click="FontMFI_Click">
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="F" />
+									</MenuFlyoutItem.KeyboardAccelerators>
+									<FlyoutBase.AttachedFlyout>
+										<Flyout x:Name="fontStyleFlyout" Opened="FontStyleFlyout_Opened" Closed="FontStyleFlyout_Closed">
+											<StackPanel Orientation="Horizontal" RelativePanel.AlignRightWithPanel="True" VerticalAlignment="Center" RelativePanel.AlignVerticalCenterWithPanel="True">
+												<ComboBox x:Name="fontCombo" VerticalAlignment="Center" SelectionChanged="FontCombo_SelectionChanged" AllowFocusOnInteraction="True"/>
+												<TextBox x:Name="fontSizeTb" VerticalAlignment="Center" Width="70" MaxLength="3" TextChanged="FontSizeTb_TextChanged" BeforeTextChanging="FontSizeTb_BeforeTextChanging" AllowFocusOnInteraction="True" GotFocus="FontSizeTb_GotFocus"/>
+												<Button x:Name="textColorBtn" Margin="10,0,0,0" Background="White"  Width="40" Height="30">
+													<Button.Flyout>
+														<Flyout>
+															<ColorPicker x:Name="textColorPicker" Color="{x:Bind typingSession.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
+														</Flyout>
+													</Button.Flyout>
+												</Button>
+												<Button x:Name="textBkgColorBtn" Background="Black" Width="40" Height="30">
+													<Button.Flyout>
+														<Flyout>
+															<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind typingSession.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
+														</Flyout>
+													</Button.Flyout>
+												</Button>
+											</StackPanel>
+										</Flyout>
+									</FlyoutBase.AttachedFlyout>
+								</MenuFlyoutItem>
+								<MenuFlyoutItem x:Name="textCmPaste" Icon="Paste" Text="Paste" Click="TextCmPaste_Click" >
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="V" />
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+								<MenuFlyoutItem x:Name="textCmPractice" Text="Practice characters..." Click="TextCmPractice_Click" >
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="P" />
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+							</MenuFlyout>
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
-				<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" CornerRadius="5" Padding="10,1,1,0" Orientation="Horizontal" Background="#ff000000" HorizontalAlignment="Center" Margin="0,0,30,0">
+				<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="10,0,0,0" Orientation="Horizontal" Background="#ff000000" Margin="0,0,30,0">
 					<TextBlock x:Name="correctCharsText" Margin="0,0,40,0" FontSize="20" ToolTipService.ToolTip="Correct characters." ToolTipService.Placement="Bottom"/>
 					<TextBlock x:Name="incorrectCharsText" Margin="0,0,40,0" FontSize="20" ToolTipService.ToolTip="Incorrect characters left uncorrected." ToolTipService.Placement="Bottom"/>
 					<TextBlock x:Name="fixedCharsText" Margin="0,0,40,0" FontSize="20" ToolTipService.ToolTip="Corrected characters." ToolTipService.Placement="Bottom"/>
 					<TextBlock x:Name="wpmText" Margin="0,0,40,0" FontSize="20" Foreground="Yellow" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty." ToolTipService.Placement="Bottom"/>
-					<TextBlock x:Name="accuracyText" Margin="0,0,30,0" FontSize="20" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters." ToolTipService.Placement="Bottom"/>
+					<TextBlock x:Name="accuracyText" Margin="0,0,25,0" FontSize="20" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters." ToolTipService.Placement="Bottom"/>
 					<!--<local:TextBlockEx x:Name="timeText" CornerRadius="5" Padding="10,0,10,0" FontSize="20"/>-->
-					<Button x:Name="timeText" AccessKey="T" CornerRadius="5" Padding="7,0,8,0" FontSize="20" IsTabStop="True" >
+					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="20" IsTabStop="True" >
 						<Button.Flyout>
 							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closed="TimeLimitFlyout_Closed">
 								<StackPanel Orientation="Horizontal">
@@ -68,47 +104,6 @@
 					<ColumnDefinition />
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
-				<Grid.ContextFlyout>
-					<MenuFlyout>
-						<MenuFlyoutItem x:Name="fontMFI" Icon="Font" Text="Font settings..." Click="FontMFI_Click">
-							<MenuFlyoutItem.KeyboardAccelerators>
-								<KeyboardAccelerator Modifiers="Control" Key="F" />
-							</MenuFlyoutItem.KeyboardAccelerators>
-							<FlyoutBase.AttachedFlyout>
-								<Flyout x:Name="fontStyleFlyout" Opened="FontStyleFlyout_Opened" Closed="FontStyleFlyout_Closed">
-									<StackPanel Orientation="Horizontal" RelativePanel.AlignRightWithPanel="True" VerticalAlignment="Center" RelativePanel.AlignVerticalCenterWithPanel="True">
-										<ComboBox x:Name="fontCombo" VerticalAlignment="Center" SelectionChanged="FontCombo_SelectionChanged" AllowFocusOnInteraction="True"/>
-										<TextBox x:Name="fontSizeTb" VerticalAlignment="Center" Width="70" MaxLength="3" TextChanged="FontSizeTb_TextChanged" BeforeTextChanging="FontSizeTb_BeforeTextChanging" AllowFocusOnInteraction="True" GotFocus="FontSizeTb_GotFocus"/>
-										<Button x:Name="textColorBtn" Margin="10,0,0,0" Background="White"  Width="40" Height="30">
-											<Button.Flyout>
-												<Flyout>
-													<ColorPicker x:Name="textColorPicker" Color="{x:Bind typingSession.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
-												</Flyout>
-											</Button.Flyout>
-										</Button>
-										<Button x:Name="textBkgColorBtn" Background="Black" Width="40" Height="30">
-											<Button.Flyout>
-												<Flyout>
-													<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind typingSession.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
-												</Flyout>
-											</Button.Flyout>
-										</Button>
-									</StackPanel>
-								</Flyout>
-							</FlyoutBase.AttachedFlyout>
-						</MenuFlyoutItem>
-						<MenuFlyoutItem x:Name="textCmPaste" Icon="Paste" Text="Paste" Click="TextCmPaste_Click" >
-							<MenuFlyoutItem.KeyboardAccelerators>
-								<KeyboardAccelerator Modifiers="Control" Key="V" />
-							</MenuFlyoutItem.KeyboardAccelerators>
-						</MenuFlyoutItem>
-						<MenuFlyoutItem x:Name="textCmPractice" Text="Practice characters..." Click="TextCmPractice_Click" >
-							<MenuFlyoutItem.KeyboardAccelerators>
-								<KeyboardAccelerator Modifiers="Control" Key="P" />
-							</MenuFlyoutItem.KeyboardAccelerators>
-						</MenuFlyoutItem>
-					</MenuFlyout>
-				</Grid.ContextFlyout>
 				<StackPanel x:Name="writtenTextPanel" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 				<StackPanel x:Name="unwrittenTextPanel" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Column="1" >
 					<local:TextBlockEx x:Name="currentCharControl" Foreground="Black" Background="White" IsTabStop="True"/>
@@ -120,8 +115,8 @@
 				<AppBarButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="A" Label="Random" IsTabStop="True" Click="ShuffleBtn_Click"/>
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 20 0 0">
-				<local:ComboBoxEx x:Name="textsCombo" MinWidth="300" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
-				<Button  x:Name="textsOptionsBtn" IsTabStop="True" VerticalAlignment="Bottom" >
+				<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" MinWidth="300" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
+				<Button  x:Name="textsOptionsBtn" AccessKey="I" IsTabStop="True" VerticalAlignment="Bottom" >
 					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE712;"/>
 					<Button.Flyout>
 						<MenuFlyout>
@@ -141,8 +136,8 @@
 								</MenuFlyoutItem.KeyboardAccelerators>
 							</MenuFlyoutItem>
 							<MenuFlyoutSeparator />
-							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import texts..." Click="TextsOptionsImport_Click"/>
-							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export texts..." Click="TextsOptionsExport_Click"/>
+							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import text list..." Click="TextsOptionsImport_Click"/>
+							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export text list..." Click="TextsOptionsExport_Click"/>
 							<MenuFlyoutSeparator/>
 							<MenuFlyoutItem x:Name="textsOptionsRestore" Text="Restore preset texts" Click="TextsOptionsRestore_Click"/>
 						</MenuFlyout>

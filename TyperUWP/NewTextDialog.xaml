@@ -20,7 +20,7 @@
 			</Flyout>
 		</FlyoutBase.AttachedFlyout>
 		<TextBox x:Name="titleTb" Header="Title" Grid.Column="1" MaxLength="50" GotFocus="TitleTb_GotFocus"/>
-		<TextBox x:Name="textTb" Header="Text" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="280" MaxLength="10000" TextChanged="TextTb_TextChanged" GotFocus="TextTb_GotFocus" Margin="0 7 0 0"/>
+		<TextBox x:Name="textTb" Header="Text" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="180" MaxLength="10000" TextChanged="TextTb_TextChanged" GotFocus="TextTb_GotFocus" Margin="0 7 0 0"/>
 		<TextBlock x:Name="textCharCount"/>
 		<CheckBox x:Name="asciiLettersCb" Content="Replace non-ASCII letters (é -> e, š -> s etc.)" Margin="0 5 0 0"/>
 	</StackPanel>
