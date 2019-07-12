@@ -6,6 +6,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace TyperLib
 {
@@ -39,7 +40,7 @@ namespace TyperLib
 			
 		}
 
-		public void loadData(string userDataDir, Action loadPresets)
+		async public Task loadData(string userDataDir, Func<Task> loadPresets)
 		{
 			if (userDataDir != null)
 				userDataPath = Path.Combine(userDataDir, "texts.ttl");
@@ -48,7 +49,7 @@ namespace TyperLib
 			if (File.Exists(userDataPath))
 				loadUserData(userDataPath, true);
 			else
-				loadPresets();
+				await loadPresets();
 		}
 
 		void loadUserData(string loadPath, bool loadRecords)

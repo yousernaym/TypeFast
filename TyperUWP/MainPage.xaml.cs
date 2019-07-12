@@ -71,7 +71,6 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
 			texts = new Texts();
-			texts.loadData(LocalDataDir, ()=>loadPresets());
 			SettingsPath = Path.Combine(RoamingDataDir, "settings");
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
@@ -80,9 +79,9 @@ namespace TyperUWP
 
 			typingSessionView = new TypingSessionView(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, new TypingSession());
 
-			//saveSettings();
-			loadSettings();
 
+			//saveSettings();
+			
 			Clipboard.ContentChanged += Clipboard_ContentChanged;
 		}
 
@@ -128,7 +127,7 @@ namespace TyperUWP
 
 		}
 
-		async private void loadSettings()
+		async private Task loadSettings()
 		{
 			TypingSession session;
 			try
@@ -563,10 +562,10 @@ namespace TyperUWP
 
 		async private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
 		{
-			loadPresets();
+			await loadPresets();
 		}
 
-		async void loadPresets()
+		async Task loadPresets()
 		{
 			var stream = await getResourceStream("texts/presets.ttl");
 			texts.importUserData(stream, false);
@@ -649,6 +648,12 @@ namespace TyperUWP
 				textCmPaste.IsEnabled = dataPackageView.Contains(StandardDataFormats.Text);
 				clipboardChanged = false;
 			}
+		}
+
+		async private void Page_Loading(FrameworkElement sender, object args)
+		{
+			await texts.loadData(LocalDataDir, () => loadPresets());
+			await loadSettings();
 		}
 	}
 }
