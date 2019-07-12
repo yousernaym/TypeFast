@@ -8,6 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	Loaded="Page_Loaded"
+	GotFocus="Page_GotFocus"
 	xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Extensions"
 	>
 	<!--xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"-->
@@ -138,7 +139,6 @@
 							<MenuFlyoutSeparator />
 							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import text list..." Click="TextsOptionsImport_Click"/>
 							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export text list..." Click="TextsOptionsExport_Click"/>
-							<MenuFlyoutSeparator/>
 							<MenuFlyoutItem x:Name="textsOptionsRestore" Text="Restore preset texts" Click="TextsOptionsRestore_Click"/>
 						</MenuFlyout>
 					</Button.Flyout>

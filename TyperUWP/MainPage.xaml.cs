@@ -49,6 +49,7 @@ namespace TyperUWP
 		}
 		Texts texts;
 		public bool DialogOpen = false;
+		private bool clipboardChanged = true;
 
 		public MainPage()
 		{
@@ -81,6 +82,21 @@ namespace TyperUWP
 
 			//saveSettings();
 			loadSettings();
+
+			Clipboard.ContentChanged += Clipboard_ContentChanged;
+		}
+
+		private void Clipboard_ContentChanged(object sender, object e)
+		{
+			try
+			{
+				DataPackageView dataPackageView = Clipboard.GetContent();
+				textCmPaste.IsEnabled = dataPackageView.Contains(StandardDataFormats.Text);
+			}
+			catch (UnauthorizedAccessException)
+			{
+				clipboardChanged = true; //Handle clipboard changes when app gets focus
+			}
 		}
 
 		async Task<Stream> getResourceStream(string path)
@@ -335,7 +351,7 @@ namespace TyperUWP
 				return;
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
-					selectTempText(await dataPackageView.GetTextAsync());
+				selectTempText(await dataPackageView.GetTextAsync());
 		}
 
 		private void TimeLimitTb_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -460,9 +476,11 @@ namespace TyperUWP
 
 		private void FontMFI_Click(object sender, RoutedEventArgs e)
 		{
-			var showOptions = new FlyoutShowOptions();
-			showOptions.Placement = FlyoutPlacementMode.Bottom;
-			fontStyleFlyout.ShowAt(textPanel, showOptions);
+			//var showOptions = new FlyoutShowOptions();
+			//showOptions.Placement = FlyoutPlacementMode.Bottom;
+			//fontStyleFlyout.ShowAt(optionsb, showOptions);
+			fontStyleFlyout.ShowAt(optionsBtn);
+
 		}
 
 		private void RecordsFlyout_Opened(object sender, object e)
@@ -621,6 +639,16 @@ namespace TyperUWP
 		private void RecordsBtn_AccessKeyDisplayDismissed(UIElement sender, AccessKeyDisplayDismissedEventArgs args)
 		{
 			DialogOpen = false;
+		}
+
+		private void Page_GotFocus(object sender, RoutedEventArgs e)
+		{
+			if (clipboardChanged)
+			{
+				DataPackageView dataPackageView = Clipboard.GetContent();
+				textCmPaste.IsEnabled = dataPackageView.Contains(StandardDataFormats.Text);
+				clipboardChanged = false;
+			}
 		}
 	}
 }
