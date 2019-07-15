@@ -332,7 +332,7 @@ namespace TyperUWP
 		{
 			if (DialogOpen)
 				return;
-			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to permanently delete this text and all its associated records?" };
+			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to permanently delete this text?" };
 			DialogOpen = true;
 			ContentDialogResult result = await dlg.ShowAsync();
 			DialogOpen = false;

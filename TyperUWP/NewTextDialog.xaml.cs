@@ -57,7 +57,7 @@ namespace TyperUWP
 			{
 				Title = "Edit text";
 				var notes = new TextBlock();
-				notes.Text = "Editing a text will erase all associated records.";
+				notes.Text = "Editing a text will erase all associated high scores.";
 				notes.Margin = new Thickness(0, 10, 0, 0);
 				notes.Foreground = new SolidColorBrush(Colors.Yellow);
 				stackPanel.Children.Add(notes);

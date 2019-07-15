@@ -141,11 +141,13 @@ namespace TyperUWP
 				setSelection(earliestMatch);
 			else if(!string.IsNullOrEmpty(selectedItem))
 				setSelection(SelectedItem);
-			
-			list.UpdateLayout();
-			if (list.ActualWidth > 0)
-				textBox.Width = list.ActualWidth;
-			listPopup.VerticalOffset = -list.ActualHeight;
+
+			updatePopup();
+
+			//list.UpdateLayout();
+			//if (list.ActualWidth > 0)
+			//	textBox.Width = list.ActualWidth;
+			//listPopup.VerticalOffset = -list.ActualHeight;
 		}
 
 		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -202,6 +204,11 @@ namespace TyperUWP
 
 		private void UserControl_Loaded(object sender, RoutedEventArgs e)
 		{
+			updatePopup();
+		}
+
+		void updatePopup()
+		{
 			var ttv = listPopup.TransformToVisual(Window.Current.Content);
 			Point popupPos = ttv.TransformPoint(new Point(0, 0));
 			list.MaxHeight = popupPos.Y;
@@ -209,7 +216,6 @@ namespace TyperUWP
 			if (list.ActualWidth > 0)
 				textBox.Width = list.ActualWidth;
 			listPopup.VerticalOffset = -list.ActualHeight;
-
 		}
 
 		private void ListPopup_Opened(object sender, object e)
