@@ -141,9 +141,8 @@ namespace TyperUWP
 			{
 				//It''s probably the first time the app is opened, meaning no settings file has been created yet.
 				//Use default settings
-				textColorBtn.Background = typingSession.ForegroundBrush;
-				textBkgColorBtn.Background = typingSession.BackgroundBrush;
 				typingSession.FontSize = 35;
+				typingSession.FontName = "Gadugi";
 			}
 
 			//Load bible
