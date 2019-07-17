@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TyperUWP")]
-[assembly: AssemblyDescription("A tool to train/test your typing skill.")]
+[assembly: AssemblyTitle("Type Fast")]
+[assembly: AssemblyDescription("Train and test your typing skill.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Mikesoft")]
-[assembly: AssemblyProduct("TyperUWP")]
+[assembly: AssemblyCompany("Mickeh")]
+[assembly: AssemblyProduct("Type Fast")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

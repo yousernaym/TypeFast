@@ -24,6 +24,11 @@ namespace TyperLib
 		{
 			return items[rnd.Next(0, items.Count)];
 		}
+		public T getItem(int i)
+		{
+			return items[i];
+		}
+
 	}
 	public class Bible : Collection<Book>
 	{
@@ -45,6 +50,9 @@ namespace TyperLib
 			var book = getRandomItem();
 			var chapter = book.getRandomItem();
 			var verse = Currentverse = chapter.getRandomItem();
+			//book = items[59];
+			//chapter = book.getItem(0);
+			//verse = chapter.getItem(14);
 			var text = new StringBuilder("");
 			while (text.Length + verse.Text.Length < length && verse.Next != null)
 			{

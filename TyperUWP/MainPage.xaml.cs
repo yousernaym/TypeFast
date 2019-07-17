@@ -127,16 +127,14 @@ namespace TyperUWP
 
 		}
 
-		async private Task loadSettings()
+		async private Task loadSession()
 		{
-			TypingSession session;
 			try
 			{
 				using (var stream = File.Open(SettingsPath, FileMode.Open))
 				{
 					var dcs = new DataContractSerializer(typeof(TypingSession), TypingSession.SerializeTypes);
-					session = (TypingSession)dcs.ReadObject(stream);
-					typingSession = session;
+					typingSession = (TypingSession)dcs.ReadObject(stream);
 				}
 			}
 			catch (FileNotFoundException)
@@ -159,6 +157,10 @@ namespace TyperUWP
 			typingSession.TimeChecked += Text_TimeChecked;
 			typingSession.Finished += Text_Finished;
 
+			//Load char mapping file
+			var charMapStream = await getResourceStream("charmap.txt");
+			typingSession.loadCharMap(charMapStream);
+
 			//Restore text from last session 
 			if (typingSession.StartText == null)
 			{
@@ -174,11 +176,7 @@ namespace TyperUWP
 				else
 					selectText(null); //Text list no longer contains the text from last session for some reason, so select random text.
 			}
-
-			//Load char mapping file
-			var charMapStream = await getResourceStream("charmap.txt");
-			typingSession.loadCharMap(charMapStream);
-		}
+		}			
 
 		private void DataChangeHandler(ApplicationData sender, object args)
 		{
@@ -653,7 +651,7 @@ namespace TyperUWP
 		async private void Page_Loading(FrameworkElement sender, object args)
 		{
 			await texts.loadData(LocalDataDir, () => loadPresets());
-			await loadSettings();
+			await loadSession();
 		}
 	}
 }

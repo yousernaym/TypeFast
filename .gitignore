@@ -28,5 +28,8 @@ obj/
 _ReSharper*/
 [Tt]est[Rr]esult*
 .vs/
+AppPackages/
+BundleArtifacts/
+
 #Nuget packages folder
 packages/
