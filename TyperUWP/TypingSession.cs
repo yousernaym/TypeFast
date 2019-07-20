@@ -85,10 +85,10 @@ namespace TyperUWP
 
 		public TypingSession()
 		{
-			FontName = "Segoe UI";
-			FontSize = 30;
+			FontName = "Gadugi";
+			FontSize = 35;
 			Background = Colors.Black;
-			Foreground = Color.FromArgb(255, 255, 255, 210);
+			Foreground = Color.FromArgb(255, 255, 255, 220);
 			ErrorForeground = Colors.Red;
 			CorrectForeground = Colors.Green;
 		}

@@ -12,11 +12,16 @@
 	CloseButtonText="Cancel"
 	Opened="ContentDialog_Opened"
 	>
-
+	<ContentDialog.Resources>
+		<Style TargetType="FlyoutPresenter" x:Key="errorFlyoutStyle">
+			<Setter Property="Background" Value="White" />
+			<Setter Property="Margin" Value="0" />
+		</Style>
+	</ContentDialog.Resources>
 	<StackPanel x:Name="stackPanel" Width="600">
 		<FlyoutBase.AttachedFlyout>
-			<Flyout x:Name="errorFlyout">
-				<TextBlock x:Name="errorText" TextWrapping="Wrap" Text="Title Error"/>
+			<Flyout x:Name="errorFlyout" FlyoutPresenterStyle="{StaticResource errorFlyoutStyle}">
+				<TextBlock x:Name="errorText" Foreground="Black"/>
 			</Flyout>
 		</FlyoutBase.AttachedFlyout>
 		<TextBox x:Name="titleTb" Header="Title" Grid.Column="1" MaxLength="50" GotFocus="TitleTb_GotFocus"/>

@@ -166,7 +166,7 @@
     </Content>
     <Content Include="..\TyperLib\texts\bible_EN.xml">
       <Link>Texts\bible_EN.xml</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Texts\presets.ttl">

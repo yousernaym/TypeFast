@@ -105,7 +105,9 @@ namespace TyperUWP
 		void displayError(TextBox entry, string error)
 		{
 			errorText.Text = error;
-			errorFlyout.ShowAt(entry);
+			var options = new FlyoutShowOptions();
+			options.Placement = FlyoutPlacementMode.Bottom;
+			errorFlyout.ShowAt(entry, options);
 		}
 
 		private void ContentDialog_Opened(ContentDialog sender, ContentDialogOpenedEventArgs args)

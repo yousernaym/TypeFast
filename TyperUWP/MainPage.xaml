@@ -63,6 +63,7 @@
 														</Flyout>
 													</Button.Flyout>
 												</Button>
+												<Button x:Name="restoreFontBtn" Content="Restore defaults" Click="RestoreFontBtn_Click"/>
 											</StackPanel>
 										</Flyout>
 									</FlyoutBase.AttachedFlyout>
@@ -81,7 +82,7 @@
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
-				<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="10,0,0,0" Orientation="Horizontal" Background="#ff000000" Margin="0,0,30,0">
+				<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="10,0,0,0" Orientation="Horizontal" Background="#ff000000">
 					<TextBlock x:Name="correctCharsText" Margin="0,0,40,0" FontSize="20" ToolTipService.ToolTip="Correct characters." ToolTipService.Placement="Bottom"/>
 					<TextBlock x:Name="incorrectCharsText" Margin="0,0,40,0" FontSize="20" ToolTipService.ToolTip="Incorrect characters left uncorrected." ToolTipService.Placement="Bottom"/>
 					<TextBlock x:Name="fixedCharsText" Margin="0,0,40,0" FontSize="20" ToolTipService.ToolTip="Corrected characters." ToolTipService.Placement="Bottom"/>

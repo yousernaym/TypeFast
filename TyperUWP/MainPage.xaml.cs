@@ -140,10 +140,11 @@ namespace TyperUWP
 			catch (FileNotFoundException)
 			{
 				//It''s probably the first time the app is opened, meaning no settings file has been created yet.
-				//Use default settings
-				typingSession.FontSize = 35;
-				typingSession.FontName = "Gadugi";
+				//Use default settings from session construtor
 			}
+			//Invoke the ColorChanged events explicitly, because they won't be invoked if a session color is set to white since that's the default picker color.
+			TextColorPicker_ColorChanged(null, null);
+			TextBkgColorPicker_ColorChanged(null, null);
 
 			//Load bible
 			var bibleStream = await getResourceStream("texts/bible_EN.xml");
@@ -627,6 +628,8 @@ namespace TyperUWP
 			selectText(null);
 		}
 
+		//The RecordsBtn is used to disable typing in the typing session when Alt is pressed to display the acces keys.
+		//Any other control with an access key could have been used for this puruose.
 		private void RecordsBtn_AccessKeyDisplayRequested(UIElement sender, AccessKeyDisplayRequestedEventArgs args)
 		{
 			DialogOpen = true;
@@ -651,6 +654,15 @@ namespace TyperUWP
 		{
 			await texts.loadData(LocalDataDir, () => loadPresets());
 			await loadSession();
+		}
+
+		private void RestoreFontBtn_Click(object sender, RoutedEventArgs e)
+		{
+			var defaultSession = new TypingSession();
+			typingSession.FontName = defaultSession.FontName;
+			typingSession.FontName = defaultSession.FontName;
+			textBkgColorPicker.Color = defaultSession.Background;
+			textColorPicker.Color = defaultSession.Foreground;
 		}
 	}
 }
