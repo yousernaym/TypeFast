@@ -63,7 +63,7 @@
 														</Flyout>
 													</Button.Flyout>
 												</Button>
-												<Button x:Name="restoreFontBtn" Content="Restore defaults" Click="RestoreFontBtn_Click"/>
+												<!--<Button x:Name="restoreFontBtn" Content="Restore defaults" Click="RestoreFontBtn_Click"/>-->
 											</StackPanel>
 										</Flyout>
 									</FlyoutBase.AttachedFlyout>
