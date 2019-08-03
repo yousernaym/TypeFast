@@ -8,7 +8,15 @@ namespace TyperLib
 	public class Record : ISerializable, IComparable
 	{
 		public int WPM { get; set; }
-		public float Accuracy { get; set; }
+		float accuracy;
+		public float Accuracy
+		{
+			get => accuracy;
+			set
+			{
+				accuracy = (float)Math.Round(value, 1);
+			}
+		}
 		public TimeSpan Time { get; set; }
 		public string TextTitle { get; set; }
 		public bool IsTextFinished { get; set; }

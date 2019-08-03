@@ -9,6 +9,7 @@ using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
@@ -98,6 +99,11 @@ namespace TyperUWP
 			syncGrid();
 		}
 
+		bool showSecondFractions(TimeSpan time)
+		{
+			return time.TotalSeconds < 10;
+		}
+
 		void syncGrid()
 		{ 
 			var records = texts.getRecords(currentRecordType, NumRecords);
@@ -109,26 +115,40 @@ namespace TyperUWP
 					table.getCell<TextBlock>(i + 1, WpmCol).Text = records[i].WPM.ToString();
 					table.getCell<TextBlock>(i + 1, AccCol).Text = records[i].Accuracy.ToString("0.0");
 					var format = "m\\:ss";
-					if (records[i].Time.TotalSeconds < 10)
+					if (showSecondFractions(records[i].Time))
 						format += "\\.ff";
 					table.getCell<TextBlock>(i + 1, TimeCol).Text = records[i].Time.ToString(format);
-					setLinkText(table.getCell<TextBlock>(i + 1, TextCol), records[i].TextTitle);
+					setLinkText(i + 1, TextCol, records);
 				}
 				else
 				{
 					table.getCell<TextBlock>(i + 1, WpmCol).Text = "";
 					table.getCell<TextBlock>(i + 1, AccCol).Text = "";
 					table.getCell<TextBlock>(i + 1, TimeCol).Text = "";
-					setLinkText(table.getCell<TextBlock>(i + 1, TextCol), "");
+					setLinkText(i + 1, TextCol, null);
 				}
 			}
 		}
 
-		private void setLinkText(TextBlock textBlock, string text)
+		private void setLinkText(int row, int col, Record[] records)
 		{
+			var textBlock = table.getCell<TextBlock>(row, col);
 			var titleLink = (Hyperlink)textBlock.Inlines[0];
 			var titleRun = (Run)titleLink.Inlines[0];
-			titleRun.Text = text;
+
+			int recordIndex = row - 1;
+			if (records == null)
+			{
+				titleRun.Text = "";
+				titleLink.SetValue(AutomationProperties.NameProperty, "");
+			}
+			else
+			{
+				titleRun.Text = records[recordIndex].TextTitle;
+				var timeText = records[recordIndex].Time.ToSpeechString(showSecondFractions(records[recordIndex].Time));
+				titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].TextTitle}. {records[recordIndex].WPM} words per minute. {records[recordIndex].Accuracy} percent accuracy. {timeText}.");
+
+			}
 		}
 
 		private void AllRBtn_Click(object sender, RoutedEventArgs e)

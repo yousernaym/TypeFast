@@ -86,7 +86,7 @@ namespace TyperUWP
 		public TypingSession()
 		{
 			FontName = "Gadugi";
-			FontSize = 35;
+			FontSize = 40;
 			Background = Colors.Black;
 			Foreground = Color.FromArgb(255, 255, 255, 220);
 			ErrorForeground = Colors.Red;

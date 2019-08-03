@@ -28,6 +28,7 @@ using Windows.Storage.Pickers;
 using System.Runtime.Serialization;
 using Windows.ApplicationModel;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Automation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -663,6 +664,31 @@ namespace TyperUWP
 			typingSession.FontName = defaultSession.FontName;
 			textBkgColorPicker.Color = defaultSession.Background;
 			textColorPicker.Color = defaultSession.Foreground;
+		}
+
+		private void TimeText_GotFocus(object sender, RoutedEventArgs e)
+		{
+			var speechString = typingSession.RemainingTime.ToSpeechString(false);
+			timeText.SetValue(AutomationProperties.NameProperty, "Time " + speechString);
+		}
+	}
+
+	public static class TimeSpanExt
+	{
+		public static string ToSpeechString(this TimeSpan time, bool showSecondFractions)
+		{
+			if (time.TotalSeconds == 0)
+				return "0 seconds";
+			var minutes = time.Minutes;
+			string timeText = "";
+			if (minutes > 0)
+				timeText = minutes + "minute" + (minutes == 1 ? "" : "s");
+			var seconds = time.Seconds;
+			if (showSecondFractions)
+				timeText = time.ToString("s\\.ff") + "seconds";
+			else if (seconds > 0)
+				timeText += seconds + "second" + (seconds == 1 ? "" : "s");
+			return timeText;
 		}
 	}
 }

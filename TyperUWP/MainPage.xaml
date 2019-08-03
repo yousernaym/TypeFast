@@ -20,13 +20,18 @@
 			<Setter Property="Background" Value="DarkGray" />
 			<Setter Property="Padding" Value="5" />
 		</Style>
+		<Style TargetType="TextBlock" x:Key="infoTextStyle">
+			<Setter Property="FontSize" Value="25" />
+			<Setter Property="Margin" Value="0,0,40,0" />
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
 	</Page.Resources>
 	
 	<Grid>
 		<StackPanel Orientation="Vertical">
 			<RelativePanel Background="{StaticResource PrimaryColor}" Padding="7,7,7,7">
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal" >
-					<Button x:Name="recordsBtn" AccessKey="R" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True" Width="50" Height="50" AccessKeyDisplayRequested="RecordsBtn_AccessKeyDisplayRequested" AccessKeyDisplayDismissed="RecordsBtn_AccessKeyDisplayDismissed">
+					<Button x:Name="recordsBtn" AutomationProperties.Name="High scores"  AccessKey="R" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True" Width="50" Height="50" AccessKeyDisplayRequested="RecordsBtn_AccessKeyDisplayRequested" AccessKeyDisplayDismissed="RecordsBtn_AccessKeyDisplayDismissed">
 						<FontIcon FontFamily="Webdings" FontSize="35" Glyph="&#38;"/>
 						<Button.Flyout>
 							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed" FlyoutPresenterStyle="{StaticResource flyoutStyle}" LightDismissOverlayMode="On">
@@ -35,8 +40,27 @@
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
+				<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="10,0,0,0" Orientation="Horizontal" Background="#ff000000">
+					<TextBlock x:Name="correctCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Correct characters."/>
+					<TextBlock x:Name="incorrectCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Incorrect characters left uncorrected."/>
+					<TextBlock x:Name="fixedCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Corrected characters."/>
+					<TextBlock x:Name="wpmText" Style="{StaticResource infoTextStyle}" Foreground="Yellow" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
+					<TextBlock x:Name="accuracyText" Style="{StaticResource infoTextStyle}" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters."/>
+					<!--<local:TextBlockEx x:Name="timeText" CornerRadius="5" Padding="10,0,10,0" FontSize="20"/>-->
+					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="25" IsTabStop="True" GotFocus="TimeText_GotFocus">
+						<Button.Flyout>
+							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closed="TimeLimitFlyout_Closed">
+								<StackPanel Orientation="Horizontal">
+									<TextBlock Text="Time limit:" Margin="0,0,10,0" VerticalAlignment="Center" />
+									<TextBox x:Name="timeLimitTb" Text="{x:Bind typingSession.TimeLimit, Mode=TwoWay, Converter={StaticResource TimeLimitConverter}}" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging" SelectionChanged="TimeLimitTb_SelectionChanged" BeforeTextChanging="TimeLimitTb_BeforeTextChanging" />
+									<!--extensions:TextBoxMask.CustomMask="5:[0-5]" extensions:TextBoxMask.Mask="99:59" extensions:TextBoxMask.PlaceHolder="0"/>-->
+								</StackPanel>
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+				</StackPanel>
 				<StackPanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal">
-					<Button x:Name="optionsBtn" AccessKey="O" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True" Width="50" Height="50">
+					<Button x:Name="optionsBtn" AccessKey="O" AutomationProperties.Name="Options" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True" Width="50" Height="50">
 						<SymbolIcon Symbol="More"/>
 						<Button.Flyout>
 							<MenuFlyout>
@@ -49,14 +73,14 @@
 											<StackPanel Orientation="Horizontal" RelativePanel.AlignRightWithPanel="True" VerticalAlignment="Center" RelativePanel.AlignVerticalCenterWithPanel="True">
 												<ComboBox x:Name="fontCombo" VerticalAlignment="Center" SelectionChanged="FontCombo_SelectionChanged" AllowFocusOnInteraction="True"/>
 												<TextBox x:Name="fontSizeTb" VerticalAlignment="Center" Width="70" MaxLength="3" TextChanged="FontSizeTb_TextChanged" BeforeTextChanging="FontSizeTb_BeforeTextChanging" AllowFocusOnInteraction="True" GotFocus="FontSizeTb_GotFocus"/>
-												<Button x:Name="textColorBtn" Margin="10,0,0,0" Background="White"  Width="40" Height="30">
+												<Button x:Name="textColorBtn" AutomationProperties.Name="Foreground" Margin="10,0,0,0" Background="White"  Width="40" Height="30">
 													<Button.Flyout>
 														<Flyout>
 															<ColorPicker x:Name="textColorPicker" Color="{x:Bind typingSession.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
 														</Flyout>
 													</Button.Flyout>
 												</Button>
-												<Button x:Name="textBkgColorBtn" Background="Black" Width="40" Height="30">
+												<Button x:Name="textBkgColorBtn" AutomationProperties.Name="Background" Background="Black" Width="40" Height="30">
 													<Button.Flyout>
 														<Flyout>
 															<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind typingSession.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
@@ -82,25 +106,6 @@
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
-				<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="10,0,0,0" Orientation="Horizontal" Background="#ff000000">
-					<TextBlock x:Name="correctCharsText" Margin="0,0,40,0" FontSize="20" ToolTipService.ToolTip="Correct characters." ToolTipService.Placement="Bottom"/>
-					<TextBlock x:Name="incorrectCharsText" Margin="0,0,40,0" FontSize="20" ToolTipService.ToolTip="Incorrect characters left uncorrected." ToolTipService.Placement="Bottom"/>
-					<TextBlock x:Name="fixedCharsText" Margin="0,0,40,0" FontSize="20" ToolTipService.ToolTip="Corrected characters." ToolTipService.Placement="Bottom"/>
-					<TextBlock x:Name="wpmText" Margin="0,0,40,0" FontSize="20" Foreground="Yellow" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty." ToolTipService.Placement="Bottom"/>
-					<TextBlock x:Name="accuracyText" Margin="0,0,25,0" FontSize="20" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters." ToolTipService.Placement="Bottom"/>
-					<!--<local:TextBlockEx x:Name="timeText" CornerRadius="5" Padding="10,0,10,0" FontSize="20"/>-->
-					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="20" IsTabStop="True" >
-						<Button.Flyout>
-							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closed="TimeLimitFlyout_Closed">
-								<StackPanel Orientation="Horizontal">
-									<TextBlock Text="Time limit:" Margin="0,0,10,0" VerticalAlignment="Center" />
-									<TextBox x:Name="timeLimitTb" Text="{x:Bind typingSession.TimeLimit, Mode=TwoWay, Converter={StaticResource TimeLimitConverter}}" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging" SelectionChanged="TimeLimitTb_SelectionChanged" BeforeTextChanging="TimeLimitTb_BeforeTextChanging" />
-									<!--extensions:TextBoxMask.CustomMask="5:[0-5]" extensions:TextBoxMask.Mask="99:59" extensions:TextBoxMask.PlaceHolder="0"/>-->
-								</StackPanel>
-							</Flyout>
-						</Button.Flyout>
-					</Button>
-				</StackPanel>
 			</RelativePanel>
 			<Grid x:Name ="textPanel" Padding="0,40,0,40" Margin="0,0,0,0">
 				<Grid.ColumnDefinitions>
@@ -119,7 +124,7 @@
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 0">
 				<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" MinWidth="300" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
-				<Button  x:Name="textsOptionsBtn" AccessKey="I" IsTabStop="True" VerticalAlignment="Bottom" >
+				<Button  x:Name="textsOptionsBtn" AutomationProperties.Name="Text list options" AccessKey="I" IsTabStop="True" VerticalAlignment="Bottom" >
 					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE712;"/>
 					<Button.Flyout>
 						<MenuFlyout>
