@@ -21,9 +21,21 @@
 			<Setter Property="Padding" Value="5" />
 		</Style>
 		<Style TargetType="TextBlock" x:Key="infoTextStyle">
-			<Setter Property="FontSize" Value="25" />
+			<Setter Property="FontSize" Value="23" />
 			<Setter Property="Margin" Value="0,0,40,0" />
 			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		<Style TargetType="Button" x:Key="menuButtonStyle">
+			<Setter Property="Width" Value="60" />
+			<Setter Property="Height" Value="60" />
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="CornerRadius" Value="5" />
+			<Setter Property="BorderBrush" Value="#40ffffff" />
+			<Setter Property="Background" Value="#40000000" />
+			<Setter Property="IsTabStop" Value="True" />
+		</Style>
+		<Style TargetType="Button" x:Key="sessionButtonStyle">
+			<Setter Property="Width" Value="70" />
 		</Style>
 	</Page.Resources>
 	
@@ -31,7 +43,7 @@
 		<StackPanel Orientation="Vertical">
 			<RelativePanel Background="{StaticResource PrimaryColor}" Padding="7,7,7,7">
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal" >
-					<Button x:Name="recordsBtn" AutomationProperties.Name="High scores"  AccessKey="R" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True" Width="50" Height="50" AccessKeyDisplayRequested="RecordsBtn_AccessKeyDisplayRequested" AccessKeyDisplayDismissed="RecordsBtn_AccessKeyDisplayDismissed">
+					<Button x:Name="recordsBtn" Style="{StaticResource menuButtonStyle}" AutomationProperties.Name="High scores" AccessKey="R" AccessKeyDisplayRequested="RecordsBtn_AccessKeyDisplayRequested" AccessKeyDisplayDismissed="RecordsBtn_AccessKeyDisplayDismissed">
 						<FontIcon FontFamily="Webdings" FontSize="35" Glyph="&#38;"/>
 						<Button.Flyout>
 							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed" FlyoutPresenterStyle="{StaticResource flyoutStyle}" LightDismissOverlayMode="On">
@@ -44,9 +56,8 @@
 					<TextBlock x:Name="correctCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Correct characters."/>
 					<TextBlock x:Name="incorrectCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Incorrect characters left uncorrected."/>
 					<TextBlock x:Name="fixedCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Corrected characters."/>
-					<TextBlock x:Name="wpmText" Style="{StaticResource infoTextStyle}" Foreground="Yellow" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
-					<TextBlock x:Name="accuracyText" Style="{StaticResource infoTextStyle}" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters."/>
-					<!--<local:TextBlockEx x:Name="timeText" CornerRadius="5" Padding="10,0,10,0" FontSize="20"/>-->
+					<TextBlock x:Name="wpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="Yellow" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
+					<TextBlock x:Name="accuracyText" Style="{StaticResource infoTextStyle}" FontSize="25" Margin="0 0 30 0" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters."/>
 					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="25" IsTabStop="True" GotFocus="TimeText_GotFocus">
 						<Button.Flyout>
 							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closed="TimeLimitFlyout_Closed">
@@ -60,7 +71,7 @@
 					</Button>
 				</StackPanel>
 				<StackPanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal">
-					<Button x:Name="optionsBtn" AccessKey="O" AutomationProperties.Name="Options" BorderBrush="#80ffffff" Background="#10000000" CornerRadius="5" IsTabStop="True" Width="50" Height="50">
+					<Button x:Name="optionsBtn" Style="{StaticResource menuButtonStyle}" AccessKey="O" AutomationProperties.Name="Options">
 						<SymbolIcon Symbol="More"/>
 						<Button.Flyout>
 							<MenuFlyout>
@@ -119,11 +130,17 @@
 				</StackPanel>
 			</Grid>
 			<StackPanel Background="#ff001144" CornerRadius="5" Margin="0,20,0,10" HorizontalAlignment="Center" Orientation="Horizontal">
-				<AppBarButton Icon="Refresh" x:Name="restartBtn" AccessKey="E" Label="Restart" IsTabStop="True" Click="RestartBtn_Click"/>
-				<AppBarButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="A" Label="Random" IsTabStop="True" Click="ShuffleBtn_Click"/>
+				<!--<AppBarButton Icon="Refresh" x:Name="restartBtn" AccessKey="E" Label="Restart" IsTabStop="True" Click="RestartBtn_Click"/>
+				<AppBarButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="A" Label="Random" IsTabStop="True" Click="ShuffleBtn_Click"/>-->
 			</StackPanel>
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 0">
-				<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" MinWidth="300" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+				<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" VerticalAlignment="Center" MinWidth="300" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
+				<Button x:Name="restartBtn" Style="{StaticResource sessionButtonStyle}" AccessKey="E" IsTabStop="True" Click="RestartBtn_Click">
+					<SymbolIcon Symbol="Refresh"/>
+				</Button>
+				<Button x:Name="shuffleBtn" Style="{StaticResource sessionButtonStyle}" AccessKey="A" IsTabStop="True" Click="ShuffleBtn_Click">
+					<SymbolIcon Symbol="Shuffle"/>
+				</Button>
 				<Button  x:Name="textsOptionsBtn" AutomationProperties.Name="Text list options" AccessKey="I" IsTabStop="True" VerticalAlignment="Bottom" >
 					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE712;"/>
 					<Button.Flyout>
