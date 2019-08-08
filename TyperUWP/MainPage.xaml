@@ -119,7 +119,7 @@
 					</Button>
 				</StackPanel>
 				</RelativePanel>
-				<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" HorizontalAlignment="Stretch" VerticalAlignment="Center" MinWidth="300" Margin="0 7 0 0" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
+				<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="300" Margin="0 7 0 0" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
 			</StackPanel>
 			
 			<Grid x:Name ="textPanel" Padding="0,40,0,40" Margin="0,0,0,0">

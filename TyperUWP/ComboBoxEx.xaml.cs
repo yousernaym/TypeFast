@@ -27,7 +27,7 @@ namespace TyperUWP
 			get => textBox.MinWidth;
 			set
 			{
-				textBox.MinWidth = list.MinWidth = value;
+				textBox.MinWidth = listPopup.MinWidth = list.MinWidth = value;
 			}
 		}
 
@@ -36,10 +36,12 @@ namespace TyperUWP
 			get => textBox.Width;
 			set
 			{
-				textBox.Width = list.Width = value;
+				textBox.Width = listPopup.Width = list.Width = value;
 			}
 		}
 
+		public double MaxListHeight { get; set; } = 10000;
+		
 		new public Brush Background
 		{
 			get => textBox.Background;
@@ -132,8 +134,6 @@ namespace TyperUWP
 				selectedItem = submittedItem;
 			else
 				submit();
-			//if (!listPopup.IsOpen)
-			//	return;
 			listPopup.IsOpen = false;
 			setText(SelectedItem);
 		}
@@ -165,12 +165,6 @@ namespace TyperUWP
 				setSelection(earliestMatch);
 			else if(!string.IsNullOrEmpty(selectedItem))
 				setSelection(SelectedItem);
-
-
-			//list.UpdateLayout();
-			//if (list.ActualWidth > 0)
-			//	textBox.Width = list.ActualWidth;
-			//listPopup.VerticalOffset = -list.ActualHeight;
 		}
 
 		private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -236,17 +230,24 @@ namespace TyperUWP
 
 			var ttv = listPopup.TransformToVisual(Window.Current.Content);
 			Point popupPos = ttv.TransformPoint(new Point(0, 0));
-			if (ListDirection == ListDirection.Up)
+			var spaceAbove = popupPos.Y;
+			var windowHeight = ((Frame)Window.Current.Content).ActualHeight;
+			var spaceBelow = windowHeight - popupPos.Y - textBox.ActualHeight;
+
+			var explicitDir = ListDirection;
+			if (ListDirection == ListDirection.Auto)
+				explicitDir = spaceAbove > spaceBelow ? ListDirection.Up : ListDirection.Down;
+			if (explicitDir == ListDirection.Up)
 			{
 				listPopup.VerticalOffset = -list.ActualHeight;
-				list.MaxHeight = popupPos.Y;
+				list.MaxHeight = spaceAbove;
 			}
 			else
 			{
 				listPopup.VerticalOffset = textBox.ActualHeight;
-				var windowHeight = ((Frame)Window.Current.Content).ActualHeight;
-				list.MaxHeight = windowHeight - popupPos.Y - textBox.ActualHeight;
+				list.MaxHeight = spaceBelow;
 			}
+			list.MaxHeight = Math.Min(list.MaxHeight, MaxListHeight); //Allows user to put a cap on list height
 			list.UpdateLayout(); //Helps to fully scroll the curretly selected item into view.
 		}
 
