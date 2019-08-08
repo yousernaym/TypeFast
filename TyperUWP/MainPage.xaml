@@ -41,7 +41,8 @@
 	
 	<Grid>
 		<StackPanel Orientation="Vertical">
-			<RelativePanel Background="{StaticResource PrimaryColor}" Padding="7,7,7,7">
+			<StackPanel Orientation="Vertical" Background="{StaticResource PrimaryColor}" Padding="7,7,7,7">
+				<RelativePanel>
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal" >
 					<Button x:Name="recordsBtn" Style="{StaticResource menuButtonStyle}" AutomationProperties.Name="High scores" AccessKey="R" AccessKeyDisplayRequested="RecordsBtn_AccessKeyDisplayRequested" AccessKeyDisplayDismissed="RecordsBtn_AccessKeyDisplayDismissed">
 						<FontIcon FontFamily="Webdings" FontSize="35" Glyph="&#38;"/>
@@ -117,7 +118,10 @@
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
-			</RelativePanel>
+				</RelativePanel>
+				<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" HorizontalAlignment="Stretch" VerticalAlignment="Center" MinWidth="300" Margin="0 7 0 0" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
+			</StackPanel>
+			
 			<Grid x:Name ="textPanel" Padding="0,40,0,40" Margin="0,0,0,0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
@@ -134,7 +138,6 @@
 				<AppBarButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="A" Label="Random" IsTabStop="True" Click="ShuffleBtn_Click"/>-->
 			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-				<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" VerticalAlignment="Center" MinWidth="300" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
 				<Button x:Name="restartBtn" Style="{StaticResource sessionButtonStyle}" AccessKey="E" IsTabStop="True" Click="RestartBtn_Click">
 					<SymbolIcon Symbol="Refresh"/>
 				</Button>

@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace TyperUWP
 {
+	public enum ListDirection { Up, Down, Auto };
 	public sealed partial class ComboBoxEx : UserControl
 	{
 		new public double MinWidth
@@ -30,6 +31,26 @@ namespace TyperUWP
 			}
 		}
 
+		new public double Width
+		{
+			get => textBox.Width;
+			set
+			{
+				textBox.Width = list.Width = value;
+			}
+		}
+
+		new public Brush Background
+		{
+			get => textBox.Background;
+			set
+			{
+				textBox.Background = value;
+			}
+		}
+
+		public ListDirection ListDirection { get; set; }
+		
 		IEnumerable<string> itemSource;
 		public IEnumerable<string> ItemSource
 		{
@@ -137,12 +158,14 @@ namespace TyperUWP
 				}
 			}
 			list.ItemsSource = matchingTexts;
+
+			updatePopup();
+
 			if (!string.IsNullOrEmpty(query) && !string.IsNullOrEmpty(earliestMatch))
 				setSelection(earliestMatch);
 			else if(!string.IsNullOrEmpty(selectedItem))
 				setSelection(SelectedItem);
 
-			updatePopup();
 
 			//list.UpdateLayout();
 			//if (list.ActualWidth > 0)
@@ -209,21 +232,29 @@ namespace TyperUWP
 
 		void updatePopup()
 		{
+			list.Width = textBox.ActualWidth;
+
 			var ttv = listPopup.TransformToVisual(Window.Current.Content);
 			Point popupPos = ttv.TransformPoint(new Point(0, 0));
-			list.MaxHeight = popupPos.Y;
-			list.UpdateLayout();
-			if (list.ActualWidth > 0)
-				textBox.Width = list.ActualWidth;
-			listPopup.VerticalOffset = -list.ActualHeight;
+			if (ListDirection == ListDirection.Up)
+			{
+				listPopup.VerticalOffset = -list.ActualHeight;
+				list.MaxHeight = popupPos.Y;
+			}
+			else
+			{
+				listPopup.VerticalOffset = textBox.ActualHeight;
+				var windowHeight = ((Frame)Window.Current.Content).ActualHeight;
+				list.MaxHeight = windowHeight - popupPos.Y - textBox.ActualHeight;
+			}
+			list.UpdateLayout(); //Helps to fully scroll the curretly selected item into view.
 		}
 
 		private void ListPopup_Opened(object sender, object e)
 		{
-			list.UpdateLayout();
-			if (list.ActualWidth > 0)
-				textBox.Width = list.ActualWidth;
-			listPopup.VerticalOffset = -list.ActualHeight;
+			//list.UpdateLayout();
+			//listPopup.VerticalOffset = -list.ActualHeight;
+			updatePopup();
 		}
 
 		public void resetFilter()
