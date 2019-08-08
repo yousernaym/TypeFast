@@ -35,14 +35,16 @@
 			<Setter Property="IsTabStop" Value="True" />
 		</Style>
 		<Style TargetType="Button" x:Key="sessionButtonStyle">
-			<Setter Property="Width" Value="70" />
+			<!--<Setter Property="Width" Value="70" />-->
+			<Setter Property="Margin" Value="0 0 7 0" />
+			<Setter Property="CornerRadius" Value="7" />
+
 		</Style>
 	</Page.Resources>
 	
 	<Grid>
 		<StackPanel Orientation="Vertical">
-			<StackPanel Orientation="Vertical" Background="{StaticResource PrimaryColor}" Padding="7,7,7,7">
-				<RelativePanel>
+			<RelativePanel Background="{StaticResource PrimaryColor}" Padding="7,7,7,7">
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal" >
 					<Button x:Name="recordsBtn" Style="{StaticResource menuButtonStyle}" AutomationProperties.Name="High scores" AccessKey="R" AccessKeyDisplayRequested="RecordsBtn_AccessKeyDisplayRequested" AccessKeyDisplayDismissed="RecordsBtn_AccessKeyDisplayDismissed">
 						<FontIcon FontFamily="Webdings" FontSize="35" Glyph="&#38;"/>
@@ -104,9 +106,20 @@
 										</Flyout>
 									</FlyoutBase.AttachedFlyout>
 								</MenuFlyoutItem>
-								<MenuFlyoutItem x:Name="textCmPaste" Icon="Paste" Text="Paste" Click="TextCmPaste_Click" >
+								<MenuFlyoutSeparator/>
+								<MenuFlyoutItem Icon="Add" x:Name="textsOptionsNew" Text="New text..." Click="TextsOptionsNew_Click" >
 									<MenuFlyoutItem.KeyboardAccelerators>
-										<KeyboardAccelerator Modifiers="Control" Key="V" />
+										<KeyboardAccelerator Modifiers="Control" Key="N"/>
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+								<MenuFlyoutItem Icon="Edit" x:Name="textsOptionsEdit" Text="Edit text..." Click="TextsOptionsEdit_Click">
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="E"/>
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+								<MenuFlyoutItem Icon="Delete"  x:Name="textsOptionsDelete" Text="Delete text" Click="TextsOptionsDelete_Click">
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="D"/>
 									</MenuFlyoutItem.KeyboardAccelerators>
 								</MenuFlyoutItem>
 								<MenuFlyoutItem x:Name="textCmPractice" Text="Practice characters..." Click="TextCmPractice_Click" >
@@ -114,15 +127,24 @@
 										<KeyboardAccelerator Modifiers="Control" Key="P" />
 									</MenuFlyoutItem.KeyboardAccelerators>
 								</MenuFlyoutItem>
+								<MenuFlyoutItem x:Name="textCmPaste" Icon="Paste" Text="Paste temporary text" Click="TextCmPaste_Click" >
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="V" />
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+								<MenuFlyoutSeparator />
+								<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import text list..." Click="TextsOptionsImport_Click"/>
+								<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export text list..." Click="TextsOptionsExport_Click"/>
+								<MenuFlyoutItem x:Name="textsOptionsRestore" Text="Restore preset texts" Click="TextsOptionsRestore_Click"/>
 							</MenuFlyout>
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
-				</RelativePanel>
-				<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="300" Margin="0 7 0 0" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
-			</StackPanel>
+			</RelativePanel>
+			<!--<local:ComboBoxEx x:Name="textsCombo" BorderBrush="#ff152a80" AccessKey="L" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="300" Margin="0 0 0 0" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>-->
+			<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="300" Margin="0 7 0 0" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
 			
-			<Grid x:Name ="textPanel" Padding="0,40,0,40" Margin="0,0,0,0">
+		<Grid x:Name ="textPanel" Padding="0,40,0,40" Margin="0,0,0,0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition />
@@ -133,42 +155,18 @@
 					<TextBlock x:Name="unwrittenTextControl" />
 				</StackPanel>
 			</Grid>
-			<StackPanel Background="#ff001144" CornerRadius="5" Margin="0,20,0,10" HorizontalAlignment="Center" Orientation="Horizontal">
-				<!--<AppBarButton Icon="Refresh" x:Name="restartBtn" AccessKey="E" Label="Restart" IsTabStop="True" Click="RestartBtn_Click"/>
-				<AppBarButton Icon="Shuffle" x:Name="shuffleBtn" AccessKey="A" Label="Random" IsTabStop="True" Click="ShuffleBtn_Click"/>-->
-			</StackPanel>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 				<Button x:Name="restartBtn" Style="{StaticResource sessionButtonStyle}" AccessKey="E" IsTabStop="True" Click="RestartBtn_Click">
-					<SymbolIcon Symbol="Refresh"/>
+					<StackPanel Orientation="Horizontal">
+						<SymbolIcon Symbol="Refresh" Margin="0 0 5 0"/>
+						<TextBlock Text="Restart session"/>
+					</StackPanel>
 				</Button>
 				<Button x:Name="shuffleBtn" Style="{StaticResource sessionButtonStyle}" AccessKey="A" IsTabStop="True" Click="ShuffleBtn_Click">
-					<SymbolIcon Symbol="Shuffle"/>
-				</Button>
-				<Button  x:Name="textsOptionsBtn" AutomationProperties.Name="Text list options" AccessKey="I" IsTabStop="True" VerticalAlignment="Bottom" >
-					<FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE712;"/>
-					<Button.Flyout>
-						<MenuFlyout>
-							<MenuFlyoutItem Icon="Add" x:Name="textsOptionsNew" Text="New text..." Click="TextsOptionsNew_Click" >
-								<MenuFlyoutItem.KeyboardAccelerators>
-									<KeyboardAccelerator Modifiers="Control" Key="N"/>
-								</MenuFlyoutItem.KeyboardAccelerators>
-							</MenuFlyoutItem>
-							<MenuFlyoutItem Icon="Edit" x:Name="textsOptionsEdit" Text="Edit text..." Click="TextsOptionsEdit_Click">
-								<MenuFlyoutItem.KeyboardAccelerators>
-									<KeyboardAccelerator Modifiers="Control" Key="E"/>
-								</MenuFlyoutItem.KeyboardAccelerators>
-							</MenuFlyoutItem>
-							<MenuFlyoutItem Icon="Delete"  x:Name="textsOptionsDelete" Text="Delete text" Click="TextsOptionsDelete_Click">
-								<MenuFlyoutItem.KeyboardAccelerators>
-									<KeyboardAccelerator Modifiers="Control" Key="D"/>
-								</MenuFlyoutItem.KeyboardAccelerators>
-							</MenuFlyoutItem>
-							<MenuFlyoutSeparator />
-							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import text list..." Click="TextsOptionsImport_Click"/>
-							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export text list..." Click="TextsOptionsExport_Click"/>
-							<MenuFlyoutItem x:Name="textsOptionsRestore" Text="Restore preset texts" Click="TextsOptionsRestore_Click"/>
-						</MenuFlyout>
-					</Button.Flyout>
+					<StackPanel Orientation="Horizontal">
+						<SymbolIcon Symbol="Shuffle" Margin="0 0 5 0"/>
+						<TextBlock Text="Random text"/>
+					</StackPanel>
 				</Button>
 			</StackPanel>
 

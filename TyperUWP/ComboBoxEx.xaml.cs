@@ -22,6 +22,14 @@ namespace TyperUWP
 	public enum ListDirection { Up, Down, Auto };
 	public sealed partial class ComboBoxEx : UserControl
 	{
+		new public Brush BorderBrush
+		{
+			get => textBox.BorderBrush;
+			set
+			{
+				textBox.BorderBrush = value;
+			}
+		}
 		new public double MinWidth
 		{
 			get => textBox.MinWidth;
