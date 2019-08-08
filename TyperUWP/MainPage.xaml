@@ -151,11 +151,11 @@
 				</StackPanel>
 			</Grid>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 7 0 0">
-				<Border Background="Black" Padding="0" CornerRadius="7" Margin="0 0 10 0">
+				<Border Background="Black" Padding="0" CornerRadius="7" Margin="0 0 12 0">
 					<Button x:Name="restartBtn" AccessKey="E" CornerRadius="7" Click="RestartBtn_Click">
 						<StackPanel Orientation="Horizontal">
 							<SymbolIcon Symbol="Refresh" Margin="0 0 5 0"/>
-							<TextBlock Text="Reset session"/>
+							<TextBlock Text="Reset"/>
 						</StackPanel>
 					</Button>
 				</Border>

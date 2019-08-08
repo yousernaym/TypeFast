@@ -49,9 +49,12 @@ namespace TyperUWP
 			this.InitializeComponent();
 			this.texts = texts;
 			this.textsControl = textsControl;
-			TitleField = texts.Current.Title;
-			TextField = texts.Current.Text;
-			AsciiLetters = texts.Current.AsciiLetters;
+			if (texts.Current != null)
+			{
+				TitleField = texts.Current.Title;
+				TextField = texts.Current.Text;
+				AsciiLetters = texts.Current.AsciiLetters;
+			}
 
 			if (edit)
 			{
@@ -66,7 +69,7 @@ namespace TyperUWP
 			else
 			{
 				Title = "Add new text";
-				if (texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
+				if (texts.Current != null && texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
 				{
 					TitleField = typingSession.TextEntry.Title;
 					TextField = typingSession.TextEntry.Text;
