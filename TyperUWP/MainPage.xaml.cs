@@ -78,7 +78,7 @@ namespace TyperUWP
 			foreach (string font in fonts)
 				fontCombo.Items.Add(font);
 
-			typingSessionView = new TypingSessionView(textPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, new TypingSession());
+			typingSessionView = new TypingSessionView(rootPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, new TypingSession());
 
 
 			//saveSettings();
