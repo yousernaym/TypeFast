@@ -20,7 +20,8 @@ using Windows.UI;
 
 namespace TyperUWP
 {
-	public sealed partial class NewTextDialog : ContentDialog
+	public enum TextDialogType { New, Clone, Edit };
+	public sealed partial class TextDialog : ContentDialog
 	{
 		public string TitleField
 		{
@@ -44,19 +45,19 @@ namespace TyperUWP
 		string editTitle = "";
 		ComboBoxEx textsControl;
 
-		public NewTextDialog(Texts texts, TypingSession typingSession, bool edit, ComboBoxEx textsControl)
+		public TextDialog(Texts texts, TypingSession typingSession, TextDialogType dialogType, ComboBoxEx textsControl)
 		{
 			this.InitializeComponent();
 			this.texts = texts;
 			this.textsControl = textsControl;
-			if (texts.Current != null)
+			if (dialogType != TextDialogType.New && texts.Current != null)
 			{
 				TitleField = texts.Current.Title;
 				TextField = texts.Current.Text;
 				AsciiLetters = texts.Current.AsciiLetters;
 			}
 
-			if (edit)
+			if (dialogType == TextDialogType.Edit)
 			{
 				Title = "Edit text";
 				var notes = new TextBlock();
@@ -69,7 +70,7 @@ namespace TyperUWP
 			else
 			{
 				Title = "Add new text";
-				if (texts.Current != null && texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
+				if (dialogType == TextDialogType.Clone && texts.Current != null && texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
 				{
 					TitleField = typingSession.TextEntry.Title;
 					TextField = typingSession.TextEntry.Text;
@@ -131,12 +132,12 @@ namespace TyperUWP
 
 		private void TitleTb_GotFocus(object sender, RoutedEventArgs e)
 		{
-			selectAllText((TextBox)sender);
+			//selectAllText((TextBox)sender);
 		}
 
 		private void TextTb_GotFocus(object sender, RoutedEventArgs e)
 		{
-			selectAllText((TextBox)sender);
+			//selectAllText((TextBox)sender);
 		}
 
 		void selectAllText(TextBox tb)

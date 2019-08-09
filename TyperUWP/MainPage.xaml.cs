@@ -303,8 +303,22 @@ namespace TyperUWP
 		{
 			if (DialogOpen)
 				return;
-			NewTextDialog newTextDialog = new NewTextDialog(texts, typingSession, false, textsCombo);
+			TextDialog newTextDialog = new TextDialog(texts, typingSession, TextDialogType.New, textsCombo);
 						
+			DialogOpen = true;
+			ContentDialogResult result = await newTextDialog.ShowAsync();
+			DialogOpen = false;
+
+			if (result == ContentDialogResult.Primary)
+				selectText(newTextDialog.TitleField);
+		}
+
+		async private void TextsOptionsClone_Click(object sender, RoutedEventArgs e)
+		{
+			if (DialogOpen)
+				return;
+			TextDialog newTextDialog = new TextDialog(texts, typingSession, TextDialogType.Clone, textsCombo);
+
 			DialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
 			DialogOpen = false;
@@ -317,7 +331,7 @@ namespace TyperUWP
 		{
 			if (DialogOpen)
 				return;
-			NewTextDialog newTextDialog = new NewTextDialog(texts, typingSession, true, textsCombo);
+			TextDialog newTextDialog = new TextDialog(texts, typingSession, TextDialogType.Edit, textsCombo);
 
 			DialogOpen = true;
 			ContentDialogResult result = await newTextDialog.ShowAsync();
