@@ -7,6 +7,7 @@ using System.Threading;
 using System.Text;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Globalization;
 
 namespace TyperLib
 {
@@ -34,7 +35,8 @@ namespace TyperLib
 			{
 				TextEntrySource = value;
 				textEntry = new TextEntry(value);
-				
+				//char bla = text[0];
+
 				rndElements = null;
 				minWordLength = maxWordLength = 1;
 				Match match;
@@ -82,6 +84,7 @@ namespace TyperLib
 				var chars = text.ToCharArray();
 				text = text.Replace('\r', ' ');
 				text = text.Replace('\t', ' ');
+				text = text.Replace('\n', ' ');
 
 				foreach (var charMapping in symbolMap)
 					foreach (var source in charMapping.Value)
@@ -91,6 +94,17 @@ namespace TyperLib
 					foreach (var charMapping in letterMap)
 						foreach (var source in charMapping.Value)
 							text = text.Replace(source, charMapping.Key);
+
+					text = text.Normalize(NormalizationForm.FormD);
+					var sb = new StringBuilder();
+					foreach (var c in text)
+					{
+						var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+						if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+							sb.Append(c);
+					}
+
+					text = sb.ToString().Normalize(NormalizationForm.FormC);
 				}
 
 				text = text.Trim();
@@ -98,10 +112,10 @@ namespace TyperLib
 				//Replace repeating spaces with single space
 				text = Regex.Replace(text, "[ ]{2,}", " ");
 
-				//Replace repeating line breaks with single break
-				text = Regex.Replace(text, "[\n]{2,}", " ");
+				////Replace repeating line breaks with single break
+				//text = Regex.Replace(text, "[\n]{2,}", " ");
 		
-				text = text.Replace('\n', ' ');
+				//text = text.Replace('\n', ' ');
 
 			}
 		}
