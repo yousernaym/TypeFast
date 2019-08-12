@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace TyperLib
 {
 	[Serializable]
-	public class Record : ISerializable, IComparable
+	public class Record : ISerializable, IComparable, IEquatable<Record>
 	{
 		public int WPM { get; set; }
 		float accuracy;
@@ -21,7 +21,8 @@ namespace TyperLib
 		public string TextTitle { get; set; }
 		public bool IsTextFinished { get; set; }
 		public int CharCount { get; set; }
-		
+		public int Id { get; private set; }
+
 		public Record(int wpm, float accuracy, TimeSpan time, string textTitle, bool isTextFinished, int charCount)
 		{
 			WPM = wpm;
@@ -30,6 +31,7 @@ namespace TyperLib
 			TextTitle = textTitle;
 			IsTextFinished = isTextFinished;
 			CharCount = charCount;
+			Id = new Random().Next();
 		}
 
 		public Record(SerializationInfo info, StreamingContext context)
@@ -48,6 +50,8 @@ namespace TyperLib
 					IsTextFinished = (bool)entry.Value;
 				else if (entry.Name == "charCount")
 					CharCount = (int)entry.Value;
+				else if (entry.Name == "id")
+					Id = (int)entry.Value;
 			}
 		}
 
@@ -59,6 +63,7 @@ namespace TyperLib
 			info.AddValue("textTitle", TextTitle);
 			info.AddValue("isTextFinished", IsTextFinished);
 			info.AddValue("charCount", CharCount);
+			info.AddValue("id", Id);
 		}
 
 		public static int reverseSort(Record x, Record y)
@@ -95,6 +100,21 @@ namespace TyperLib
 			}
 		}
 
+		public bool Equals(Record other)
+		{
+			return other != null && Id == other.Id;
+		}
+
+		public override bool Equals(object obj)
+		{
+			return Equals(obj as Record);
+		}
+
+		public override int GetHashCode()
+		{
+			return Id;
+		}
+
 		static public bool operator<(Record rec1, Record rec2)
 		{
 			return rec1.CompareTo(rec2) == 1;
@@ -114,5 +134,7 @@ namespace TyperLib
 		{
 			return rec1.CompareTo(rec2) <= 0 ;
 		}
+
+
 	}
 }

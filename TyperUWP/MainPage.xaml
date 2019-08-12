@@ -40,7 +40,7 @@
 		<StackPanel Orientation="Vertical">
 			<RelativePanel Background="{StaticResource PrimaryColor}" Padding="7,7,7,7">
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal" >
-					<Button x:Name="recordsBtn" Style="{StaticResource menuButtonStyle}" AutomationProperties.Name="High scores" AccessKey="R" AccessKeyDisplayRequested="RecordsBtn_AccessKeyDisplayRequested" AccessKeyDisplayDismissed="RecordsBtn_AccessKeyDisplayDismissed">
+					<Button x:Name="recordsBtn" Style="{StaticResource menuButtonStyle}" AutomationProperties.Name="High scores" AccessKey="H" AccessKeyDisplayRequested="RecordsBtn_AccessKeyDisplayRequested" AccessKeyDisplayDismissed="RecordsBtn_AccessKeyDisplayDismissed">
 						<FontIcon FontFamily="Webdings" FontSize="35" Glyph="&#38;"/>
 						<Button.Flyout>
 							<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed" FlyoutPresenterStyle="{StaticResource flyoutStyle}" LightDismissOverlayMode="On">
@@ -106,11 +106,11 @@
 										<KeyboardAccelerator Modifiers="Control" Key="N"/>
 									</MenuFlyoutItem.KeyboardAccelerators>
 								</MenuFlyoutItem>
-								<MenuFlyoutItem Icon="Copy" x:Name="textsOptionsClone" Text="Clone text..." Click="TextsOptionsClone_Click" >
+								<!--<MenuFlyoutItem Icon="Copy" x:Name="textsOptionsClone" Text="Clone text..." Click="TextsOptionsClone_Click" >
 									<MenuFlyoutItem.KeyboardAccelerators>
 										<KeyboardAccelerator Modifiers="Control" Key="C"/>
 									</MenuFlyoutItem.KeyboardAccelerators>
-								</MenuFlyoutItem>
+								</MenuFlyoutItem>-->
 								<MenuFlyoutItem Icon="Edit" x:Name="textsOptionsEdit" Text="Edit text..." Click="TextsOptionsEdit_Click">
 									<MenuFlyoutItem.KeyboardAccelerators>
 										<KeyboardAccelerator Modifiers="Control" Key="E"/>

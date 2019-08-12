@@ -70,10 +70,11 @@ namespace TyperUWP
 			else
 			{
 				Title = "Add new text";
-				if (dialogType == TextDialogType.Clone && texts.Current != null && texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
+				if (texts.Current != null && texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
 				{
 					TitleField = typingSession.TextEntry.Title;
 					TextField = typingSession.TextEntry.Text;
+					AsciiLetters = texts.Current.AsciiLetters;
 				}
 			}
 		}

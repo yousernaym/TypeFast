@@ -69,8 +69,14 @@ namespace TyperLib
 			
 			foreach (var text in data.TextEntries)
 				userData.TextEntries.add(text);
-			foreach (var rec in data.Records)
-				addRecord(rec);
+			if (loadRecords)
+			{
+				foreach (var rec in data.Records)
+				{
+					if (!userData.Records.Any(r => r.Id == rec.Id))
+						addRecord(rec);
+				}
+			}
 		}
 
 		public void saveUserData()
