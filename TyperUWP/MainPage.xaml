@@ -72,6 +72,42 @@
 						<SymbolIcon Symbol="More"/>
 						<Button.Flyout>
 							<MenuFlyout>
+								<MenuFlyoutItem x:Name="textCmPractice" Text="Practice characters..." Click="TextCmPractice_Click" >
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="P" />
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+								<MenuFlyoutItem x:Name="textCmPaste" Icon="Paste" Text="Paste temporary text" Click="TextCmPaste_Click" >
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="V" />
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+								<MenuFlyoutSeparator />
+								<MenuFlyoutItem Icon="Add" x:Name="textsOptionsNew" Text="New text..." Click="TextsOptionsNew_Click" >
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="N"/>
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+								<!--<MenuFlyoutItem Icon="Copy" x:Name="textsOptionsClone" Text="Clone text..." Click="TextsOptionsClone_Click" >
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="C"/>
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>-->
+								<MenuFlyoutItem Icon="Edit" x:Name="textsOptionsEdit" Text="Edit text..." Click="TextsOptionsEdit_Click">
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="E"/>
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+								<MenuFlyoutItem Icon="Delete"  x:Name="textsOptionsDelete" Text="Delete text" Click="TextsOptionsDelete_Click">
+									<MenuFlyoutItem.KeyboardAccelerators>
+										<KeyboardAccelerator Modifiers="Control" Key="D"/>
+									</MenuFlyoutItem.KeyboardAccelerators>
+								</MenuFlyoutItem>
+								<MenuFlyoutSeparator />
+								<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import text list..." Click="TextsOptionsImport_Click"/>
+								<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export text list..." Click="TextsOptionsExport_Click"/>
+								<MenuFlyoutItem x:Name="textsOptionsRestore" Text="Restore preset texts" Click="TextsOptionsRestore_Click"/>
+								<MenuFlyoutSeparator />
 								<MenuFlyoutItem x:Name="fontMFI" Icon="Font" Text="Font settings..." Click="FontMFI_Click">
 									<MenuFlyoutItem.KeyboardAccelerators>
 										<KeyboardAccelerator Modifiers="Control" Key="F" />
@@ -100,41 +136,6 @@
 										</Flyout>
 									</FlyoutBase.AttachedFlyout>
 								</MenuFlyoutItem>
-								<MenuFlyoutSeparator/>
-								<MenuFlyoutItem Icon="Add" x:Name="textsOptionsNew" Text="New text..." Click="TextsOptionsNew_Click" >
-									<MenuFlyoutItem.KeyboardAccelerators>
-										<KeyboardAccelerator Modifiers="Control" Key="N"/>
-									</MenuFlyoutItem.KeyboardAccelerators>
-								</MenuFlyoutItem>
-								<!--<MenuFlyoutItem Icon="Copy" x:Name="textsOptionsClone" Text="Clone text..." Click="TextsOptionsClone_Click" >
-									<MenuFlyoutItem.KeyboardAccelerators>
-										<KeyboardAccelerator Modifiers="Control" Key="C"/>
-									</MenuFlyoutItem.KeyboardAccelerators>
-								</MenuFlyoutItem>-->
-								<MenuFlyoutItem Icon="Edit" x:Name="textsOptionsEdit" Text="Edit text..." Click="TextsOptionsEdit_Click">
-									<MenuFlyoutItem.KeyboardAccelerators>
-										<KeyboardAccelerator Modifiers="Control" Key="E"/>
-									</MenuFlyoutItem.KeyboardAccelerators>
-								</MenuFlyoutItem>
-								<MenuFlyoutItem Icon="Delete"  x:Name="textsOptionsDelete" Text="Delete text" Click="TextsOptionsDelete_Click">
-									<MenuFlyoutItem.KeyboardAccelerators>
-										<KeyboardAccelerator Modifiers="Control" Key="D"/>
-									</MenuFlyoutItem.KeyboardAccelerators>
-								</MenuFlyoutItem>
-								<MenuFlyoutItem x:Name="textCmPractice" Text="Practice characters..." Click="TextCmPractice_Click" >
-									<MenuFlyoutItem.KeyboardAccelerators>
-										<KeyboardAccelerator Modifiers="Control" Key="P" />
-									</MenuFlyoutItem.KeyboardAccelerators>
-								</MenuFlyoutItem>
-								<MenuFlyoutItem x:Name="textCmPaste" Icon="Paste" Text="Paste temporary text" Click="TextCmPaste_Click" >
-									<MenuFlyoutItem.KeyboardAccelerators>
-										<KeyboardAccelerator Modifiers="Control" Key="V" />
-									</MenuFlyoutItem.KeyboardAccelerators>
-								</MenuFlyoutItem>
-								<MenuFlyoutSeparator />
-								<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import text list..." Click="TextsOptionsImport_Click"/>
-								<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export text list..." Click="TextsOptionsExport_Click"/>
-								<MenuFlyoutItem x:Name="textsOptionsRestore" Text="Restore preset texts" Click="TextsOptionsRestore_Click"/>
 							</MenuFlyout>
 						</Button.Flyout>
 					</Button>
