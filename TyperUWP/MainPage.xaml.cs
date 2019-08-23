@@ -488,10 +488,8 @@ namespace TyperUWP
 
 		private void FontMFI_Click(object sender, RoutedEventArgs e)
 		{
-			//var showOptions = new FlyoutShowOptions();
-			//showOptions.Placement = FlyoutPlacementMode.Bottom;
-			//fontStyleFlyout.ShowAt(optionsb, showOptions);
-			fontStyleFlyout.ShowAt(optionsBtn);
+            fontStyleFlyout.Placement = FlyoutPlacementMode.Bottom;
+            fontStyleFlyout.ShowAt(resetButtonsPanel);
 
 		}
 
@@ -576,7 +574,9 @@ namespace TyperUWP
 		async private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
 		{
 			await loadPresets();
-		}
+            restorePresetsFlyout.Placement = FlyoutPlacementMode.Bottom;
+            restorePresetsFlyout.ShowAt(resetButtonsPanel);
+        }
 
 		async Task loadPresets()
 		{

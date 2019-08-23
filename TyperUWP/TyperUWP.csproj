@@ -144,8 +144,8 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NewTextDialog.xaml.cs">
-      <DependentUpon>NewTextDialog.xaml</DependentUpon>
+    <Compile Include="TextDialog.xaml.cs">
+      <DependentUpon>TextDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
@@ -255,7 +255,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="NewTextDialog.xaml">
+    <Page Include="TextDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
