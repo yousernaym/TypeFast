@@ -134,22 +134,23 @@
 											<StackPanel Orientation="Horizontal" RelativePanel.AlignRightWithPanel="True" VerticalAlignment="Center" RelativePanel.AlignVerticalCenterWithPanel="True">
 												<ComboBox x:Name="fontCombo" VerticalAlignment="Center" SelectionChanged="FontCombo_SelectionChanged" AllowFocusOnInteraction="True"/>
 												<TextBox x:Name="fontSizeTb" VerticalAlignment="Center" Width="70" MaxLength="3" TextChanged="FontSizeTb_TextChanged" BeforeTextChanging="FontSizeTb_BeforeTextChanging" AllowFocusOnInteraction="True" GotFocus="FontSizeTb_GotFocus"/>
-											<StackPanel Margin="10,0,0,0" Padding="2" Orientation="Horizontal" Background="Gray">
-												<Button x:Name="textColorBtn" AutomationProperties.Name="Foreground" Background="White"  Width="40" Height="30">
-													<Button.Flyout>
-														<Flyout>
-															<ColorPicker x:Name="textColorPicker" Color="{x:Bind typingSession.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
-														</Flyout>
-													</Button.Flyout>
-												</Button>
-												<Button x:Name="textBkgColorBtn" AutomationProperties.Name="Background" Background="Black" Width="40" Height="30">
-													<Button.Flyout>
-														<Flyout>
-															<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind typingSession.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
-														</Flyout>
-													</Button.Flyout>
-												</Button>
-											</StackPanel>
+												<StackPanel Margin="10,0,0,0" Padding="2" Orientation="Horizontal" Background="Gray">
+													<Button x:Name="textColorBtn" AutomationProperties.Name="Foreground" Background="White"  Width="40" Height="30">
+														<Button.Flyout>
+															<Flyout>
+																<ColorPicker x:Name="textColorPicker" Color="{x:Bind typingSession.Foreground, Mode=TwoWay}" ColorChanged="TextColorPicker_ColorChanged"/>
+															</Flyout>
+														</Button.Flyout>
+													</Button>
+													<Button x:Name="textBkgColorBtn" AutomationProperties.Name="Background" Background="Black" Width="40" Height="30">
+														<Button.Flyout>
+															<Flyout>
+																<ColorPicker x:Name="textBkgColorPicker" Color="{x:Bind typingSession.Background, Mode=TwoWay}" ColorChanged="TextBkgColorPicker_ColorChanged"/>
+															</Flyout>
+														</Button.Flyout>
+													</Button>
+												</StackPanel>
+											<Button x:Name="invertColBtn" Margin="10 0 0 0" Content="Invert colors" Click="InvertColBtn_Click"/>
 											<!--<Button x:Name="restoreFontBtn" Content="Restore defaults" Click="RestoreFontBtn_Click"/>-->
 											</StackPanel>
 										</Flyout>

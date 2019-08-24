@@ -85,7 +85,7 @@ namespace TyperUWP
 
 		public TypingSession()
 		{
-			FontName = "Gadugi";
+			FontName = "Verdana";
 			FontSize = 40;
 			Background = Colors.Black;
 			Foreground = Color.FromArgb(255, 255, 255, 220);

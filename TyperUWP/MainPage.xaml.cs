@@ -685,9 +685,16 @@ namespace TyperUWP
 			var speechString = typingSession.RemainingTime.ToSpeechString(false);
 			timeText.SetValue(AutomationProperties.NameProperty, "Time " + speechString);
 		}
-	}
 
-	public static class TimeSpanExt
+        private void InvertColBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var fore = textColorPicker.Color;
+            textColorPicker.Color = textBkgColorPicker.Color;
+            textBkgColorPicker.Color = fore;
+        }
+    }
+
+    public static class TimeSpanExt
 	{
 		public static string ToSpeechString(this TimeSpan time, bool showSecondFractions)
 		{
