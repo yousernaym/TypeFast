@@ -110,7 +110,7 @@ namespace TyperUWP
 		void displayError(TextBox entry, string error)
 		{
 			errorText.Text = error; //errorText is a TextBlock in errorFlyout
-            errorFlyout.Placement = FlyoutPlacementMode.Bottom;
+            //errorFlyout.Placement = FlyoutPlacementMode.Bottom;
             errorFlyout.ShowAt(entry);
 		}
 
