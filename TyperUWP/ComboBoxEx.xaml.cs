@@ -39,7 +39,16 @@ namespace TyperUWP
 			}
 		}
 
-		new public double Width
+        new public double MaxWidth
+        {
+            get => textBox.MaxWidth;
+            set
+            {
+                textBox.MaxWidth = listPopup.MaxWidth = list.MaxWidth = value;
+            }
+        }
+
+        new public double Width
 		{
 			get => textBox.Width;
 			set

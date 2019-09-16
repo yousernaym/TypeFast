@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TyperUWP", "TyperUWP\TyperU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TyperUWPTest", "TyperUWPTest\TyperUWPTest.csproj", "{EA53FB40-2546-482C-BEF0-172E0BAD808C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TyperLib", "TyperLib\TyperLib.csproj", "{1FC9CE38-09A7-49F1-8C0A-5A6D8C275F94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TyperLib", "TyperLib\TyperLib.csproj", "{1FC9CE38-09A7-49F1-8C0A-5A6D8C275F94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,7 +61,6 @@ Global
 		{EA53FB40-2546-482C-BEF0-172E0BAD808C}.Debug|x64.Deploy.0 = Debug|x64
 		{EA53FB40-2546-482C-BEF0-172E0BAD808C}.Debug|x86.ActiveCfg = Debug|x86
 		{EA53FB40-2546-482C-BEF0-172E0BAD808C}.Debug|x86.Build.0 = Debug|x86
-		{EA53FB40-2546-482C-BEF0-172E0BAD808C}.Debug|x86.Deploy.0 = Debug|x86
 		{EA53FB40-2546-482C-BEF0-172E0BAD808C}.Release|Any CPU.ActiveCfg = Release|x86
 		{EA53FB40-2546-482C-BEF0-172E0BAD808C}.Release|ARM.ActiveCfg = Release|ARM
 		{EA53FB40-2546-482C-BEF0-172E0BAD808C}.Release|ARM.Build.0 = Release|ARM

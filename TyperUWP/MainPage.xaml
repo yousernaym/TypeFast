@@ -163,7 +163,7 @@
 			</RelativePanel>
 			<StackPanel />
 			<!--<local:ComboBoxEx x:Name="textsCombo" BorderBrush="#ff152a80" AccessKey="L" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="300" Margin="0 0 0 0" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>-->
-			<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="300" Margin="0 7 0 7" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
+		<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="300" MaxWidth="300" Margin="0 7 0 7" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
 
 			<Grid x:Name ="textPanel" Padding="0,40,0,40" Margin="0,0,0,0">
 				<Grid.ColumnDefinitions>
