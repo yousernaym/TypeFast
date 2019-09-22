@@ -131,6 +131,10 @@ namespace TyperUWP
 					FontName = (string)entry.Value;
 				else if (entry.Name == "fontSize")
 					fontSize = (double)entry.Value;
+				else if (entry.Name == "hideWrittenChars")
+					hideWrittenChars = (bool)entry.Value;
+				else if (entry.Name == "underlineCurrentChar")
+					underlineCurrentChar = (bool)entry.Value;
 			}
 		}
 
@@ -143,6 +147,8 @@ namespace TyperUWP
 			info.AddValue("errorForeground", ErrorForeground);
 			info.AddValue("fontName", FontName);
 			info.AddValue("fontSize", fontSize);
+			info.AddValue("hideWrittenChars", hideWrittenChars);
+			info.AddValue("underlineCurrentChar", underlineCurrentChar);
 		}
 	}
 
