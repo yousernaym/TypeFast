@@ -132,7 +132,7 @@ namespace TyperUWP
 
         public void updateHighContrastMarker(bool show)
         {
-            if (show)
+			if (show)
             { 
                 highContrastMarker.Visibility = Visibility.Visible;
                 highContrastMarker.Width = border.Width;

@@ -93,8 +93,19 @@ namespace TyperUWP
                 View.draw();
             }
         }
+		bool underlineCurrentChar;
+		public bool UnderlineCurrentChar
+		{
+			get => underlineCurrentChar;
+			set
+			{
+				underlineCurrentChar = value;
+				View.applyStyle();
+			}
+		}
 
-        public TypingSession()
+
+		public TypingSession()
 		{
 			FontName = "Verdana";
 			FontSize = 40;
@@ -184,11 +195,21 @@ namespace TyperUWP
             }
 
             //Current character
-            currentCharControl.Background = Session.BackgroundBrush;
-            currentCharControl.ForeGround = Session.ForegroundBrush;
-            currentCharControl.FontFamily = Session.FontFamily;
+            //currentCharControl.Background = Session.ForegroundBrush;
+            //currentCharControl.ForeGround = Session.BackgroundBrush;
+			if (Session.UnderlineCurrentChar)
+			{
+				currentCharControl.Background = Session.BackgroundBrush;
+				currentCharControl.Foreground = Session.ForegroundBrush;
+			}
+			else
+			{
+				currentCharControl.Background = Session.ForegroundBrush;
+				currentCharControl.Foreground = Session.BackgroundBrush;
+			}
+			currentCharControl.FontFamily = Session.FontFamily;
 			currentCharControl.FontSize = Session.FontSize;
-            currentCharControl.Underline = true;
+            currentCharControl.Underline = session.UnderlineCurrentChar;
             currentCharControl.updateHighContrastMarker(false);
 
             //Set color of unwritten text
@@ -226,7 +247,8 @@ namespace TyperUWP
 				{
 					control.Text = "";
 					control.Background = Session.BackgroundBrush;
-                    continue;
+					control.updateHighContrastMarker(false);
+					continue;
 				}
 				bool isCorrect = currentChar.Value.Item1;
 				char c = currentChar.Value.Item2;
@@ -246,10 +268,9 @@ namespace TyperUWP
 			else
 			{
 				char c = Session.UnwrittenTextToDraw[0];
-                currentCharControl.Underline = true;
-                if (c == ' ')
+              	if (c == ' ')
                 {
-                    currentCharControl.Text = "_";
+					currentCharControl.Text = session.UnderlineCurrentChar ? "_" : " ";
                     currentCharControl.Width = spaceWidth;
                 }
                 else

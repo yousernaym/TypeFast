@@ -152,9 +152,11 @@
 														</Button>
 													</StackPanel>
 												<Button x:Name="invertColBtn" Margin="10 0 0 0" Content="Invert colors" Click="InvertColBtn_Click"/>
+													
 												<!--<Button x:Name="restoreFontBtn" Content="Restore defaults" Click="RestoreFontBtn_Click"/>-->
 												</StackPanel>
 											<CheckBox x:Name="hideWrittenCharsCb" Content="Hide written characters" IsChecked="{x:Bind typingSession.HideWrittenChars, Mode=TwoWay}"/>
+											<CheckBox x:Name="underlineCurrentChar" Content="Underline current character" IsChecked="{x:Bind typingSession.UnderlineCurrentChar, Mode=TwoWay}"/>
 										</StackPanel>
 										</Flyout>
 									</FlyoutBase.AttachedFlyout>
