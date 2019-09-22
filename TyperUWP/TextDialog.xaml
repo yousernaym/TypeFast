@@ -25,9 +25,9 @@
 			</Flyout>
 		</FlyoutBase.AttachedFlyout>
 		<TextBlock Text="Title"/>
-		<TextBox x:Name="titleTb" Grid.Column="1" MaxLength="50" GotFocus="TitleTb_GotFocus"/>
+		<TextBox x:Name="titleTb" Grid.Column="1" MaxLength="50" AutomationProperties.Name="Title" GotFocus="TitleTb_GotFocus"/>
 		<TextBlock Text="Text" Margin="0 7 0 0"/>
-		<TextBox x:Name="textTb" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="180" MaxLength="10000" TextChanged="TextTb_TextChanged" GotFocus="TextTb_GotFocus"/>
+		<TextBox x:Name="textTb" Grid.Column="1" TextWrapping="Wrap" AcceptsReturn="True" Height="180" MaxLength="10000" AutomationProperties.Name="Text" TextChanged="TextTb_TextChanged" GotFocus="TextTb_GotFocus"/>
 		<TextBlock x:Name="textCharCount"/>
 		<CheckBox x:Name="asciiLettersCb" Content="Remove accents" Margin="0 5 0 0"/>
 	</StackPanel>
