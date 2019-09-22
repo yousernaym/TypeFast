@@ -692,6 +692,7 @@ namespace TyperUWP
             textColorPicker.Color = textBkgColorPicker.Color;
             textBkgColorPicker.Color = fore;
         }
+
     }
 
     public static class TimeSpanExt

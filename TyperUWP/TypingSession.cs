@@ -83,7 +83,18 @@ namespace TyperUWP
 			}
 		}
 
-		public TypingSession()
+        bool hideWrittenChars;
+        public bool HideWrittenChars
+        {
+            get => hideWrittenChars;
+            set
+            {
+                hideWrittenChars = value;
+                View.draw();
+            }
+        }
+
+        public TypingSession()
 		{
 			FontName = "Verdana";
 			FontSize = 40;
@@ -143,7 +154,7 @@ namespace TyperUWP
 			}
 		}
 
-		public TypingSessionView(Panel _textPanel, StackPanel writtenTextPanel, TextBlockEx _currentCharControl, TextBlock _unwrittenTextControl, TypingSession session)
+        public TypingSessionView(Panel _textPanel, StackPanel writtenTextPanel, TextBlockEx _currentCharControl, TextBlock _unwrittenTextControl, TypingSession session)
 		{
 			writtenTextControls = new TextBlockEx[TypingSession.NumCharsFromCenter];
 			textPanel = _textPanel;
@@ -154,7 +165,6 @@ namespace TyperUWP
 			}
 			
 			currentCharControl = _currentCharControl;
-            currentCharControl.Underline = true;
             unwrittenTextControl = _unwrittenTextControl;
 			Session = session;
 		}
@@ -170,16 +180,19 @@ namespace TyperUWP
 				control.FontFamily = Session.FontFamily;
 				control.FontSize = Session.FontSize; 
 				control.Foreground = Session.ForegroundBrush;
-			}
+                control.Background = Session.BackgroundBrush;
+            }
 
-			//Current character
-			currentCharControl.Background = Session.ForegroundBrush;
-			currentCharControl.Foreground = Session.BackgroundBrush;
-			currentCharControl.FontFamily = Session.FontFamily;
+            //Current character
+            currentCharControl.Background = Session.BackgroundBrush;
+            currentCharControl.ForeGround = Session.ForegroundBrush;
+            currentCharControl.FontFamily = Session.FontFamily;
 			currentCharControl.FontSize = Session.FontSize;
+            currentCharControl.Underline = true;
+            currentCharControl.updateHighContrastMarker(false);
 
-			//Set color of unwritten text
-			unwrittenTextControl.Foreground = Session.ForegroundBrush;
+            //Set color of unwritten text
+            unwrittenTextControl.Foreground = Session.ForegroundBrush;
 			unwrittenTextControl.FontFamily = Session.FontFamily;
 			unwrittenTextControl.FontSize = Session.FontSize;
 
@@ -220,17 +233,10 @@ namespace TyperUWP
 
                 control.Background = isCorrect ? Session.BackgroundBrush : Session.ErrorForegroundBrush;
                 control.Foreground = isCorrect ? Session.CorrectForegroundBrush : Session.BackgroundBrush;
-                //if (c == ' ')
-                //	control.Background = isCorrect ? Session.BackgroundBrush : Session.ErrorForegroundBrush;
-                //else
-                //{
-                //	control.Foreground = isCorrect ? Session.CorrectForegroundBrush : Session.ErrorForegroundBrush;
-                //	control.Background = Session.BackgroundBrush;
-                //}
-
+                
                 control.Text = c.ToString();
 				control.Width = c == ' ' ? spaceWidth : Double.NaN;
-                control.updateHighContrastMarker(true);
+                control.updateHighContrastMarker(Session.HideWrittenChars);
                 currentChar = currentChar.Next;
 			}
 			if (string.IsNullOrEmpty(Session.UnwrittenTextToDraw))
@@ -240,29 +246,16 @@ namespace TyperUWP
 			else
 			{
 				char c = Session.UnwrittenTextToDraw[0];
-                //double charWidth = c == ' ' ? spaceWidth : Double.NaN;
+                currentCharControl.Underline = true;
                 if (c == ' ')
                 {
-                    currentCharControl.Underline = true;
-
-                    currentCharControl.Underline = false;
                     currentCharControl.Text = "_";
                     currentCharControl.Width = spaceWidth;
-
-                    //currentCharControl.Background = session.ForegroundBrush;
-                    currentCharControl.updateHighContrastMarker(false);
                 }
                 else
                 {
-                    currentCharControl.Underline = true;
                     currentCharControl.Text = c.ToString();
                     currentCharControl.Width = double.NaN;
-
-                    currentCharControl.Background = session.BackgroundBrush;
-                    currentCharControl.ForeGround = session.ForegroundBrush;
-                    
-                    currentCharControl.updateHighContrastMarker(false);
-
                 }
                 unwrittenTextControl.Text = Session.UnwrittenTextToDraw.Substring(1, Session.UnwrittenTextToDraw.Length - 1);
 			}
