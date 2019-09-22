@@ -212,19 +212,22 @@ namespace TyperUWP
 				{
 					control.Text = "";
 					control.Background = Session.BackgroundBrush;
-					continue;
+                    continue;
 				}
 				bool isCorrect = currentChar.Value.Item1;
 				char c = currentChar.Value.Item2;
-				if (c == ' ')
-					control.Background = isCorrect ? Session.BackgroundBrush : Session.ErrorForegroundBrush;
-				else
-				{
-					control.Foreground = isCorrect ? Session.CorrectForegroundBrush : Session.ErrorForegroundBrush;
-					control.Background = Session.BackgroundBrush;
-				}
 
-					control.Text = c.ToString();
+                control.Background = isCorrect ? Session.BackgroundBrush : Session.ErrorForegroundBrush;
+                control.Foreground = isCorrect ? Session.CorrectForegroundBrush : Session.BackgroundBrush;
+                //if (c == ' ')
+                //	control.Background = isCorrect ? Session.BackgroundBrush : Session.ErrorForegroundBrush;
+                //else
+                //{
+                //	control.Foreground = isCorrect ? Session.CorrectForegroundBrush : Session.ErrorForegroundBrush;
+                //	control.Background = Session.BackgroundBrush;
+                //}
+
+                control.Text = c.ToString();
 				control.Width = c == ' ' ? spaceWidth : Double.NaN;
 
 				currentChar = currentChar.Next;
