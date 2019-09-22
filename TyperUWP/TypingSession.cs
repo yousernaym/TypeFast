@@ -154,7 +154,8 @@ namespace TyperUWP
 			}
 			
 			currentCharControl = _currentCharControl;
-			unwrittenTextControl = _unwrittenTextControl;
+            currentCharControl.Underline = true;
+            unwrittenTextControl = _unwrittenTextControl;
 			Session = session;
 		}
 
@@ -229,8 +230,8 @@ namespace TyperUWP
 
                 control.Text = c.ToString();
 				control.Width = c == ' ' ? spaceWidth : Double.NaN;
-
-				currentChar = currentChar.Next;
+                control.updateHighContrastMarker(true);
+                currentChar = currentChar.Next;
 			}
 			if (string.IsNullOrEmpty(Session.UnwrittenTextToDraw))
 			{
@@ -239,11 +240,34 @@ namespace TyperUWP
 			else
 			{
 				char c = Session.UnwrittenTextToDraw[0];
-				currentCharControl.Text = c.ToString();
-				currentCharControl.Width = c == ' ' ? spaceWidth : Double.NaN;
-				unwrittenTextControl.Text = Session.UnwrittenTextToDraw.Substring(1, Session.UnwrittenTextToDraw.Length - 1);
+                //double charWidth = c == ' ' ? spaceWidth : Double.NaN;
+                if (c == ' ')
+                {
+                    currentCharControl.Underline = true;
+
+                    currentCharControl.Underline = false;
+                    currentCharControl.Text = "_";
+                    currentCharControl.Width = spaceWidth;
+
+                    //currentCharControl.Background = session.ForegroundBrush;
+                    currentCharControl.updateHighContrastMarker(false);
+                }
+                else
+                {
+                    currentCharControl.Underline = true;
+                    currentCharControl.Text = c.ToString();
+                    currentCharControl.Width = double.NaN;
+
+                    currentCharControl.Background = session.BackgroundBrush;
+                    currentCharControl.ForeGround = session.ForegroundBrush;
+                    
+                    currentCharControl.updateHighContrastMarker(false);
+
+                }
+                unwrittenTextControl.Text = Session.UnwrittenTextToDraw.Substring(1, Session.UnwrittenTextToDraw.Length - 1);
 			}
-		}
+            //currentCharControl.updateHighContrastMarker(false);
+        }
 		
 	}
 

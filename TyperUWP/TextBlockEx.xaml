@@ -11,7 +11,9 @@
 
     <Grid>
 		<Border x:Name="border">
-			<TextBlock x:Name="textBlock"  Text=""/>
+			<TextBlock x:Name="textBlock" Text=""/>
 		</Border>
+		<!--Rectangle is rendered on top of text for compatibility with high-contrast themes-->
+		<Rectangle x:Name="highContrastMarker"/>
 	</Grid>
 </UserControl>

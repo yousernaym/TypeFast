@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -10,6 +11,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -74,19 +76,40 @@ namespace TyperUWP
 		new public static readonly DependencyProperty BackgroundProperty =
 			DependencyProperty.Register("Background", typeof(Brush), typeof(TextBlockEx), new PropertyMetadata(0));
 
+        string text;
 		public string Text
 		{
 			get { return (string)GetValue(TextProperty); }
-			set
-			{
-				SetValue(TextProperty, value);
-				textBlock.Text = value;
-			}
+            set
+            {
+                SetValue(TextProperty, value);
+                text = value;
+                textBlock.TextDecorations = Underline ?   Windows.UI.Text.TextDecorations.Underline : Windows.UI.Text.TextDecorations.None;
+                textBlock.Text = value;
+                //for (int i = 0; i < textBlock.Inlines.Count; i++)
+                //{
+                //    Inline inline = textBlock.Inlines[i];
+                //    Run run;
+                //    if (inline is Underline)
+                //    {
+                //        Underline underline = (Underline)inline;
+                //        run = (Run)underline.Inlines[0];
+                //       run.Text = Underline ? value : "";
+                //    }
+                //    else
+                //    {
+                //        run = (Run)inline;
+                //        run.Text = Underline ? "" : value;
+                //    }
+                //}
+            }
 		}
 
 		// Using a DependencyProperty as the backing store for Text.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty TextProperty =
 			DependencyProperty.Register("Text", typeof(string), typeof(TextBlockEx), new PropertyMetadata(0));
+
+        public bool Underline { get; set; } = false;
 
 		new public CornerRadius CornerRadius
 		{
@@ -106,5 +129,22 @@ namespace TyperUWP
 		{
 			this.InitializeComponent();
 		}
-	}
+
+        public void updateHighContrastMarker(bool show)
+        {
+            if (show)
+            { 
+                highContrastMarker.Visibility = Visibility.Visible;
+                highContrastMarker.Width = border.Width;
+                highContrastMarker.Stroke = border.Background;
+                highContrastMarker.Fill = border.Background;
+                highContrastMarker.CenterPoint = border.CenterPoint;
+                highContrastMarker.Height = border.Height;
+            }
+            else
+            {
+                highContrastMarker.Visibility = Visibility.Collapsed;
+            } 
+        }
+    }
 }
