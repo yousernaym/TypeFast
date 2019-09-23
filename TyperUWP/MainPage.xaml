@@ -183,7 +183,7 @@
 			</Grid>
 			<StackPanel x:Name="resetButtonsPanel" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 7 0 0">
 				<Border Background="Black" Padding="0" CornerRadius="7" Margin="0 0 12 0">
-					<Button x:Name="restartBtn" AccessKey="E" CornerRadius="7" Click="RestartBtn_Click">
+				<Button x:Name="restartBtn" AccessKey="E" CornerRadius="7" AutomationProperties.Name="Reset" Click="RestartBtn_Click">
 						<StackPanel Orientation="Horizontal">
 							<SymbolIcon Symbol="Refresh" Margin="0 0 5 0"/>
 							<TextBlock Text="Reset"/>
@@ -191,7 +191,7 @@
 					</Button>
 				</Border>
 				<Border Background="Black" Padding="0" CornerRadius="7">
-					<Button x:Name="shuffleBtn" AccessKey="A" CornerRadius="7" Click="ShuffleBtn_Click">
+					<Button x:Name="shuffleBtn" AccessKey="A" CornerRadius="7" AutomationProperties.Name="Random text" Click="ShuffleBtn_Click">
 						<StackPanel Orientation="Horizontal">
 							<SymbolIcon Symbol="Shuffle" Margin="0 0 5 0"/>
 							<TextBlock Text="Random text"/>
