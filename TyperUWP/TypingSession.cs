@@ -296,13 +296,18 @@ namespace TyperUWP
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
 			var time = (TimeSpan)value;
+			//if (time.TotalSeconds < 30)
+			//	time = new TimeSpan(0, 0, 30);
 			return time.Minutes.ToString("d2") + ":" + time.Seconds.ToString("d2");
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
-			var time = (string)value;
-			return new TimeSpan(0, int.Parse(time.Substring(0, 2)), int.Parse(time.Substring(3, 2)));
+			var timeStr = (string)value;
+			var timeSpan = new TimeSpan(0, int.Parse(timeStr.Substring(0, 2)), int.Parse(timeStr.Substring(3, 2)));
+			//if (timeSpan.TotalSeconds < 30)
+			//	timeSpan = new TimeSpan(0, 0, 30);
+			return timeSpan;
 		}
 	}
 

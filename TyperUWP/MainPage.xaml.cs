@@ -51,6 +51,7 @@ namespace TyperUWP
 		Texts texts;
 		public bool DialogOpen = false;
 		private bool clipboardChanged = true;
+		AccessibilitySettings accessibilitySettings;
 
 		public MainPage()
 		{
@@ -80,9 +81,8 @@ namespace TyperUWP
 
 			typingSessionView = new TypingSessionView(rootPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, new TypingSession());
 
-
 			//saveSettings();
-			
+
 			Clipboard.ContentChanged += Clipboard_ContentChanged;
 		}
 
@@ -297,6 +297,20 @@ namespace TyperUWP
 		{
 			currentCharControl.Focus(FocusState.Programmatic);
 			textsCombo.ItemSource = texts.Titles;
+			accessibilitySettings = new AccessibilitySettings();
+			accessibilitySettings.HighContrastChanged += AccessibilitySettings_HighContrastChanged;
+			updateAccessibilitySettings();
+		}
+
+		private void AccessibilitySettings_HighContrastChanged(AccessibilitySettings sender, object args)
+		{
+			updateAccessibilitySettings();
+		}
+
+		void updateAccessibilitySettings()
+		{
+			if (accessibilitySettings.HighContrast)
+				hideWrittenCharsCb.IsChecked = underlineCurrentCharCb.IsChecked = accessibilitySettings.HighContrast;
 		}
 
 		async private void TextsOptionsNew_Click(object sender, RoutedEventArgs e)
@@ -377,25 +391,38 @@ namespace TyperUWP
 		private void TimeLimitFlyout_Opened(object sender, object e)
 		{
 			DialogOpen = true;
+			timeLimitTb.Text = timeToString(typingSession.TimeLimit);
 			timeLimitTb.SelectionStart = 1;
 			timeLimitTb.SelectionLength = 1;
+		}
+
+		public string timeToString(TimeSpan timeSpan)
+		{
+			return timeSpan.Minutes.ToString("d2") + ":" + timeSpan.Seconds.ToString("d2");
+		}
+
+		public TimeSpan stringToTime(string timeStr)
+		{
+			var timeSpan = new TimeSpan(0, int.Parse(timeStr.Substring(0, 2)), int.Parse(timeStr.Substring(3, 2)));
+			return timeSpan;
 		}
 
 		private void TimeLimitFlyout_Closed(object sender, object e)
 		{
 			DialogOpen = false;
-			if (typingSession.TimeLimit.TotalSeconds < 30)
-			{
+			var time = stringToTime(timeLimitTb.Text);
+			if (time.TotalSeconds < 30)
 				timeLimitTb.Text = "00:30";
-				typingSession.TimeLimit = TimeSpan.FromSeconds(30);
-			}
+			
+			typingSession.TimeLimit = stringToTime(timeLimitTb.Text);
 			reset();
+			timeText.Content = "Time\n" + typingSession.RemainingTimeString;
 		}
 
 		private void TimeLimitTb_CharacterReceived(UIElement sender, CharacterReceivedRoutedEventArgs args)
 		{
 			bool digit = args.Character >= '0' && args.Character <= '9';
-			int charPos = timeLimitTb.SelectionStart - 1;
+			int charPos = timeLimitTb.SelectionStart;
 			bool tooManySeconds = digit && charPos == 3 && args.Character > '5';
 			if (!digit || tooManySeconds)
 			{
@@ -682,8 +709,8 @@ namespace TyperUWP
 
 		private void TimeText_GotFocus(object sender, RoutedEventArgs e)
 		{
-			var speechString = typingSession.RemainingTime.ToSpeechString(false);
-			timeText.SetValue(AutomationProperties.NameProperty, "Time " + speechString);
+			//var speechString = typingSession.RemainingTime.ToSpeechString(false);
+			//timeText.SetValue(AutomationProperties.NameProperty, "Time: " + speechString);
 		}
 
         private void InvertColBtn_Click(object sender, RoutedEventArgs e)

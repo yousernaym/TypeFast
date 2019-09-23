@@ -57,10 +57,10 @@
 					<TextBlock x:Name="accuracyText" Style="{StaticResource infoTextStyle}" FontSize="25" Margin="0 0 30 0" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters."/>
 					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="25" IsTabStop="True" GotFocus="TimeText_GotFocus">
 						<Button.Flyout>
-							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closed="TimeLimitFlyout_Closed">
+							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closing="TimeLimitFlyout_Closed">
 								<StackPanel Orientation="Horizontal">
 									<TextBlock Text="Time limit:" Margin="0,0,10,0" VerticalAlignment="Center" />
-									<TextBox x:Name="timeLimitTb" Text="{x:Bind typingSession.TimeLimit, Mode=TwoWay, Converter={StaticResource TimeLimitConverter}}" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging" SelectionChanged="TimeLimitTb_SelectionChanged" BeforeTextChanging="TimeLimitTb_BeforeTextChanging" />
+									<TextBox x:Name="timeLimitTb" KeyDown="TimeLimitTb_KeyDown" CharacterReceived="TimeLimitTb_CharacterReceived" SelectionChanging="TimeLimitTb_SelectionChanging" SelectionChanged="TimeLimitTb_SelectionChanged" BeforeTextChanging="TimeLimitTb_BeforeTextChanging" />
 									<!--extensions:TextBoxMask.CustomMask="5:[0-5]" extensions:TextBoxMask.Mask="99:59" extensions:TextBoxMask.PlaceHolder="0"/>-->
 								</StackPanel>
 							</Flyout>
@@ -156,7 +156,7 @@
 												<!--<Button x:Name="restoreFontBtn" Content="Restore defaults" Click="RestoreFontBtn_Click"/>-->
 												</StackPanel>
 											<CheckBox x:Name="hideWrittenCharsCb" Content="Hide written characters" IsChecked="{x:Bind typingSession.HideWrittenChars, Mode=TwoWay}"/>
-											<CheckBox x:Name="underlineCurrentChar" Content="Underline current character" IsChecked="{x:Bind typingSession.UnderlineCurrentChar, Mode=TwoWay}"/>
+											<CheckBox x:Name="underlineCurrentCharCb" Content="Underline current character" IsChecked="{x:Bind typingSession.UnderlineCurrentChar, Mode=TwoWay}"/>
 										</StackPanel>
 										</Flyout>
 									</FlyoutBase.AttachedFlyout>
