@@ -108,7 +108,7 @@ namespace TyperUWP
 		public TypingSession()
 		{
 			FontName = "Verdana";
-			FontSize = 40;
+			FontSize = 35;
 			Background = Colors.Black;
 			Foreground = Color.FromArgb(255, 255, 255, 220);
 			ErrorForeground = Colors.Red;
