@@ -20,9 +20,9 @@ namespace TyperLib
 			if (previous != null)
 				previous.Next = this;
 		}
-		public T getRandomItem()
+		public T getRandomItem(int minValue = 0, int maxValue = int.MaxValue)
 		{
-			return items[rnd.Next(0, items.Count)];
+			return items[rnd.Next(0, Math.Min(maxValue, items.Count))];
 		}
 		public T getItem(int i)
 		{
@@ -47,7 +47,7 @@ namespace TyperLib
 		}
 		public string getRandomText(int length)
 		{
-			var book = getRandomItem();
+			var book = getRandomItem(0, 4);
 			var chapter = book.getRandomItem();
 			var verse = Currentverse = chapter.getRandomItem();
 			//book = items[59];
