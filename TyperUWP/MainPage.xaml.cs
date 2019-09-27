@@ -204,6 +204,7 @@ namespace TyperUWP
 
 		private void Text_Finished(object sender, EventArgs e)
 		{
+			audio.play(Audio.Type.Finished);
 			if (texts.Current != null && !string.IsNullOrEmpty(texts.Current.Title))
 			{
 				texts.addRecord(typingSession);
@@ -268,6 +269,8 @@ namespace TyperUWP
 				audio.play(Audio.Type.Space);
 			else if (result == TypingSession.KeyPressResult.DeleteIncorrect && typingSession.ErrorAudio)
 				audio.play(Audio.Type.Fix);
+			else if ((result == TypingSession.KeyPressResult.DeleteCorrect || result == TypingSession.KeyPressResult.DeleteIncorrect) && typingSession.TypingAudio)
+				audio.play(Audio.Type.Backspace);
 			else if (typingSession.TypingAudio)
 				audio.play(Audio.Type.Typing);
 		}

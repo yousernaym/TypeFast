@@ -172,16 +172,26 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="Assets\audio\Backspace.wav" />
+    <Content Include="Assets\audio\Finished.wav" />
     <Content Include="Assets\audio\Error.wav" />
     <Content Include="Assets\audio\Fix.wav" />
-    <Content Include="Assets\audio\space\Space 1 - 0000.wav" />
-    <Content Include="Assets\audio\space\Space 2 - 0001.wav" />
-    <Content Include="Assets\audio\space\Spaces %28D%29 - 0008.wav" />
-    <Content Include="Assets\audio\space\Spaces %28D%29 - 0009.wav" />
-    <Content Include="Assets\audio\space\Spaces %28D%29 - 0010.wav" />
-    <Content Include="Assets\audio\typing\Various %28D%29 - 0006.wav" />
-    <Content Include="Assets\audio\typing\Various %28D%29 - 0007.wav" />
-    <Content Include="Assets\audio\typing\Various - 0002.wav" />
+    <Content Include="Assets\audio\space\0001 - Spaces.wav" />
+    <Content Include="Assets\audio\space\0002 - Spaces %28D%29.wav" />
+    <Content Include="Assets\audio\space\0003 - Spaces %28D%29.wav" />
+    <Content Include="Assets\audio\typing\0007 - Various.wav" />
+    <Content Include="Assets\audio\typing\0008 - Various %28D%29.wav" />
+    <Content Include="Assets\audio\typing\0009 - Various %28D%29.wav" />
+    <Content Include="Assets\audio\typing\0010 - Various 2.wav" />
+    <Content Include="Assets\audio\typing\0012 - Various 3.wav" />
+    <Content Include="Assets\audio\typing\0013 - Various 4.wav" />
+    <Content Include="Assets\audio\typing\0014 - Various 5.wav" />
+    <Content Include="Assets\audio\typing\0015 - Various 6.wav" />
+    <Content Include="Assets\audio\typing\0016 - Various 7.wav" />
+    <Content Include="Assets\audio\typing\0017 - Various 8.wav" />
+    <Content Include="Assets\audio\typing\0018 - Various 9.wav" />
+    <Content Include="Assets\audio\typing\0019 - Various 10.wav" />
+    <Content Include="Assets\audio\typing\0022 - Various 13.wav" />
     <Content Include="Texts\presets.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -300,6 +310,7 @@
       <Name>TyperLib</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

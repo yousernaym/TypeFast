@@ -116,7 +116,7 @@ namespace TyperUWP
 		}
 
 		public bool ErrorAudio { get; set; } = true;
-		public bool TypingAudio { get; set; } = false;
+		public bool TypingAudio { get; set; } = true;
 
 		public TypingSession()
 		{
