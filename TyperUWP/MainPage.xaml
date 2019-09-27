@@ -77,12 +77,6 @@
 										<KeyboardAccelerator Modifiers="Control" Key="P" />
 									</MenuFlyoutItem.KeyboardAccelerators>
 								</MenuFlyoutItem>
-								<MenuFlyoutItem x:Name="textCmPaste" Icon="Paste" Text="Paste temporary text" Click="TextCmPaste_Click" >
-									<MenuFlyoutItem.KeyboardAccelerators>
-										<KeyboardAccelerator Modifiers="Control" Key="V" />
-									</MenuFlyoutItem.KeyboardAccelerators>
-								</MenuFlyoutItem>
-								<MenuFlyoutSeparator />
 								<MenuFlyoutItem Icon="Add" x:Name="textsOptionsNew" Text="New text..." Click="TextsOptionsNew_Click" >
 									<MenuFlyoutItem.KeyboardAccelerators>
 										<KeyboardAccelerator Modifiers="Control" Key="N"/>
@@ -103,7 +97,12 @@
 										<KeyboardAccelerator Modifiers="Control" Key="D"/>
 									</MenuFlyoutItem.KeyboardAccelerators>
 								</MenuFlyoutItem>
-								<MenuFlyoutSeparator />
+							<MenuFlyoutItem x:Name="textCmPaste" Icon="Paste" Text="Paste temporary text" Click="TextCmPaste_Click" >
+								<MenuFlyoutItem.KeyboardAccelerators>
+									<KeyboardAccelerator Modifiers="Control" Key="V" />
+								</MenuFlyoutItem.KeyboardAccelerators>
+							</MenuFlyoutItem>
+							<MenuFlyoutSeparator />
 								<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import text list..." Click="TextsOptionsImport_Click">
 									<MenuFlyoutItem.KeyboardAccelerators>
 										<KeyboardAccelerator Modifiers="Control" Key="I"/>
