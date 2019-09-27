@@ -546,6 +546,7 @@ namespace TyperUWP
 			else
 				texts.select(title);
 			textsOptionsEdit.IsEnabled = true;
+			textsOptionsDelete.IsEnabled = true;
 			reset();
 		}
 
@@ -657,6 +658,7 @@ namespace TyperUWP
 		{
 			texts.Current = new TextEntry("", text, false); ;
 			textsOptionsEdit.IsEnabled = false;
+			textsOptionsDelete.IsEnabled = false;
 			reset();
 		}
 
