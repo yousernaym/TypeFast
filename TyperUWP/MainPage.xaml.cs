@@ -256,14 +256,17 @@ namespace TyperUWP
 			if (!typingSession.IsRunning && args.KeyCode == (uint)' ')
 				return;
 
-			if (!typingSession.typeChar(args.KeyCode))
+			var result = typingSession.typeChar(args.KeyCode);
+			if (result == TypingSession.KeyPressResult.NotTypable)
 				return;
 			focusOnTyping();
 			typingSessionView.draw();
 			updateTypingStats();
-			if (args.KeyCode == TypingSession.KeyCode_Space)
+			if (result == TypingSession.KeyPressResult.Incorrect)
+				audio.play(Audio.Type.Error);
+			else if (args.KeyCode == TypingSession.KeyCode_Space)
 				audio.play(Audio.Type.Space);
-			else if (args.KeyCode == TypingSession.KeyCode_Backspace)
+			else if (result == TypingSession.KeyPressResult.DeleteIncorrect)
 				audio.play(Audio.Type.Fix);
 			else
 				audio.play(Audio.Type.Typing);

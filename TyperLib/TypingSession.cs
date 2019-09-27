@@ -15,6 +15,7 @@ namespace TyperLib
 	public class TypingSession : ISerializable
 	{
 		enum RndEntity { Chars, Words, Lines, None };
+		public enum KeyPressResult { NotTypable, Incorrect, Correct, DeleteIncorrect, DeleteCorrect };
 		public const uint KeyCode_Backspace = 8;
 		public const uint KeyCode_Space = 32;
 
@@ -109,13 +110,13 @@ namespace TyperLib
 				}
 
 				text = text.Trim();
-				
+
 				//Replace repeating spaces with single space
 				text = Regex.Replace(text, "[ ]{2,}", " ");
 
 				////Replace repeating line breaks with single break
 				//text = Regex.Replace(text, "[\n]{2,}", " ");
-		
+
 				//text = text.Replace('\n', ' ');
 
 			}
@@ -134,6 +135,7 @@ namespace TyperLib
 		}
 
 		protected int currentCharIndex;
+		public int CurrentChar => text[currentCharIndex];
 		public const int NumCharsFromCenter = 100;
 		protected int startDrawChar => Math.Max(currentCharIndex - NumCharsFromCenter, 0);
 		public LinkedList<Tuple<bool, char>> WrittenChars { get; private set; } = new LinkedList<Tuple<bool, char>>();
@@ -275,16 +277,16 @@ namespace TyperLib
 		//	TheText = File.ReadAllText("textToType.txt");
 		//}
 
-		public bool typeChar(uint keyCode)
+		public KeyPressResult typeChar(uint keyCode)
 		{
 			char c = (char)keyCode;
 			if (IsFinished || keyCode < 32 && keyCode != KeyCode_Backspace)
-				return false;
+				return KeyPressResult.NotTypable;
 
 			if (!stopwatch.IsRunning)
 			{
 				if (keyCode == KeyCode_Backspace)
-					return false;
+					return KeyPressResult.NotTypable;
 				startTime();
 			}
 
@@ -293,31 +295,43 @@ namespace TyperLib
 			{
 				//Aiready at beginning?
 				if (currentCharIndex == 0)
-					return false;
+					return KeyPressResult.NotTypable;
 
 				currentCharIndex--;
-				if (WrittenChars.First.Value.Item1)
-					CorrectChars--; //Correct char deleted
-				else
-					IncorrectChars--; //Inorrect char deleted
+				bool isCorrect = WrittenChars.First.Value.Item1;
 				WrittenChars.RemoveFirst();
+				if (isCorrect)
+				{
+					CorrectChars--; //Correct char deleted
+					return KeyPressResult.DeleteCorrect;
+				}
+				else
+				{
+					IncorrectChars--; //Inorrect char deleted
+					return KeyPressResult.DeleteIncorrect;
+				}
 			}
 			else //Not backspace
 			{
 				char currentChar = text[currentCharIndex++];
 				bool isCorrect = currentChar == c;
 				WrittenChars.AddFirst(new Tuple<bool, char>(isCorrect, currentChar));
+				KeyPressResult result; 
 				if (isCorrect)
+				{
 					CorrectChars++;
+					result = KeyPressResult.Correct;
+				}
 				else
 				{
 					IncorrectChars++;
 					TotalIncorrectChars++;
+					result = KeyPressResult.Incorrect;
 				}
 				if (currentCharIndex >= text.Length)
 					OnFinished();
+				return result;
 			}
-			return true;
 		}
 
 		void startTime()
