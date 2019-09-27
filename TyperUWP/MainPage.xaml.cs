@@ -57,6 +57,7 @@ namespace TyperUWP
 		public MainPage()
 		{
 			this.InitializeComponent();
+			
 			//var importIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEA52" };
 			//textsOptionsImport.Icon = importIcon;
 			//var exportIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEDE2" };
@@ -111,6 +112,7 @@ namespace TyperUWP
 		private void Current_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
 		{
 			saveSettings();
+			audio.Dispose();
 		}
 
 		private void saveSettings()
@@ -532,7 +534,6 @@ namespace TyperUWP
 		{
             fontStyleFlyout.Placement = FlyoutPlacementMode.Bottom;
             fontStyleFlyout.ShowAt(resetButtonsPanel);
-
 		}
 
 		private void RecordsFlyout_Opened(object sender, object e)

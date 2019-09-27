@@ -13,7 +13,7 @@ using Windows.Storage;
 
 namespace TyperUWP
 {
-	public class Audio
+	public class Audio : IDisposable
 	{
 		public enum Type { Fix, Error, Typing, Space, Backspace, Finished};
 		AudioGraph audioGraph = null;
@@ -21,22 +21,50 @@ namespace TyperUWP
 
 		AudioFileInputNode fixNode = null;
 		AudioFileInputNode errorNode = null;
-		List<AudioFileInputNode> typingNodes = null;
+		List<AudioFileInputNode> typingNodes = new List<AudioFileInputNode>();
 		int lastTypingNodeIndex;
-		List<AudioFileInputNode> spaceNodes = null;
+		List<AudioFileInputNode> spaceNodes = new List<AudioFileInputNode>();
 		int lastSpaceNodeIndex;
 		AudioFileInputNode backspaceNode = null;
 		AudioFileInputNode finishedNode = null;
 		
 		Random random = new Random();
+		public void Dispose()
+		{
+			if (fixNode != null)
+				fixNode.Dispose();
+			if (errorNode != null)
+				errorNode.Dispose();
+			foreach (var node in typingNodes)
+			{
+				if (node != null)
+					node.Dispose();
+			}
+			foreach (var node in spaceNodes)
+			{
+				if (node != null)
+					node.Dispose();
+			}
+			if (backspaceNode != null)
+				backspaceNode.Dispose();
+			if (finishedNode != null)
+				finishedNode.Dispose();
 
+			if (deviceOutputNode != null)
+				deviceOutputNode.Dispose();
+			if (audioGraph != null)
+				audioGraph.Dispose();
+		}
 		public async Task init()
 		{
 			await createAudioGraph();
+			if (audioGraph == null)
+				return;
 			await createDeviceOutputNode();
+			if (deviceOutputNode == null)
+				return;
 			await createFileInputNodes();
 			audioGraph.Start();
-			
 		}
 
 		async Task createAudioGraph()
@@ -53,7 +81,13 @@ namespace TyperUWP
 			if (result.Status == AudioDeviceNodeCreationStatus.Success)
 			{
 				deviceOutputNode = result.DeviceOutputNode;
-				deviceOutputNode.OutgoingGain = 1.4;
+				deviceOutputNode.OutgoingGain = 1.35;
+			}
+			else
+			{
+				audioGraph.Dispose();
+				audioGraph = null;
+				throw new InvalidOperationException();
 			}
 		}
 
@@ -96,6 +130,8 @@ namespace TyperUWP
 
 		public void play(Type type)
 		{
+			if (deviceOutputNode == null)
+				return;
 			if (type == Type.Fix)
 				playNode(fixNode);
 			else if (type == Type.Error)
