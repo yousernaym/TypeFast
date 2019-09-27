@@ -154,9 +154,11 @@
 													
 												<!--<Button x:Name="restoreFontBtn" Content="Restore defaults" Click="RestoreFontBtn_Click"/>-->
 												</StackPanel>
-											<CheckBox x:Name="hideWrittenCharsCb" Content="Hide written characters" IsChecked="{x:Bind typingSession.HideWrittenChars, Mode=TwoWay}"/>
-											<CheckBox x:Name="underlineCurrentCharCb" Content="Underline current character" IsChecked="{x:Bind typingSession.UnderlineCurrentChar, Mode=TwoWay}"/>
-										</StackPanel>
+												<CheckBox x:Name="hideWrittenCharsCb" Content="Hide written characters" IsChecked="{x:Bind typingSession.HideWrittenChars, Mode=TwoWay}"/>
+												<CheckBox x:Name="underlineCurrentCharCb" Content="Underline current character" IsChecked="{x:Bind typingSession.UnderlineCurrentChar, Mode=TwoWay}"/>
+												<CheckBox x:Name="errorAudioCb" Content="Audio feedback for typing errors" IsChecked="{x:Bind typingSession.ErrorAudio, Mode=TwoWay}"/>
+												<CheckBox x:Name="typingAudioCb" Content="Audio feedback for general typing" IsChecked="{x:Bind typingSession.TypingAudio, Mode=TwoWay}"/>
+											</StackPanel>
 										</Flyout>
 									</FlyoutBase.AttachedFlyout>
 								</MenuFlyoutItem>

@@ -115,6 +115,8 @@ namespace TyperUWP
 			}
 		}
 
+		public bool ErrorAudio { get; set; } = true;
+		public bool TypingAudio { get; set; } = false;
 
 		public TypingSession()
 		{
@@ -149,6 +151,10 @@ namespace TyperUWP
 					hideWrittenChars = (bool)entry.Value;
 				else if (entry.Name == "underlineCurrentChar")
 					underlineCurrentChar = (bool)entry.Value;
+				else if (entry.Name == "errorAudio")
+					ErrorAudio = (bool)entry.Value;
+				else if (entry.Name == "typingAudio")
+					TypingAudio = (bool)entry.Value;
 			}
 		}
 
@@ -164,6 +170,8 @@ namespace TyperUWP
 			info.AddValue("fontSize", fontSize);
 			info.AddValue("hideWrittenChars", hideWrittenChars);
 			info.AddValue("underlineCurrentChar", underlineCurrentChar);
+			info.AddValue("errorAudio", ErrorAudio);
+			info.AddValue("typingAudio", TypingAudio);
 		}
 	}
 

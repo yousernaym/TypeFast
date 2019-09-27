@@ -262,13 +262,13 @@ namespace TyperUWP
 			focusOnTyping();
 			typingSessionView.draw();
 			updateTypingStats();
-			if (result == TypingSession.KeyPressResult.Incorrect)
+			if (result == TypingSession.KeyPressResult.Incorrect && typingSession.ErrorAudio)
 				audio.play(Audio.Type.Error);
-			else if (args.KeyCode == TypingSession.KeyCode_Space)
+			else if (args.KeyCode == TypingSession.KeyCode_Space && typingSession.TypingAudio)
 				audio.play(Audio.Type.Space);
-			else if (result == TypingSession.KeyPressResult.DeleteIncorrect)
+			else if (result == TypingSession.KeyPressResult.DeleteIncorrect && typingSession.ErrorAudio)
 				audio.play(Audio.Type.Fix);
-			else
+			else if (typingSession.TypingAudio)
 				audio.play(Audio.Type.Typing);
 		}
 
