@@ -50,6 +50,17 @@ namespace TyperUWP
 			}
 		}
 
+		public SolidColorBrush ErrorBackgroundBrush { get; private set; }
+		public Color ErrorBackground
+		{
+			get => ErrorBackgroundBrush.Color;
+			set
+			{
+				ErrorBackgroundBrush = new SolidColorBrush(value);
+				View?.applyStyle();
+			}
+		}
+
 		public SolidColorBrush ErrorForegroundBrush { get; private set; }
 		public Color ErrorForeground
 		{
@@ -60,7 +71,7 @@ namespace TyperUWP
 				View?.applyStyle();
 			}
 		}
-
+		
 		double fontSize;
 		public double FontSize
 		{
@@ -111,7 +122,8 @@ namespace TyperUWP
 			FontSize = 35;
 			Background = Colors.Black;
 			Foreground = Color.FromArgb(255, 255, 255, 220);
-			ErrorForeground = Colors.Red;
+			ErrorBackground = Colors.Red;
+			ErrorForeground = Colors.White;
 			CorrectForeground = Colors.Green;
 		}
 
@@ -125,6 +137,8 @@ namespace TyperUWP
 					Foreground = (Color)entry.Value;
 				else if (entry.Name == "correctForeground")
 					CorrectForeground = (Color)entry.Value;
+				else if (entry.Name == "errorBackground")
+					ErrorBackground = (Color)entry.Value;
 				else if (entry.Name == "errorForeground")
 					ErrorForeground = (Color)entry.Value;
 				else if (entry.Name == "fontName")
@@ -144,6 +158,7 @@ namespace TyperUWP
 			info.AddValue("background", Background);
 			info.AddValue("foreground", Foreground);
 			info.AddValue("correctForeground", CorrectForeground);
+			info.AddValue("errorBackground", ErrorBackground);
 			info.AddValue("errorForeground", ErrorForeground);
 			info.AddValue("fontName", FontName);
 			info.AddValue("fontSize", fontSize);
@@ -259,8 +274,8 @@ namespace TyperUWP
 				bool isCorrect = currentChar.Value.Item1;
 				char c = currentChar.Value.Item2;
 
-                control.Background = isCorrect ? Session.BackgroundBrush : Session.ErrorForegroundBrush;
-                control.Foreground = isCorrect ? Session.CorrectForegroundBrush : Session.BackgroundBrush;
+                control.Background = isCorrect ? Session.BackgroundBrush : Session.ErrorBackgroundBrush;
+                control.Foreground = isCorrect ? Session.CorrectForegroundBrush : Session.ErrorForegroundBrush;
                 
                 control.Text = c.ToString();
 				control.Width = c == ' ' ? spaceWidth : Double.NaN;
