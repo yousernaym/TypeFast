@@ -129,6 +129,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Audio.cs" />
     <Compile Include="ComboBoxEx.xaml.cs">
       <DependentUpon>ComboBoxEx.xaml</DependentUpon>
     </Compile>
@@ -171,6 +172,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="Assets\audio\Error.wav" />
+    <Content Include="Assets\audio\Fix.wav" />
+    <Content Include="Assets\audio\space\Space 1 - 0000.wav" />
+    <Content Include="Assets\audio\space\Space 2 - 0001.wav" />
+    <Content Include="Assets\audio\space\Spaces %28D%29 - 0008.wav" />
+    <Content Include="Assets\audio\space\Spaces %28D%29 - 0009.wav" />
+    <Content Include="Assets\audio\space\Spaces %28D%29 - 0010.wav" />
+    <Content Include="Assets\audio\typing\Various %28D%29 - 0006.wav" />
+    <Content Include="Assets\audio\typing\Various %28D%29 - 0007.wav" />
+    <Content Include="Assets\audio\typing\Various - 0002.wav" />
     <Content Include="Texts\presets.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

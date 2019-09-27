@@ -52,6 +52,7 @@ namespace TyperUWP
 		public bool DialogOpen = false;
 		private bool clipboardChanged = true;
 		AccessibilitySettings accessibilitySettings;
+		Audio audio = new Audio();
 
 		public MainPage()
 		{
@@ -260,6 +261,12 @@ namespace TyperUWP
 			focusOnTyping();
 			typingSessionView.draw();
 			updateTypingStats();
+			if (args.KeyCode == TypingSession.KeyCode_Space)
+				audio.play(Audio.Type.Space);
+			else if (args.KeyCode == TypingSession.KeyCode_Backspace)
+				audio.play(Audio.Type.Fix);
+			else
+				audio.play(Audio.Type.Typing);
 		}
 
 		private void updateTypingStats()
@@ -294,13 +301,14 @@ namespace TyperUWP
 			//focusOnTyping();
 		}
 
-		private void Page_Loaded(object sender, RoutedEventArgs e)
+		async private void Page_Loaded(object sender, RoutedEventArgs e)
 		{
 			currentCharControl.Focus(FocusState.Programmatic);
 			textsCombo.ItemSource = texts.Titles;
 			accessibilitySettings = new AccessibilitySettings();
 			accessibilitySettings.HighContrastChanged += AccessibilitySettings_HighContrastChanged;
 			updateAccessibilitySettings();
+			await audio.init();
 		}
 
 		private void AccessibilitySettings_HighContrastChanged(AccessibilitySettings sender, object args)

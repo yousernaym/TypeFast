@@ -15,7 +15,8 @@ namespace TyperLib
 	public class TypingSession : ISerializable
 	{
 		enum RndEntity { Chars, Words, Lines, None };
-		const uint KeyCode_Backspace = 8;
+		public const uint KeyCode_Backspace = 8;
+		public const uint KeyCode_Space = 32;
 
 		string[] rndElements;
 		int minWordLength;
