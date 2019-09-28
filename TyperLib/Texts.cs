@@ -47,7 +47,7 @@ namespace TyperLib
 			bool userDataExists = File.Exists(userDataPath);
 			if (userDataExists)
 				loadUserData(userDataPath, true);
-			loadUserData(presetsStream, false, true);
+			loadUserData(presetsStream, false, userDataExists);
 		}
 
 		void loadUserData(string loadPath, bool loadRecords)
