@@ -12,16 +12,17 @@ namespace TyperLib
 {
 	using Records = List<Record>;
 	public enum RecordType { RT_BestSessions, RT_BestTexts, RT_WorstTexts, RT_BestOfText};
-	
+
 	[Serializable]
 	public class Texts : IEnumerable<TextEntry>
 	{
-		TextEntries presets = new TextEntries();
+		//TextEntries presets = new TextEntries();
 		UserData userData = new UserData();
 		public const int MaxRecordsPerText = 10;
 		string userDataPath;
-		//readonly string presetsPath;
-		
+		//string presetsPath;
+		int PresetsVersion = 1;
+				
 		public TextEntry Current { get; set; }
 		public int Count => userData.TextEntries.Count;
 		public List<string> Titles
@@ -35,21 +36,28 @@ namespace TyperLib
 			}
 		}
 		
-		public Texts()
-		{
-			
-		}
-
-		async public Task loadData(string userDataDir, Func<Task> loadPresets)
+		public Texts(string userDataDir, Stream presetsStream)
 		{
 			if (userDataDir != null)
 				userDataPath = Path.Combine(userDataDir, "texts.ttl");
+			//if (presetsDir != null)
+				//presetsPath = Path.Combine(presetsDir, "presets.ttl");
 			//saveUserData();
 
-			if (File.Exists(userDataPath))
+			bool userDataExists = File.Exists(userDataPath);
+
+			loadUserData(presetsStream, false); //Loads userData.PresetVersion
+
+			//Ignore presets if the app has not been updated with new or updated presets, and there exists user texts
+			if (userData.PresetsVersion == PresetsVersion && userDataExists)
+				userData = new UserData();
+
+			//Merge presets with user data. If different versions of the same text exists, the preset is overwritten by the user text.
+			if (userDataExists)
 				loadUserData(userDataPath, true);
-			else
-				await loadPresets();
+
+			userData.PresetsVersion = PresetsVersion;
+			saveUserData();
 		}
 
 		void loadUserData(string loadPath, bool loadRecords)
@@ -64,6 +72,8 @@ namespace TyperLib
 
 		void loadUserData(Stream stream, bool loadRecords)
 		{
+			if (stream == null)
+				return;
 			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
 			var data = (UserData)dcs.ReadObject(stream);
 			
@@ -84,9 +94,7 @@ namespace TyperLib
 			if (userDataPath == null)
 				return;
 			using (var stream = File.Open(userDataPath, FileMode.Create))
-			{
 				saveUserData(stream, userData);
-			}
 		}
 
 		public void saveUserTexts(Stream stream)
@@ -265,6 +273,7 @@ namespace TyperLib
 	[Serializable]
 	internal class UserData : ISerializable
 	{
+		internal int PresetsVersion { get; set; }
 		internal TextEntries TextEntries { get; set; } = new TextEntries();
 		internal Records Records { get; set; } = new Records();
 		static readonly public Type[] SerializeTypes = new Type[] { typeof(TextEntry), typeof(Record) };
@@ -277,18 +286,18 @@ namespace TyperLib
 		{
 			foreach (var entry in info)
 			{
-				//Save individual texts and records in order to be able to shange data structure without changing file format.
-				if (entry.Name.StartsWith("textEntry_"))
-				{
-					var textEntry = (TextEntry)entry.Value;
-					TextEntries.add(textEntry);
-				}
+				if (entry.Name == "presetsVersion")
+					PresetsVersion = (int)entry.Value;
+				else if (entry.Name.StartsWith("textEntry_"))
+					TextEntries.add((TextEntry)entry.Value);
 				else if (entry.Name.StartsWith("record_"))
 					Records.Add((Record)entry.Value);
 			}
 		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
+			info.AddValue("presetsVersion", PresetsVersion);
+			//Save individual texts and records in order to be able to shange data structure without changing file format.
 			foreach (var textEntry in TextEntries)
 				info.AddValue("textEntry_"+textEntry.Title, textEntry);
 			for (int i = 0; i < Records.Count; i++)

@@ -42,6 +42,8 @@ namespace TyperUWP
 		readonly string RoamingDataDir = ApplicationData.Current.RoamingFolder.Path;
 		readonly string LocalDataDir = ApplicationData.Current.LocalFolder.Path;
 		readonly string SettingsPath;
+		const string TextsAssetsFolder = "texts/";
+		
 		TypingSessionView typingSessionView;
 		TypingSession typingSession
 		{
@@ -74,7 +76,7 @@ namespace TyperUWP
 			Window.Current.CoreWindow.CharacterReceived += CoreWindow_CharacterReceived;
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
-			texts = new Texts();
+			
 			SettingsPath = Path.Combine(RoamingDataDir, "settings");
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
@@ -104,7 +106,7 @@ namespace TyperUWP
 
 		async Task<Stream> getResourceStream(string path)
 		{
-			var uri = new Uri("ms-appx:///"+path);
+			var uri = new Uri("ms-appx:///Assets/"+path);
 			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
 			return await sampleFile.OpenStreamForReadAsync();
 		}
@@ -152,10 +154,9 @@ namespace TyperUWP
 			TextBkgColorPicker_ColorChanged(null, null);
 
 			//Load bible
-			var bibleStream = await getResourceStream("texts/bible_EN.xml");
-			typingSession.Bible = new Bible(bibleStream);
-			bibleStream.Dispose();
-
+			using (var bibleStream = await getResourceStream(TextsAssetsFolder + "bible_EN.xml")) 
+				typingSession.Bible = new Bible(bibleStream);
+			
 			//Misc init
 			fontCombo.SelectedItem = typingSession.FontName;
 			fontSizeTb.Text = typingSession.FontSize.ToString();
@@ -163,9 +164,9 @@ namespace TyperUWP
 			typingSession.Finished += Text_Finished;
 
 			//Load char mapping file
-			var charMapStream = await getResourceStream("charmap.txt");
-			typingSession.loadCharMap(charMapStream);
-
+			using (var charMapStream = await getResourceStream(TextsAssetsFolder + "charmap.txt"))
+				typingSession.loadCharMap(charMapStream);
+			
 			//Restore text from last session 
 			if (typingSession.StartText == null)
 			{
@@ -311,6 +312,10 @@ namespace TyperUWP
 
 		async private void Page_Loaded(object sender, RoutedEventArgs e)
 		{
+			using (var presetsStream = await getPresetsStream())
+				texts = new Texts(LocalDataDir, presetsStream);
+			await loadSession();
+
 			currentCharControl.Focus(FocusState.Programmatic);
 			textsCombo.ItemSource = texts.Titles;
 			accessibilitySettings = new AccessibilitySettings();
@@ -579,11 +584,12 @@ namespace TyperUWP
 			StorageFile file = await fsp.PickSaveFileAsync();
 			if (file != null)
 			{
-				var stream = await file.OpenStreamForWriteAsync();
-				stream.SetLength(0);
-				//texts.saveUserTexts(stream);
-				texts.saveUserData(stream); 
-				stream.Dispose();
+				using (var stream = await file.OpenStreamForWriteAsync())
+				{
+					stream.SetLength(0);
+					//texts.saveUserTexts(stream);
+					texts.saveUserData(stream);
+				}
 			}
 		}
 
@@ -622,11 +628,16 @@ namespace TyperUWP
             restorePresetsFlyout.ShowAt(resetButtonsPanel);
         }
 
+		async Task<Stream> getPresetsStream()
+		{
+			return await getResourceStream(TextsAssetsFolder + "presets.ttl");
+		}
+
 		async Task loadPresets()
 		{
-			var stream = await getResourceStream("texts/presets.ttl");
-			texts.importUserData(stream, false);
-			stream.Dispose();
+			using (var stream = await getPresetsStream())
+				texts.importUserData(stream, false);
+			
 			textsCombo.ItemSource = texts.Titles;
 			reset();
 			//selectText(texts.Current?.Title);
@@ -712,8 +723,7 @@ namespace TyperUWP
 
 		async private void Page_Loading(FrameworkElement sender, object args)
 		{
-			await texts.loadData(LocalDataDir, () => loadPresets());
-			await loadSession();
+			
 		}
 
 		private void RestoreFontBtn_Click(object sender, RoutedEventArgs e)

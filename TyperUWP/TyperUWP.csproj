@@ -164,12 +164,8 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <Content Include="..\TyperLib\charmap.txt">
-      <Link>charmap.txt</Link>
+      <Link>Assets\Texts\charmap.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\TyperLib\texts\bible_EN.xml">
-      <Link>Texts\bible_EN.xml</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Assets\audio\Backspace.wav" />
@@ -192,7 +188,8 @@
     <Content Include="Assets\audio\typing\0018 - Various 9.wav" />
     <Content Include="Assets\audio\typing\0019 - Various 10.wav" />
     <Content Include="Assets\audio\typing\0022 - Various 13.wav" />
-    <Content Include="Texts\presets.ttl">
+    <Content Include="Assets\Texts\bible_EN.xml" />
+    <Content Include="Assets\Texts\presets.ttl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="TyperUWP_TemporaryKey.pfx" />
