@@ -21,8 +21,8 @@ namespace TyperLib
 		public const int MaxRecordsPerText = 10;
 		string userDataPath;
 		//string presetsPath;
-		int PresetsVersion = 1;
-				
+		public const int Version = 0;
+
 		public TextEntry Current { get; set; }
 		public int Count => userData.TextEntries.Count;
 		public List<string> Titles
@@ -35,7 +35,7 @@ namespace TyperLib
 				return titles;
 			}
 		}
-		
+
 		public Texts(string userDataDir, Stream presetsStream)
 		{
 			if (userDataDir != null)
@@ -45,19 +45,9 @@ namespace TyperLib
 			//saveUserData();
 
 			bool userDataExists = File.Exists(userDataPath);
-
-			loadUserData(presetsStream, false); //Loads userData.PresetVersion
-
-			//Ignore presets if the app has not been updated with new or updated presets, and there exists user texts
-			if (userData.PresetsVersion == PresetsVersion && userDataExists)
-				userData = new UserData();
-
-			//Merge presets with user data. If different versions of the same text exists, the preset is overwritten by the user text.
 			if (userDataExists)
 				loadUserData(userDataPath, true);
-
-			userData.PresetsVersion = PresetsVersion;
-			saveUserData();
+			loadUserData(presetsStream, false, true);
 		}
 
 		void loadUserData(string loadPath, bool loadRecords)
@@ -70,15 +60,18 @@ namespace TyperLib
 			}
 		}
 
-		void loadUserData(Stream stream, bool loadRecords)
+		void loadUserData(Stream stream, bool loadRecords, bool onlyAddNewTexts = false)
 		{
 			if (stream == null)
 				return;
 			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
 			var data = (UserData)dcs.ReadObject(stream);
-			
+
 			foreach (var text in data.TextEntries)
-				userData.TextEntries.add(text);
+			{
+				if (!onlyAddNewTexts || text.Version > userData.SyncedWithVersion && !userData.TextEntries.containsKey(text.Title))
+					userData.TextEntries.add(text);
+			}
 			if (loadRecords)
 			{
 				foreach (var rec in data.Records)
@@ -87,6 +80,7 @@ namespace TyperLib
 						addRecord(rec);
 				}
 			}
+			userData.SyncedWithVersion = data.SyncedWithVersion;
 		}
 
 		public void saveUserData()
@@ -273,7 +267,7 @@ namespace TyperLib
 	[Serializable]
 	internal class UserData : ISerializable
 	{
-		internal int PresetsVersion { get; set; }
+		internal int SyncedWithVersion { get; set; }
 		internal TextEntries TextEntries { get; set; } = new TextEntries();
 		internal Records Records { get; set; } = new Records();
 		static readonly public Type[] SerializeTypes = new Type[] { typeof(TextEntry), typeof(Record) };
@@ -286,8 +280,8 @@ namespace TyperLib
 		{
 			foreach (var entry in info)
 			{
-				if (entry.Name == "presetsVersion")
-					PresetsVersion = (int)entry.Value;
+				if (entry.Name == "syncedWithVersion")
+					SyncedWithVersion = (int)entry.Value;
 				else if (entry.Name.StartsWith("textEntry_"))
 					TextEntries.add((TextEntry)entry.Value);
 				else if (entry.Name.StartsWith("record_"))
@@ -296,7 +290,7 @@ namespace TyperLib
 		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("presetsVersion", PresetsVersion);
+			info.AddValue("syncedWithVersion", Texts.Version);
 			//Save individual texts and records in order to be able to shange data structure without changing file format.
 			foreach (var textEntry in TextEntries)
 				info.AddValue("textEntry_"+textEntry.Title, textEntry);
