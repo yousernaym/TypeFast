@@ -87,7 +87,6 @@ namespace TyperUWP
 			{
 				audioGraph.Dispose();
 				audioGraph = null;
-				throw new InvalidOperationException();
 			}
 		}
 
@@ -148,6 +147,8 @@ namespace TyperUWP
 
 		void playNode(AudioFileInputNode node)
 		{
+			if (node == null)
+				return;
 			node.Reset();
 			node.Start();
 		}

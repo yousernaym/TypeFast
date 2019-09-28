@@ -533,7 +533,7 @@ namespace TyperUWP
 		private void FontMFI_Click(object sender, RoutedEventArgs e)
 		{
             fontStyleFlyout.Placement = FlyoutPlacementMode.Bottom;
-            fontStyleFlyout.ShowAt(resetButtonsPanel);
+            fontStyleFlyout.ShowAt(textPanel);
 		}
 
 		private void RecordsFlyout_Opened(object sender, object e)
