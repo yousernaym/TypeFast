@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
@@ -101,8 +103,8 @@ namespace TyperUWP
             set
             {
                 hideWrittenChars = value;
-                View.draw();
-            }
+                View?.draw();
+			}
         }
 		bool underlineCurrentChar;
 		public bool UnderlineCurrentChar
@@ -111,13 +113,29 @@ namespace TyperUWP
 			set
 			{
 				underlineCurrentChar = value;
-				View.applyStyle();
+				View?.applyStyle();
 			}
 		}
 
-		public bool ErrorAudio { get; set; } = true;
-		public bool TypingAudio { get; set; } = true;
-
+		bool errorAudio;
+		public bool ErrorAudio
+		{
+			get => errorAudio;
+			set
+			{
+				errorAudio = value;
+			}
+		}
+		bool typingAudio;
+		public bool TypingAudio
+		{
+			get => typingAudio;
+			set
+			{
+				typingAudio = value;
+			}
+		}
+		
 		public TypingSession()
 		{
 			FontName = "Verdana";
@@ -127,6 +145,10 @@ namespace TyperUWP
 			ErrorBackground = Colors.Red;
 			ErrorForeground = Colors.White;
 			CorrectForeground = Colors.Green;
+			UnderlineCurrentChar = false;
+			HideWrittenChars = false;
+			ErrorAudio = true;
+			TypingAudio = true;
 		}
 
 		public TypingSession(SerializationInfo info, StreamingContext context) : base(info, context)
@@ -148,9 +170,9 @@ namespace TyperUWP
 				else if (entry.Name == "fontSize")
 					fontSize = (double)entry.Value;
 				else if (entry.Name == "hideWrittenChars")
-					hideWrittenChars = (bool)entry.Value;
+					HideWrittenChars = (bool)entry.Value;
 				else if (entry.Name == "underlineCurrentChar")
-					underlineCurrentChar = (bool)entry.Value;
+					UnderlineCurrentChar = (bool)entry.Value;
 				else if (entry.Name == "errorAudio")
 					ErrorAudio = (bool)entry.Value;
 				else if (entry.Name == "typingAudio")

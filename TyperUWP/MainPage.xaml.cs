@@ -83,12 +83,29 @@ namespace TyperUWP
 			foreach (string font in fonts)
 				fontCombo.Items.Add(font);
 
-			typingSessionView = new TypingSessionView(rootPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, new TypingSession());
+			typingSessionView = new TypingSessionView(rootPanel, writtenTextPanel, currentCharControl, unwrittenTextControl, loadTypingSession());
 
 			//saveSettings();
 
 			Clipboard.ContentChanged += Clipboard_ContentChanged;
-			
+		}
+
+		async private void Page_Loading(FrameworkElement sender, object args)
+		{
+			await audio.init();
+			using (var presetsStream = await getPresetsStream())
+				texts = new Texts(LocalDataDir, presetsStream);
+			textsCombo.ItemSource = texts.Titles;
+			await initTypingSession();
+
+			accessibilitySettings = new AccessibilitySettings();
+			accessibilitySettings.HighContrastChanged += AccessibilitySettings_HighContrastChanged;
+			updateAccessibilitySettings();
+		}
+
+		private void Page_Loaded(object sender, RoutedEventArgs e)
+		{
+			currentCharControl.Focus(FocusState.Programmatic);
 		}
 
 		private void Clipboard_ContentChanged(object sender, object e)
@@ -134,21 +151,28 @@ namespace TyperUWP
 
 		}
 
-		async private Task loadSession()
+		private TypingSession loadTypingSession()
 		{
+			TypingSession session;
 			try
 			{
 				using (var stream = File.Open(SettingsPath, FileMode.Open))
 				{
 					var dcs = new DataContractSerializer(typeof(TypingSession), TypingSession.SerializeTypes);
-					typingSession = (TypingSession)dcs.ReadObject(stream);
+					session = (TypingSession)dcs.ReadObject(stream);
 				}
 			}
 			catch (FileNotFoundException)
 			{
 				//It''s probably the first time the app is opened, meaning no settings file has been created yet.
 				//Use default settings from session construtor
+				session = new TypingSession();
 			}
+			return session;
+		}
+
+		async private Task initTypingSession()
+		{
 			//Invoke the ColorChanged events explicitly, because they won't be invoked if a session color is set to white since that's the default picker color.
 			TextColorPicker_ColorChanged(null, null);
 			TextBkgColorPicker_ColorChanged(null, null);
@@ -310,20 +334,6 @@ namespace TyperUWP
 			//focusOnTyping();
 		}
 
-		async private void Page_Loaded(object sender, RoutedEventArgs e)
-		{
-			using (var presetsStream = await getPresetsStream())
-				texts = new Texts(LocalDataDir, presetsStream);
-			await loadSession();
-
-			currentCharControl.Focus(FocusState.Programmatic);
-			textsCombo.ItemSource = texts.Titles;
-			accessibilitySettings = new AccessibilitySettings();
-			accessibilitySettings.HighContrastChanged += AccessibilitySettings_HighContrastChanged;
-			updateAccessibilitySettings();
-			await audio.init();
-		}
-
 		private void AccessibilitySettings_HighContrastChanged(AccessibilitySettings sender, object args)
 		{
 			updateAccessibilitySettings();
@@ -332,7 +342,7 @@ namespace TyperUWP
 		void updateAccessibilitySettings()
 		{
 			if (accessibilitySettings.HighContrast)
-				hideWrittenCharsCb.IsChecked = underlineCurrentCharCb.IsChecked = accessibilitySettings.HighContrast;
+				hideWrittenCharsCb.IsChecked = underlineCurrentCharCb.IsChecked = true;
 		}
 
 		async private void TextsOptionsNew_Click(object sender, RoutedEventArgs e)
@@ -719,11 +729,6 @@ namespace TyperUWP
 				textCmPaste.IsEnabled = dataPackageView.Contains(StandardDataFormats.Text);
 				clipboardChanged = false;
 			}
-		}
-
-		async private void Page_Loading(FrameworkElement sender, object args)
-		{
-			
 		}
 
 		private void RestoreFontBtn_Click(object sender, RoutedEventArgs e)

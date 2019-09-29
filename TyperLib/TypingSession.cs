@@ -8,6 +8,8 @@ using System.Text;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Globalization;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace TyperLib
 {
@@ -193,7 +195,7 @@ namespace TyperLib
 
 		public event EventHandler TimeChecked;
 		public event EventHandler Finished;
-
+		
 		//public string WrittenTextToDraw => text == null ? "" : text.Substring(startDrawChar, currentCharIndex - startDrawChar);
 		public string UnwrittenTextToDraw => text == null ? "" : text.Substring(currentCharIndex, Math.Min(text.Length - currentCharIndex, NumCharsFromCenter));
 
