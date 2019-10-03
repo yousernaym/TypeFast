@@ -589,8 +589,8 @@ namespace TyperUWP
 		async private void TextsOptionsExport_Click(object sender, RoutedEventArgs e)
 		{
 			var fsp = new FileSavePicker();
-			fsp.FileTypeChoices.Add("Typer text list", new List<string>() { ".ttl" });
-			fsp.SuggestedFileName = "My text list";
+			fsp.FileTypeChoices.Add("Type Fast texts", new List<string>() { ".tft" });
+			fsp.SuggestedFileName = "My texts";
 			StorageFile file = await fsp.PickSaveFileAsync();
 			if (file != null)
 			{
@@ -607,7 +607,7 @@ namespace TyperUWP
 		{
 			var fop = new FileOpenPicker();
 			//fop.FileTypeFilter.Add("*");
-			fop.FileTypeFilter.Add(".ttl");
+			fop.FileTypeFilter.Add(".tft");
 			StorageFile file = await fop.PickSingleFileAsync();
 			if (file != null)
 			{
@@ -640,7 +640,7 @@ namespace TyperUWP
 
 		async Task<Stream> getPresetsStream()
 		{
-			return await getResourceStream(TextsAssetsFolder + "presets.ttl");
+			return await getResourceStream(TextsAssetsFolder + "presets.tft");
 		}
 
 		async Task loadPresets()

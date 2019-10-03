@@ -165,7 +165,6 @@
     </AppxManifest>
     <Content Include="..\TyperLib\charmap.txt">
       <Link>Assets\Texts\charmap.txt</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Assets\audio\Backspace.wav" />
@@ -189,9 +188,7 @@
     <Content Include="Assets\audio\typing\0019 - Various 10.wav" />
     <Content Include="Assets\audio\typing\0022 - Various 13.wav" />
     <Content Include="Assets\Texts\bible_EN.xml" />
-    <Content Include="Assets\Texts\presets.ttl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Assets\Texts\presets.tft" />
     <None Include="TyperUWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
