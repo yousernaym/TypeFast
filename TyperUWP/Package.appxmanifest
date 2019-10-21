@@ -16,7 +16,7 @@
   <Properties>
     <DisplayName>Type Fast</DisplayName>
     <PublisherDisplayName>Mickeh</PublisherDisplayName>
-    <Logo>Assets\Logo\StoreLogo.png</Logo>
+    <Logo>Assets\Logo\StoreLogo.jpg</Logo>
   </Properties>
 
   <Dependencies>
@@ -33,18 +33,18 @@
       EntryPoint="TyperUWP.App">
       <uap:VisualElements
         DisplayName="Type Fast"
-        Square150x150Logo="Assets\Logo\Square150x150Logo.png"
-        Square44x44Logo="Assets\Logo\Square44x44Logo.png"
+        Square150x150Logo="Assets\Logo\Square150x150Logo.jpg"
+        Square44x44Logo="Assets\Logo\Square44x44Logo.jpg"
         Description="Train and test your typing skills."
-        BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Logo\Wide310x150Logo.png" Square71x71Logo="Assets\Logo\SmallTile.png" Square310x310Logo="Assets\Logo\LargeTile.png">
+        BackgroundColor="#000000">
+        <uap:DefaultTile Wide310x150Logo="Assets\Logo\Wide310x150Logo.jpg" Square310x310Logo="Assets\Logo\LargeTile.jpg" Square71x71Logo="Assets\Logo\SmallTile.jpg">
           <uap:ShowNameOnTiles>
-            <uap:ShowOn Tile="wide310x150Logo"/>
             <uap:ShowOn Tile="square150x150Logo"/>
+            <uap:ShowOn Tile="wide310x150Logo"/>
             <uap:ShowOn Tile="square310x310Logo"/>
           </uap:ShowNameOnTiles>
         </uap:DefaultTile >
-        <uap:SplashScreen Image="Assets\Logo\SplashScreen.png" />
+        <uap:SplashScreen Image="Assets\Logo\SplashScreen.jpg"     BackgroundColor="#000000"/>
       </uap:VisualElements>
     </Application>
   </Applications>
