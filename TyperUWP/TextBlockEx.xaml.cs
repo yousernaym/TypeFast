@@ -84,7 +84,7 @@ namespace TyperUWP
             {
                 SetValue(TextProperty, value);
                 text = value;
-                textBlock.TextDecorations = Underline ?   Windows.UI.Text.TextDecorations.Underline : Windows.UI.Text.TextDecorations.None;
+                textBlock.TextDecorations = Underline ? Windows.UI.Text.TextDecorations.Underline : Windows.UI.Text.TextDecorations.None;
                 textBlock.Text = value;
                 //for (int i = 0; i < textBlock.Inlines.Count; i++)
                 //{
@@ -135,11 +135,11 @@ namespace TyperUWP
 			if (show)
             { 
                 highContrastMarker.Visibility = Visibility.Visible;
-                highContrastMarker.Width = border.Width;
+				//highContrastMarker.Width = border.Width;
                 highContrastMarker.Stroke = border.Background;
                 highContrastMarker.Fill = border.Background;
-                highContrastMarker.CenterPoint = border.CenterPoint;
-                highContrastMarker.Height = border.Height;
+				//highContrastMarker.CenterPoint = border.CenterPoint;
+				//highContrastMarker.Height = border.Height;
             }
             else
             {

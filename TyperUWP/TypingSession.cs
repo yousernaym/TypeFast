@@ -306,10 +306,24 @@ namespace TyperUWP
 
                 control.Background = isCorrect ? Session.BackgroundBrush : Session.ErrorBackgroundBrush;
                 control.Foreground = isCorrect ? Session.CorrectForegroundBrush : Session.ErrorForegroundBrush;
-                
                 control.Text = c.ToString();
-				control.Width = c == ' ' ? spaceWidth : Double.NaN;
-                control.updateHighContrastMarker(Session.HideWrittenChars);
+
+				if (c == ' ')
+				{
+					control.Width = spaceWidth;
+				}
+				else
+				{
+					if (Session.HideWrittenChars)
+					{
+						control.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+						control.Text = " ";
+						control.Width = control.DesiredSize.Width;
+					}
+					else
+						control.Width = double.NaN;
+				}
+				control.updateHighContrastMarker(Session.HideWrittenChars);
                 currentChar = currentChar.Next;
 			}
 			if (string.IsNullOrEmpty(Session.UnwrittenTextToDraw))
