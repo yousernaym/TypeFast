@@ -54,7 +54,7 @@ namespace TyperLib
 						text = text.Replace(" ", "");
 						text = text.Replace("\n", "");
 						text = text.Replace("\r", "");
-						rndElements = text.Select(x => x.ToString()).ToArray();
+						rndElements = text.Select(x => x.ToString()).ToArray(); //Create array with all characters in the string
 					}
 				}
 				else if (text.StartsWith("__rnd ws__"))
@@ -66,7 +66,12 @@ namespace TyperLib
 					text = Bible.getRandomText(10000);
 					title = Bible.Currentverse.ToString();
 				}
-
+				else if((match = Regex.Match(text, "__rnd \".+\"__")).Success)
+				{
+					string delim = text.Substring(7, match.Length - 3 - 7);
+					text = text.Substring(match.Length);
+					rndElements = text.Split(new string[] { delim }, StringSplitOptions.None);
+				}
 				if (rndElements != null)
 				{
 					var rnd = new Random();
