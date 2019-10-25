@@ -588,6 +588,9 @@ namespace TyperUWP
 
 		async private void TextsOptionsExport_Click(object sender, RoutedEventArgs e)
 		{
+			if (DialogOpen)
+				return;
+			DialogOpen = true;
 			var fsp = new FileSavePicker();
 			fsp.FileTypeChoices.Add("Type Fast texts", new List<string>() { ".tft" });
 			fsp.SuggestedFileName = "My texts";
@@ -601,33 +604,42 @@ namespace TyperUWP
 					texts.saveUserData(stream);
 				}
 			}
+			DialogOpen = false;
 		}
 
 		async private void TextsOptionsImport_Click(object sender, RoutedEventArgs e)
 		{
-			var fop = new FileOpenPicker();
-			//fop.FileTypeFilter.Add("*");
-			fop.FileTypeFilter.Add(".tft");
-			StorageFile file = await fop.PickSingleFileAsync();
-			if (file != null)
+			if (DialogOpen)
+				return;
+			DialogOpen = true;
+			try
 			{
-				var stream = await file.OpenStreamForReadAsync();
-				try
+				var fop = new FileOpenPicker();
+				//fop.FileTypeFilter.Add("*");
+				fop.FileTypeFilter.Add(".tft");
+				StorageFile file = await fop.PickSingleFileAsync();
+				if (file != null)
 				{
-					texts.importUserData(stream, true);
+					using (var stream = await file.OpenStreamForReadAsync())
+					{
+						try
+						{
+							texts.importUserData(stream, true);
+						}
+						catch
+						{
+							var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Couldn't load file." }.ShowAsync();
+							return;
+						}
+					}
+					textsCombo.ItemSource = texts.Titles;
+					reset();
+					//selectText(texts.Current?.Title);
 				}
-				catch
-				{
-					var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Couldn't load file." }.ShowAsync();
-					return;
-				}
-				finally
-				{
-					stream.Dispose();
-				}
-				textsCombo.ItemSource = texts.Titles;
-				reset();
-				//selectText(texts.Current?.Title);
+			}
+			finally
+			{
+				DialogOpen = false;
 			}
 		}
 
