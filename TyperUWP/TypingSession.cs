@@ -301,8 +301,8 @@ namespace TyperUWP
 					control.updateHighContrastMarker(false);
 					continue;
 				}
-				bool isCorrect = currentChar.Value.Item1;
-				char c = currentChar.Value.Item2;
+				bool isCorrect = currentChar.Value.Correct;
+				char c = currentChar.Value.Char;
 
                 control.Background = isCorrect ? Session.BackgroundBrush : Session.ErrorBackgroundBrush;
                 control.Foreground = isCorrect ? Session.CorrectForegroundBrush : Session.ErrorForegroundBrush;

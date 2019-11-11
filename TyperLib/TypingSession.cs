@@ -20,6 +20,7 @@ namespace TyperLib
 		public enum KeyPressResult { NotTypable, Incorrect, Correct, DeleteIncorrect, DeleteCorrect };
 		public const uint KeyCode_Backspace = 8;
 		public const uint KeyCode_Space = 32;
+		const float CurrentWpmTimeS = 5;
 
 		string[] rndElements;
 		int minWordLength;
@@ -145,11 +146,16 @@ namespace TyperLib
 		public int CurrentChar => text[currentCharIndex];
 		public const int NumCharsFromCenter = 100;
 		protected int startDrawChar => Math.Max(currentCharIndex - NumCharsFromCenter, 0);
-		public LinkedList<Tuple<bool, char>> WrittenChars { get; private set; } = new LinkedList<Tuple<bool, char>>();
+		public LinkedList<WrittenChar> WrittenChars { get; private set; } = new LinkedList<WrittenChar>();
 		public int CorrectChars { get; private set; } = 0;
 		public int IncorrectChars { get; private set; } = 0;
 		public int TotalIncorrectChars { get; private set; } = 0;
 		public int FixedChars => TotalIncorrectChars - IncorrectChars;
+
+		int maxWpm;
+		int minWpm;
+		public int MaxWpm => maxWpm;
+		public int MinWpm => minWpm;
 
 		public int Wpm
 		{
@@ -157,7 +163,7 @@ namespace TyperLib
 			{
 				//If last typed chasactes was incorrect, don't apply WPM penalty for that character. Only apply pehalty if user keeps going without fixing.
 				var adjustedIncorrectChars = IncorrectChars;
-				if (IncorrectChars > 0 && !WrittenChars.First.Value.Item1)
+				if (IncorrectChars > 0 && !WrittenChars.First.Value.Correct)
 					adjustedIncorrectChars--;
 
 				return Math.Max((int)((CorrectChars - adjustedIncorrectChars * 2) / ElapsedTime.TotalMinutes), 0) / 5;
@@ -230,33 +236,35 @@ namespace TyperLib
 
 		public void loadCharMap(Stream stream)
 		{
-			var reader = new StreamReader(stream);
-			string line;
-			string section = null;
-			while ((line = reader.ReadLine()) != null)
+			using (var reader = new StreamReader(stream))
 			{
-				Match match;
-				if ((match = Regex.Match(line, "\\[.*\\]")).Success)
+				string line;
+				string section = null;
+				while ((line = reader.ReadLine()) != null)
 				{
-					section = match.Value;
-					continue;
+					Match match;
+					if ((match = Regex.Match(line, "\\[.*\\]")).Success)
+					{
+						section = match.Value;
+						continue;
+					}
+					if (string.IsNullOrWhiteSpace(line))
+						continue;
+					var split = line.Split(new char[] { ',' }, 2);
+					var sources = split[0].Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
+					for (int i = 0; i < sources.Length; i++)
+						if (sources[i][0] == '#')
+							sources[i] = ((char)int.Parse(sources[i].Substring(1))).ToString();
+
+					var dest = split[1].Trim();
+					if (dest.Count(c => c == '"') == 2)
+						dest = dest.Replace("\"", "");
+
+					if (section == "[Symbols]")
+						symbolMap.Add(dest, sources);
+					else if (section == "[Letters]")
+						letterMap.Add(dest, sources);
 				}
-				if (string.IsNullOrWhiteSpace(line))
-					continue;
-				var split = line.Split(new char[]{','}, 2);
-				var sources = split[0].Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
-				for (int i = 0; i < sources.Length; i++)
-					if (sources[i][0] == '#')
-						sources[i] = ((char)int.Parse(sources[i].Substring(1))).ToString();
-
-				var dest = split[1].Trim();
-				if (dest.Count(c => c == '"') == 2)
-					dest = dest.Replace("\"", "");
-
-				if (section == "[Symbols]")
-					symbolMap.Add(dest, sources);
-				else if (section == "[Letters]")
-					letterMap.Add(dest, sources);
 			}
 		}
 		protected virtual void OnTimeChecked()
@@ -305,7 +313,7 @@ namespace TyperLib
 					return KeyPressResult.NotTypable;
 
 				currentCharIndex--;
-				bool isCorrect = WrittenChars.First.Value.Item1;
+				bool isCorrect = WrittenChars.First.Value.Correct;
 				WrittenChars.RemoveFirst();
 				if (isCorrect)
 				{
@@ -322,7 +330,7 @@ namespace TyperLib
 			{
 				char currentChar = text[currentCharIndex++];
 				bool isCorrect = currentChar == c;
-				WrittenChars.AddFirst(new Tuple<bool, char>(isCorrect, currentChar));
+				WrittenChars.AddFirst(new WrittenChar(isCorrect, currentChar, (float)ElapsedTime.TotalSeconds));
 				KeyPressResult result; 
 				if (isCorrect)
 				{
@@ -361,9 +369,50 @@ namespace TyperLib
 		public void reset()
 		{
 			stopTime(true);
-			WrittenChars = new LinkedList<Tuple<bool, char>>();
+			WrittenChars = new LinkedList<WrittenChar>();
 			CorrectChars = IncorrectChars = TotalIncorrectChars = 0;
 			currentCharIndex = 0;
 		}
+
+		public void updateMaxMinWpm()
+		{
+			int correctChars = 0, incorrectChars = 0;
+			foreach (var writtenChar in WrittenChars)
+			{
+				if (writtenChar.SecondsFromStart > ElapsedTime.TotalSeconds + CurrentWpmTimeS)
+				{
+					if (writtenChar.Correct)
+						correctChars++;
+					else
+						incorrectChars++;
+				}
+			}
+			//If last typed chasactes was incorrect, don't apply WPM penalty for that character. Only apply pehalty if user keeps going without fixing.
+			var adjustedIncorrectChars = incorrectChars;
+			if (incorrectChars > 0 && !WrittenChars.First.Value.Correct)
+				adjustedIncorrectChars--;
+
+			int wpm = (int)(Math.Max((int)((correctChars - adjustedIncorrectChars * 2) / ElapsedTime.TotalMinutes), 0) * CurrentWpmTimeS / 60);
+			if (wpm > maxWpm)
+				maxWpm = wpm;
+			if (wpm < minWpm)
+				minWpm = wpm;
+		}
+	}
+}
+
+public class WrittenChar
+{
+	bool correct;
+	char character;
+	float secondsFromStart;
+	public bool Correct => correct;
+	public char Char => character;
+	public float SecondsFromStart => secondsFromStart;
+	public WrittenChar(bool correct, char character, float secondsFromStart)
+	{
+		this.correct = correct;
+		this.character = character;
+		this.secondsFromStart = secondsFromStart;
 	}
 }
