@@ -49,11 +49,11 @@
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
-				<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="10,0,0,0" Orientation="Horizontal" Background="#ff000000">
-					<TextBlock x:Name="correctCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Correct characters."/>
-					<TextBlock x:Name="incorrectCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Incorrect characters left uncorrected."/>
-					<TextBlock x:Name="fixedCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Corrected characters."/>
-					<TextBlock x:Name="wpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="Yellow" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
+			<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="10,0,0,0" Background="#ff000000">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock x:Name="maxWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="White" ToolTipService.ToolTip="Highest WPM measured during 5 seconds."/>
+					<TextBlock x:Name="minWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="White" ToolTipService.ToolTip="Lowest WPM measured during 5 seconds."/>
+					<TextBlock x:Name="wpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="White" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
 					<TextBlock x:Name="accuracyText" Style="{StaticResource infoTextStyle}" FontSize="25" Margin="0 0 30 0" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters."/>
 					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="25" IsTabStop="True" GotFocus="TimeText_GotFocus">
 						<Button.Flyout>
@@ -67,7 +67,13 @@
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
-				<StackPanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock x:Name="correctCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Correct characters."/>
+					<TextBlock x:Name="incorrectCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Incorrect characters left uncorrected."/>
+					<TextBlock x:Name="fixedCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Corrected characters."/>
+				</StackPanel>
+			</StackPanel>
+			<StackPanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal">
 					<Button x:Name="optionsBtn" Style="{StaticResource menuButtonStyle}" AccessKey="O" AutomationProperties.Name="Options">
 						<SymbolIcon Symbol="More"/>
 						<Button.Flyout>
@@ -166,8 +172,9 @@
 						</Button.Flyout>
 					</Button>
 				</StackPanel>
-			</RelativePanel>
-			<StackPanel />
+			
+		</RelativePanel>
+			
 			<!--<local:ComboBoxEx x:Name="textsCombo" BorderBrush="#ff152a80" AccessKey="L" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="300" Margin="0 0 0 0" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>-->
 		<local:ComboBoxEx x:Name="textsCombo" AccessKey="L" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="300" MaxWidth="300" Margin="0 7 0 7" ListDirection="Auto" Background="Black" SelectionSubmitted="TextsCombo_SelectionSubmitted" GotFocus="TextsCombo_GotFocus" LostFocus="TextsCombo_LostFocus"/>
 

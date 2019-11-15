@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace TyperLib
 {
@@ -87,8 +88,23 @@ namespace TyperLib
 		{
 			if (userDataPath == null)
 				return;
-			using (var stream = File.Open(userDataPath, FileMode.Create))
-				saveUserData(stream, userData);
+
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+			while (true)
+			{
+				try
+				{
+					using (var stream = File.Open(userDataPath, FileMode.Create))
+						saveUserData(stream, userData);
+					return;
+				}
+				catch (Exception ex) when (ex is IOException)
+				{
+					if (stopwatch.ElapsedMilliseconds > 2000)
+						throw ex;
+				}
+			}
 		}
 
 		public void saveUserTexts(Stream stream)

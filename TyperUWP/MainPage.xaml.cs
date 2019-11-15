@@ -229,13 +229,33 @@ namespace TyperUWP
 			}
 		}
 
-		private void Text_Finished(object sender, EventArgs e)
+		async private void Text_Finished(object sender, EventArgs e)
 		{
 			audio.play(Audio.Type.Finished);
 			if (texts.Current != null && !string.IsNullOrEmpty(texts.Current.Title))
 			{
 				texts.addRecord(typingSession);
-				texts.saveUserData();
+
+				while (true)
+				{
+					try
+					{
+						texts.saveUserData();
+						return;
+					}
+					catch (Exception ex) when (ex is IOException)
+					{
+						await Dispatcher.RunAsync(CoreDispatcherPriority.High, async delegate
+						{
+							var dlg = new ContentDialog { PrimaryButtonText = "Retry", CloseButtonText = "Cancel", Content = "Couldn't save typing result to file.\nReason: " + ex.Message };
+							DialogOpen = true;
+							ContentDialogResult result = await dlg.ShowAsync();
+							DialogOpen = false;
+							if (result != ContentDialogResult.Primary)
+								return;
+						});
+					}
+				}
 			}
 		}
 
@@ -246,7 +266,10 @@ namespace TyperUWP
 			//	return;
 			await Dispatcher.RunAsync(CoreDispatcherPriority.High, delegate
 			{
+				typingSession.updateMaxMinWpm();
 				timeText.Content = "Time\n" + typingSession.RemainingTimeString;
+				maxWpmText.Text = "Max WPM\n" + typingSession.MaxWpm;
+				minWpmText.Text = "Min WPM\n" + typingSession.MinWpm;
 				wpmText.Text = "WPM\n" + typingSession.Wpm;
 				accuracyText.Text = "Accuracy\n" + typingSession.Accuracy.ToString("0.0") + " %";
 
