@@ -235,7 +235,6 @@ namespace TyperUWP
 			if (texts.Current != null && !string.IsNullOrEmpty(texts.Current.Title))
 			{
 				texts.addRecord(typingSession);
-
 				while (true)
 				{
 					try
@@ -243,17 +242,17 @@ namespace TyperUWP
 						texts.saveUserData();
 						return;
 					}
-					catch (Exception ex) when (ex is IOException)
+					catch (IOException) 
 					{
-						await Dispatcher.RunAsync(CoreDispatcherPriority.High, async delegate
-						{
-							var dlg = new ContentDialog { PrimaryButtonText = "Retry", CloseButtonText = "Cancel", Content = "Couldn't save typing result to file.\nReason: " + ex.Message };
-							DialogOpen = true;
-							ContentDialogResult result = await dlg.ShowAsync();
-							DialogOpen = false;
-							if (result != ContentDialogResult.Primary)
+						//await Dispatcher.RunAsync(CoreDispatcherPriority.High, async delegate
+						//{
+							//var dlg = new ContentDialog { PrimaryButtonText = "Retry", CloseButtonText = "Cancel", Content = "Couldn't save typing result to file.\nReason: " + ex.Message };
+							//DialogOpen = true;
+							//ContentDialogResult result = await dlg.ShowAsync();
+							//DialogOpen = false;
+							//if (result != ContentDialogResult.Primary)
 								return;
-						});
+						//});
 					}
 				}
 			}
