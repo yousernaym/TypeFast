@@ -267,8 +267,8 @@ namespace TyperUWP
 			{
 				typingSession.updateMaxMinWpm();
 				timeText.Content = "Time\n" + typingSession.RemainingTimeString;
-				maxWpmText.Text = "Max WPM\n" + typingSession.MaxWpm;
-				minWpmText.Text = "Min WPM\n" + typingSession.MinWpm;
+				maxWpmText.Text = "Max WPM\n" + (typingSession.MaxWpm > -1 ? typingSession.MaxWpm.ToString() : "-");
+				minWpmText.Text = "Min WPM\n" + (typingSession.MinWpm > -1 ? typingSession.MinWpm.ToString() : "-"); ;
 				wpmText.Text = "WPM\n" + typingSession.Wpm;
 				accuracyText.Text = "Accuracy\n" + typingSession.Accuracy.ToString("0.0") + " %";
 
@@ -326,9 +326,9 @@ namespace TyperUWP
 
 		private void updateTypingStats()
 		{
-			correctCharsText.Text = "Correct\n" + typingSession.CorrectChars;
-			incorrectCharsText.Text = "Incorrect\n" + typingSession.IncorrectChars;
-			fixedCharsText.Text = "Fixed\n" + typingSession.FixedChars;
+			correctCharsText.Text = "Correct: " + typingSession.CorrectChars;
+			incorrectCharsText.Text = "Incorrect: " + typingSession.IncorrectChars;
+			fixedCharsText.Text = "Fixed: " + typingSession.FixedChars;
 		}
 
 		private void RestartBtn_Click(object sender, RoutedEventArgs e)

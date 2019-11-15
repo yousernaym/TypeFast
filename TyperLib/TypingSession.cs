@@ -154,8 +154,8 @@ namespace TyperLib
 
 		int maxWpm;
 		int minWpm;
-		public int MaxWpm => maxWpm;
-		public int MinWpm => minWpm;
+		public int MaxWpm => ElapsedTime.TotalSeconds > CurrentWpmTimeS ? maxWpm : -1;
+		public int MinWpm => ElapsedTime.TotalSeconds > CurrentWpmTimeS ? minWpm : -1;
 
 		public int Wpm
 		{

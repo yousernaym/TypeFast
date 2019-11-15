@@ -21,7 +21,7 @@
 			<Setter Property="Padding" Value="5" />
 		</Style>
 		<Style TargetType="TextBlock" x:Key="infoTextStyle">
-			<Setter Property="FontSize" Value="23" />
+			<Setter Property="FontSize" Value="25" />
 			<Setter Property="Margin" Value="0,0,40,0" />
 			<Setter Property="VerticalAlignment" Value="Center"/>
 		</Style>
@@ -51,9 +51,9 @@
 				</StackPanel>
 			<StackPanel x:Name="infoPanel" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="10,0,0,0" Background="#ff000000">
 				<StackPanel Orientation="Horizontal">
-					<TextBlock x:Name="maxWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="White" ToolTipService.ToolTip="Highest WPM measured during 5 seconds."/>
-					<TextBlock x:Name="minWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="White" ToolTipService.ToolTip="Lowest WPM measured during 5 seconds."/>
-					<TextBlock x:Name="wpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="White" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
+					<TextBlock x:Name="maxWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="#b0b0FF" ToolTipService.ToolTip="Highest WPM measured during 5 seconds."/>
+					<TextBlock x:Name="minWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="#b0b0FF" ToolTipService.ToolTip="Lowest WPM measured during 5 seconds."/>
+					<TextBlock x:Name="wpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="Yellow" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
 					<TextBlock x:Name="accuracyText" Style="{StaticResource infoTextStyle}" FontSize="25" Margin="0 0 30 0" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters."/>
 					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="25" IsTabStop="True" GotFocus="TimeText_GotFocus">
 						<Button.Flyout>
@@ -68,9 +68,9 @@
 					</Button>
 				</StackPanel>
 				<StackPanel Orientation="Horizontal">
-					<TextBlock x:Name="correctCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Correct characters."/>
-					<TextBlock x:Name="incorrectCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Incorrect characters left uncorrected."/>
-					<TextBlock x:Name="fixedCharsText" Style="{StaticResource infoTextStyle}" ToolTipService.ToolTip="Corrected characters."/>
+					<TextBlock x:Name="correctCharsText" Style="{StaticResource infoTextStyle}" Foreground="LightGray" ToolTipService.ToolTip="Correct characters."/>
+					<TextBlock x:Name="incorrectCharsText" Style="{StaticResource infoTextStyle}" Foreground="LightGray" ToolTipService.ToolTip="Incorrect characters left uncorrected."/>
+					<TextBlock x:Name="fixedCharsText" Style="{StaticResource infoTextStyle}" Foreground="LightGray" ToolTipService.ToolTip="Corrected characters."/>
 				</StackPanel>
 			</StackPanel>
 			<StackPanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal">
