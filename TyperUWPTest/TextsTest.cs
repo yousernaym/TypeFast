@@ -28,48 +28,48 @@ namespace TyperUWPTest
 			texts.addRecord(new Record(250, 50, time + TimeSpan.FromSeconds(1), "title3", false, 0));
 			
 			//Get 3 records
-			var records = texts.getRecords(RecordType.RT_BestSessions, 3);
+			var records = texts.getRecords(RecordType.RT_BestSessions, false,  3);
 			//Verify that we got 3 records
 			Assert.IsTrue(records.Length == 3);
 			//Verify that the records are sorted highest to lowest wpm
 			for (int i = 0; i < records.Length - 1; i++)
-				Assert.IsTrue(records[i].WPM >= records[i + 1].WPM);
+				Assert.IsTrue(records[i].Wpm >= records[i + 1].Wpm);
 
 			//Get 2 records with unique text titles
-			records = texts.getRecords(RecordType.RT_BestTexts, 2);
+			records = texts.getRecords(RecordType.RT_BestTexts, false,  2);
 			//Check that we got no more than 2 records
 			Assert.IsTrue(records.Length <= 2);
 			//Check that the records are sorted highest to lowest wpm
 			for (int i = 0; i < records.Length - 1; i++)
-				Assert.IsTrue(records[i].WPM >= records[i + 1].WPM);
+				Assert.IsTrue(records[i].Wpm >= records[i + 1].Wpm);
 
 			//Check that every text title is unique
 			var dict = new Dictionary<string, int>();
 			foreach (var rec in records)
 			{
 				Assert.IsFalse(dict.ContainsKey(rec.TextTitle));
-				dict.Add(rec.TextTitle, rec.WPM);
+				dict.Add(rec.TextTitle, rec.Wpm);
 			}
 
 			//Get 4 worst records with unique text titles
-			records = texts.getRecords(RecordType.RT_WorstTexts, 4);
+			records = texts.getRecords(RecordType.RT_WorstTexts, false, 4);
 			//Check that we got no more than 4 records
 			Assert.IsTrue(records.Length <= 4);
 			//Check that the records are sorted lowest to highest wpm
 			for (int i = 0; i < records.Length - 1; i++)
-				Assert.IsTrue(records[i].WPM <= records[i + 1].WPM);
+				Assert.IsTrue(records[i].Wpm <= records[i + 1].Wpm);
 
 			//Check that every text title is unique
 			dict = new Dictionary<string, int>();
 			foreach (var rec in records)
 			{
 				Assert.IsFalse(dict.ContainsKey(rec.TextTitle));
-				dict.Add(rec.TextTitle, rec.WPM);
+				dict.Add(rec.TextTitle, rec.Wpm);
 			}
 
 			//Check that the first (worst) 2 records are 50
-			Assert.AreEqual(50, records[0].WPM);
-			Assert.AreEqual(50, records[1].WPM);
+			Assert.AreEqual(50, records[0].Wpm);
+			Assert.AreEqual(50, records[1].Wpm);
 
 			//Check that the first (worst) record has an accuracy of 95, since 95 is lower than 100
 			Assert.AreEqual(95, records[0].Accuracy);
@@ -77,12 +77,12 @@ namespace TyperUWPTest
 			Assert.AreEqual(100, records[1].Accuracy);
 
 			//Get all records, highest to lowest
-			records = texts.getRecords(RecordType.RT_BestSessions, 0);
+			records = texts.getRecords(RecordType.RT_BestSessions, false, 0);
 			//Check that we got all 6
 			Assert.IsTrue(records.Length == 6);
 			//Check that last 2 records are 50
-			Assert.AreEqual(50, records[4].WPM);
-			Assert.AreEqual(50, records[5].WPM);
+			Assert.AreEqual(50, records[4].Wpm);
+			Assert.AreEqual(50, records[5].Wpm);
 			//Check that the second last record has an accuracy of 100
 			Assert.AreEqual(100, records[4].Accuracy);
 			//Check that the last record has an accuracy of 95, since 95 is lower than 100

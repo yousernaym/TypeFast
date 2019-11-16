@@ -4,10 +4,13 @@ using System.Runtime.Serialization;
 
 namespace TyperLib
 {
+	public enum RecordElem { Wpm, Time, Acc, MinWpm, MaxWpm };
 	[Serializable]
 	public class Record : ISerializable, IComparable, IEquatable<Record>
 	{
-		public int WPM { get; set; }
+		public static RecordElem PrimarySort = RecordElem.Wpm;
+		public int Wpm { get; set; }
+		public TimeSpan Time { get; set; }
 		float accuracy;
 		public float Accuracy
 		{
@@ -17,7 +20,9 @@ namespace TyperLib
 				accuracy = (float)Math.Round(value, 1);
 			}
 		}
-		public TimeSpan Time { get; set; }
+		public int MinWpm { get; set; }
+		public int MaxWpm { get; set; }
+
 		public string TextTitle { get; set; }
 		public bool IsTextFinished { get; set; }
 		public int CharCount { get; set; }
@@ -25,7 +30,7 @@ namespace TyperLib
 
 		public Record(int wpm, float accuracy, TimeSpan time, string textTitle, bool isTextFinished, int charCount)
 		{
-			WPM = wpm;
+			Wpm = wpm;
 			Accuracy = accuracy;
 			Time = time;
 			TextTitle = textTitle;
@@ -39,7 +44,7 @@ namespace TyperLib
 			foreach (var entry in info)
 			{
 				if (entry.Name == "wpm")
-					WPM = (int)entry.Value;
+					Wpm = (int)entry.Value;
 				else if (entry.Name == "accuracy")
 					Accuracy = (float)entry.Value;
 				else if (entry.Name == "time")
@@ -57,7 +62,7 @@ namespace TyperLib
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("wpm", WPM);
+			info.AddValue("wpm", Wpm);
 			info.AddValue("time", Time);
 			info.AddValue("accuracy", Accuracy);
 			info.AddValue("textTitle", TextTitle);
@@ -73,31 +78,54 @@ namespace TyperLib
 
 		public int CompareTo(object obj)
 		{
-			 Record rec = (Record)obj;
-			if (WPM < rec.WPM)
-				return 1;
-			else if (WPM > rec.WPM)
-				return -1;
-			else //Same wpm, compare time
-			{
-				var reverse = IsTextFinished && rec.IsTextFinished && CharCount == rec.CharCount ? -1 : 1; //If both records finished typing the whole text and both texts have the same length, shorter times are better, otherwise worse
-				var roundedTime = Math.Round(Time.TotalSeconds, Time.TotalSeconds < 10 ? 2 : 0);
-				var roundedTime2 = Math.Round(rec.Time.TotalSeconds, rec.Time.TotalSeconds < 10 ? 2 : 0);
+			Record rec = (Record)obj;
+			int compResult = 0;
+			
+			//Start with the primary sort type...	
+			if (PrimarySort == RecordElem.Wpm)
+				compResult = Wpm.CompareTo(rec.Wpm);
+			else if (PrimarySort == RecordElem.Time)
+				compResult = Time.CompareTo(rec.Time);
+			else if (PrimarySort == RecordElem.Acc)
+				compResult = Accuracy.CompareTo(rec.Accuracy);
+			else if (PrimarySort == RecordElem.MinWpm)
+				compResult = MinWpm.CompareTo(rec.MinWpm);
+			else if (PrimarySort == RecordElem.MaxWpm)
+				compResult = MaxWpm.CompareTo(rec.MaxWpm);
 
-				if (roundedTime < roundedTime2)
-					return 1 * reverse;
-				else if (roundedTime > roundedTime2)
-					return -1 * reverse;
-				else //Same time, compare accuracy
+			//...then go through all of them in case of equality
+			if (compResult == 0)
+			{
+				compResult = Wpm.CompareTo(rec.Wpm);
+				if (compResult == 0) //Same wpm, compare time
 				{
-					if (Accuracy < rec.Accuracy)
-						return 1;
-					else if (Accuracy > rec.Accuracy)
-						return -1;
-					else
-						return 0;
+					var reverse = IsTextFinished && rec.IsTextFinished && CharCount == rec.CharCount ? -1 : 1; //If both records finished typing the whole text and both texts have the same length, shorter times are better, otherwise worse
+					var roundedTime = Math.Round(Time.TotalSeconds, Time.TotalSeconds < 10 ? 2 : 0);
+
+					var roundedTime2 = Math.Round(rec.Time.TotalSeconds, rec.Time.TotalSeconds < 10 ? 2 : 0);
+					compResult = roundedTime.CompareTo(roundedTime2) * reverse;
+					if (compResult == 0) //Same time, compare accuracy
+					{
+						compResult = Accuracy.CompareTo(rec.Accuracy);
+						if (compResult == 0)
+						{
+							compResult = MinWpm.CompareTo(rec.MinWpm);
+							if (compResult == 0)
+								return MaxWpm.CompareTo(rec.MaxWpm);
+							else
+								return compResult;
+						}
+						else
+							return compResult;
+					}
+					else 
+						return compResult;
 				}
+				else
+					return compResult;
 			}
+			else 
+				return compResult;
 		}
 
 		public bool Equals(Record other)

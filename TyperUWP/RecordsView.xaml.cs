@@ -26,7 +26,7 @@ namespace TyperUWP
 	{
 		const int
 			NumRecords = Texts.MaxRecordsPerText,
-			Rows = NumRecords + 1,
+			Rows = NumRecords,
 			Columns = 4,
 			WpmCol = 0,
 			AccCol = 1,
@@ -35,6 +35,8 @@ namespace TyperUWP
 		
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
 		RecordType currentRecordType = RecordType.RT_BestSessions;
+		int sortCol = WpmCol;
+		bool ascendingSort = false;
 		Texts texts;
 
 		public delegate void TextTitleClickEH(RecordsView recordsView, TextTitleClickEventArgs e);
@@ -43,8 +45,8 @@ namespace TyperUWP
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			//var recordCM = new MenuFlyout();
-			//recordCM.Items.Add(new MenuFlyoutItem { Text = "Delete this record" });
+			table.init(new string[] { "WPM", "Acc %", "Time", "Text" }, 7, 18);
+			table.Sort += Table_Sort;
 			for (int r = 0; r < Rows; r++)
 			{
 				table.addRow();
@@ -73,18 +75,20 @@ namespace TyperUWP
 						link.Click += TextTitle_Click;
 					}
 
-					if (r == 0)
-					{
-						cell.FontStyle = Windows.UI.Text.FontStyle.Italic;
-						cell.HorizontalAlignment = HorizontalAlignment.Center;
-					}
 					table.addCell(cell);
 				}
 			}
-			table.getCell<TextBlock>(0, WpmCol).Text = "WPM";
-			table.getCell<TextBlock>(0, AccCol).Text = "Acc %";
-			table.getCell<TextBlock>(0, TimeCol).Text = "Time";
-			table.getCell<TextBlock>(0, TextCol).Text = "Text";
+			//table.getCell<TextBlock>(0, WpmCol).Text = "WPM";
+			//table.getCell<TextBlock>(0, AccCol).Text = "Acc %";
+			//table.getCell<TextBlock>(0, TimeCol).Text = "Time";
+			//table.getCell<TextBlock>(0, TextCol).Text = "Text";
+		}
+
+		private void Table_Sort(object sender, SortEventArgs e)
+		{
+			ascendingSort = e.Ascend;
+			Record.PrimarySort = (RecordElem)e.Column;
+			syncGrid();
 		}
 
 		private void TextTitle_Click(Hyperlink sender, HyperlinkClickEventArgs args)
@@ -106,13 +110,13 @@ namespace TyperUWP
 
 		void syncGrid()
 		{ 
-			var records = texts.getRecords(currentRecordType, NumRecords);
+			var records = texts.getRecords(currentRecordType, ascendingSort, NumRecords);
 
 			for (int i = 0; i < NumRecords; i++)
 			{
 				if (i < records.Length)
 				{
-					table.getCell<TextBlock>(i + 1, WpmCol).Text = records[i].WPM.ToString();
+					table.getCell<TextBlock>(i + 1, WpmCol).Text = records[i].Wpm.ToString();
 					table.getCell<TextBlock>(i + 1, AccCol).Text = records[i].Accuracy.ToString("0.0");
 					var format = "m\\:ss";
 					if (showSecondFractions(records[i].Time))
@@ -146,7 +150,7 @@ namespace TyperUWP
 			{
 				titleRun.Text = records[recordIndex].TextTitle;
 				var timeText = records[recordIndex].Time.ToSpeechString(showSecondFractions(records[recordIndex].Time));
-				titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].TextTitle}. {records[recordIndex].WPM} words per minute. {records[recordIndex].Accuracy} percent accuracy. {timeText}.");
+				titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].TextTitle}. {records[recordIndex].Wpm} words per minute. {records[recordIndex].Accuracy} percent accuracy. {timeText}.");
 
 			}
 		}

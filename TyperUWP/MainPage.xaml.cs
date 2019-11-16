@@ -229,7 +229,7 @@ namespace TyperUWP
 			}
 		}
 
-		async private void Text_Finished(object sender, EventArgs e)
+		private void Text_Finished(object sender, EventArgs e)
 		{
 			audio.play(Audio.Type.Finished);
 			if (texts.Current != null && !string.IsNullOrEmpty(texts.Current.Title))

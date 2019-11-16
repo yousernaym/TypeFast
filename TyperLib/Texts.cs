@@ -228,7 +228,7 @@ namespace TyperLib
 			return textRecords.ToArray();
 		}
 
-		public Record[] getRecords(RecordType type, int count = 0)
+		public Record[] getRecords(RecordType type, bool reverseSort, int count = 0)
 		{
 			Record[] records = new Record[userData.Records.Count];
 			userData.Records.CopyTo(records);

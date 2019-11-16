@@ -78,6 +78,8 @@ namespace TyperUWP
 			}
 		}
 
+		public event EventHandler<SortEventArgs> Sort;
+
 		List<List<Border>> rows = new List<List<Border>>();
 		Brush rowBackground1 = new SolidColorBrush(Colors.Black);
 		Brush rowBackground2 = new SolidColorBrush(Color.FromArgb(255, 25, 25, 25));
@@ -87,6 +89,78 @@ namespace TyperUWP
 		public Table()
 		{
 			this.InitializeComponent();
+		}
+
+		public void init(string[] headerStrings, uint sortFlags, int fontSize)
+		{
+			addRow();
+			int col = 0;
+			foreach (var str in headerStrings)
+			{
+				bool sort = (sortFlags & 1) == 1;
+				if (sort)
+				{
+					var btn = new Button();
+					btn.Content = str;
+					btn.HorizontalAlignment = HorizontalAlignment.Stretch;
+					btn.VerticalAlignment = VerticalAlignment.Center;
+					btn.FontStyle = FontStyle.Italic;
+					btn.FontSize = fontSize;
+					btn.Tag = col;
+					btn.Click += SortBtn_Click;
+					addCell(btn);
+				}
+				else
+				{
+					TextBlock tBlock = new TextBlock();
+					tBlock.Text = str;
+					tBlock.HorizontalAlignment = HorizontalAlignment.Center;
+					tBlock.VerticalAlignment = VerticalAlignment.Center;
+					tBlock.FontStyle = FontStyle.Italic;
+					tBlock.FontSize = fontSize;
+					addCell(tBlock);
+				}
+				sortFlags >>= 1;
+				col++;
+			}
+		}
+
+		public class CellComparerAsc : IComparer<List<Border>>
+		{
+			public int Compare(List<Border> a, List<Border> b)
+			{
+				return 1;
+			}
+		}
+
+		public class CellComparer : IComparer<List<Border>>
+		{
+			int col;
+			bool ascend;
+			public CellComparer(int col, bool asc)
+			{
+				this.col = col;
+				this.ascend = asc;
+			}
+
+			public int Compare(List<Border> a, List<Border> b)
+			{
+				TextBlock tb1 = (TextBlock)a[col].Child;
+				TextBlock tb2 = (TextBlock)b[col].Child;
+				return tb1.Text.CompareTo(tb2.Text) * (ascend ? 1 : -1);
+			}
+		}
+
+		private void SortBtn_Click(object sender, RoutedEventArgs e)
+		{
+			int col = (int)((Button)sender).Tag;
+			SortEventArgs args = new SortEventArgs();
+			args.Ascend = true;
+			args.Column = col;
+			Sort?.Invoke(sender, args);
+			//rows.Sort(1, rows.Count - 1, new CellComparer(col, true));
+			//for (int i = 0; i < rows.Count; i++)
+			//	Grid.SetRow(rows[i][col], i);
 		}
 
 		public void addRow(List<UIElement> row = null)
@@ -170,5 +244,11 @@ namespace TyperUWP
 		{
 			return ((int)value1 & (int)value2) > 0;
 		}
+	}
+
+	public class SortEventArgs
+	{
+		public bool Ascend;
+		public int Column;
 	}
 }
