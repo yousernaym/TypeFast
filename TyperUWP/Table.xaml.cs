@@ -78,6 +78,11 @@ namespace TyperUWP
 			}
 		}
 
+		public Border getCellBorder(int r, int c)
+		{
+			return rows[r][c];
+		}
+
 		public event EventHandler<SortEventArgs> Sort;
 
 		List<List<Border>> rows = new List<List<Border>>();

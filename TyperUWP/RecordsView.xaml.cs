@@ -55,36 +55,41 @@ namespace TyperUWP
 				table.addRow();
 				for (int c = 0; c < Columns; c++)
 				{
-					var cell = new TextBlock();
-					cell.HorizontalAlignment = c == WpmCol || c == AccCol ? HorizontalAlignment.Right : HorizontalAlignment.Left;
-					cell.VerticalAlignment = VerticalAlignment.Center;
-					cell.Foreground = new SolidColorBrush(Colors.White);
-					cell.FontSize = 18;
-					cell.Padding = new Thickness(20, 5, 7, 5);
-					//cell.ContextFlyout = recordCM;
-					if (c == TextCol)
-						cell.Padding = new Thickness(7, 5, 7, 5);
-
-					if (c == WpmCol)
+					//if (c == WpmCol)
+					//{
+					//	cell.FontWeight = FontWeights.Bold;
+					//}
+					if (c == TextCol || c == MaxWpmCol || c == MinWpmCol)
 					{
-						cell.FontWeight = FontWeights.Bold;
+						var cell = new HyperlinkButton();
+						//Duplicate init code---------
+						cell.HorizontalAlignment = c == TextCol ? HorizontalAlignment.Left : HorizontalAlignment.Right;
+						cell.VerticalAlignment = VerticalAlignment.Center;
+						cell.Padding = new Thickness(20, 5, 7, 5);
+						if (c == TextCol)
+							cell.Padding = new Thickness(7, 5, 7, 5);
+						cell.FontSize = 18;
+						//----------------------------
+						cell.Click += createSessionBtn_Click;
+						table.addCell(cell);
 					}
-					else if (c == TextCol || c == MaxWpmCol || c == MinWpmCol )
+					else
 					{
-						var link = new Hyperlink();
-						var run = new Run();
-						link.Inlines.Add(run);
-						cell.Inlines.Add(link);
-						link.Click += createSessionLink_Click;
+						var cell = new TextBlock();
+						
+						//Duplicate init code---------
+						cell.HorizontalAlignment = c == WpmCol || c == AccCol ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+						cell.VerticalAlignment = VerticalAlignment.Center;
+						cell.Padding = new Thickness(20, 5, 7, 5);
+						if (c == TextCol)
+							cell.Padding = new Thickness(7, 5, 7, 5);
+						cell.FontSize = 18;
+						//----------------------------
+						cell.Foreground = new SolidColorBrush(Colors.White);
+						table.addCell(cell);
 					}
-					
-					table.addCell(cell);
 				}
 			}
-			//table.getCell<TextBlock>(0, WpmCol).Text = "WPM";
-			//table.getCell<TextBlock>(0, AccCol).Text = "Acc %";
-			//table.getCell<TextBlock>(0, TimeCol).Text = "Time";
-			//table.getCell<TextBlock>(0, TextCol).Text = "Text";
 		}
 
 		private void Table_Sort(object sender, SortEventArgs e)
@@ -94,11 +99,11 @@ namespace TyperUWP
 			syncGrid();
 		}
 
-		private void createSessionLink_Click(Hyperlink sender, HyperlinkClickEventArgs args)
+		private void createSessionBtn_Click(object sender, RoutedEventArgs e)
 		{
-			//var title = ((Run)sender.Inlines[0]).Text;
-			bool tempSessionText = sender.NavigateUri.Host == "title" ? false : true;
-			string textOrTitle = sender.NavigateUri.LocalPath.Substring(1);
+			string tag = (string)((HyperlinkButton)sender).Tag;
+			bool tempSessionText = int.Parse(tag[0].ToString()) == 1;
+			string textOrTitle = tag.Substring(1);			
 			TextTitleClick?.Invoke(this, new TextTitleClickEventArgs(textOrTitle, tempSessionText));
 		}
 
@@ -155,36 +160,33 @@ namespace TyperUWP
 
 		private void setLinkText(int row, int col, Record[] records)
 		{
-			var textBlock = table.getCell<TextBlock>(row, col);
-			var titleLink = (Hyperlink)textBlock.Inlines[0];
-			var titleRun = (Run)titleLink.Inlines[0];
-
+			var cell = table.getCell<HyperlinkButton>(row, col);
 			int recordIndex = row - 1;
 			if (records == null)
 			{
-				titleRun.Text = "";
-				titleLink.SetValue(AutomationProperties.NameProperty, "");
+				cell.Content = "";
+				cell.SetValue(AutomationProperties.NameProperty, "");
 			}
 			else
 			{
 				if (col == TextCol)
 				{
-					titleRun.Text = records[recordIndex].TextTitle;
-					titleLink.NavigateUri = new Uri("urn://title/"+titleRun.Text);
+					cell.Content = records[recordIndex].TextTitle;
+					cell.Tag = "0" + cell.Content.ToString();
 					var timeText = records[recordIndex].Time.ToSpeechString(showSecondFractions(records[recordIndex].Time));
-					titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].TextTitle}. {records[recordIndex].Wpm} words per minute. {records[recordIndex].Accuracy} percent accuracy. {timeText}.");
+					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].TextTitle}. {records[recordIndex].Wpm} words per minute. {records[recordIndex].Accuracy} percent accuracy. {timeText}.");
 				}
 				else if (col == MaxWpmCol)
 				{
-					titleRun.Text = records[recordIndex].MaxWpm.ToString();
-					titleLink.NavigateUri = new Uri("http://maxWpmText/" + records[recordIndex].MaxWpmText);
-					titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MaxWpm} max words per minute.");
+					cell.Content = records[recordIndex].MaxWpm.ToString();
+					cell.Tag = "1" + records[recordIndex].MaxWpmText;
+					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MaxWpm} max words per minute.");
 				}
 				else if (col == MinWpmCol)
 				{
-					titleRun.Text = records[recordIndex].MinWpm.ToString();
-					titleLink.NavigateUri = new Uri("http://minWpmText/" + records[recordIndex].MinWpmText);
-					titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MinWpm} min words per minute.");
+					cell.Content = records[recordIndex].MinWpm.ToString();
+					cell.Tag = "1" + records[recordIndex].MinWpmText;
+					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MinWpm} min words per minute.");
 				}
 			}
 		}

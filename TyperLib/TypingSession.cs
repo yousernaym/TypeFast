@@ -393,7 +393,7 @@ namespace TyperLib
 						correctChars++;
 					else
 						incorrectChars++;
-					textSnippet += writtenChar.Char;
+					textSnippet = writtenChar.Char + textSnippet;
 				}
 				else
 					break;
