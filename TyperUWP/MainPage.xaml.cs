@@ -326,9 +326,9 @@ namespace TyperUWP
 
 		private void updateTypingStats()
 		{
-			correctCharsText.Text = "Correct: " + typingSession.CorrectChars;
-			incorrectCharsText.Text = "Incorrect: " + typingSession.IncorrectChars;
-			fixedCharsText.Text = "Fixed: " + typingSession.FixedChars;
+			correctCharsText.Text = "Correct\n" + typingSession.CorrectChars;
+			incorrectCharsText.Text = "Incorrect\n" + typingSession.IncorrectChars;
+			fixedCharsText.Text = "Fixed\n" + typingSession.FixedChars;
 		}
 
 		private void RestartBtn_Click(object sender, RoutedEventArgs e)

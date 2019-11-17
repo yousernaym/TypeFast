@@ -20,8 +20,8 @@ namespace TyperLib
 				accuracy = (float)Math.Round(value, 1);
 			}
 		}
-		public int MinWpm { get; set; }
-		public int MaxWpm { get; set; }
+		public int MinWpm { get; set; } = -1;
+		public int MaxWpm { get; set; } = -1;
 		public string MaxWpmText { get; set; }
 		public string MinWpmText { get; set; }
 

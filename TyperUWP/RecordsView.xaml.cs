@@ -28,13 +28,13 @@ namespace TyperUWP
 			NumRecords = Texts.MaxRecords,
 			Rows = NumRecords,
 			Columns = 6,
-			WpmCol = 0,
-			MaxWpmCol = 1,
-			MinWpmCol = 2,
-			AccCol = 3,
-			TimeCol = 4,
+			TimeCol = 0,
+			WpmCol = 1,
+			MaxWpmCol = 2,
+			MinWpmCol = 3,
+			AccCol = 4,
 			TextCol = 5;
-		
+				
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
 		bool ascendingSort = false;
 		RecordElem primarySort;
@@ -46,7 +46,7 @@ namespace TyperUWP
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			table.init(new string[] { "WPM", "Max WPM", "Min WPM", "Acc %", "Time", "Text" }, 31, 18);
+			table.init(new string[] { "Time", "WPM", "Max WPM", "Min WPM", "Acc %", "Text"}, 31, 18);
 			table.PrimarySortCol = WpmCol;
 			primarySort = columnToRecordElem(table.PrimarySortCol);
 			table.Sort += Table_Sort;
@@ -162,13 +162,17 @@ namespace TyperUWP
 		{
 			var cell = table.getCell<HyperlinkButton>(row, col);
 			int recordIndex = row - 1;
-			if (records == null)
+			if (records == null || col == MaxWpmCol && records[recordIndex].MaxWpm < 0 || col == MinWpmCol && records[recordIndex].MinWpm < 0)
 			{
+				ToolTipService.SetToolTip(cell, null);
 				cell.Content = "";
 				cell.SetValue(AutomationProperties.NameProperty, "");
+				cell.IsTabStop = false;
 			}
 			else
 			{
+				ToolTip toolTip = new ToolTip();
+				cell.IsTabStop = true;
 				if (col == TextCol)
 				{
 					cell.Content = records[recordIndex].TextTitle;
@@ -178,16 +182,19 @@ namespace TyperUWP
 				}
 				else if (col == MaxWpmCol)
 				{
-					cell.Content = records[recordIndex].MaxWpm.ToString();
+					toolTip.Content = records[recordIndex].MaxWpmText;
+					cell.Content = records[recordIndex].MaxWpm < 0 ? "" : records[recordIndex].MaxWpm.ToString();
 					cell.Tag = "1" + records[recordIndex].MaxWpmText;
 					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MaxWpm} max words per minute.");
 				}
 				else if (col == MinWpmCol)
 				{
+					toolTip.Content = records[recordIndex].MinWpmText;
 					cell.Content = records[recordIndex].MinWpm.ToString();
 					cell.Tag = "1" + records[recordIndex].MinWpmText;
 					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MinWpm} min words per minute.");
 				}
+				ToolTipService.SetToolTip(cell, toolTip);
 			}
 		}
 
