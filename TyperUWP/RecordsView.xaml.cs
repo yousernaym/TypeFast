@@ -137,7 +137,9 @@ namespace TyperUWP
 				if (i < records.Length)
 				{
 					table.getCell<TextBlock>(i + 1, WpmCol).Text = records[i].Wpm.ToString();
-					table.getCell<TextBlock>(i + 1, AccCol).Text = records[i].Accuracy.ToString("0.0");
+					var accCell = table.getCell<TextBlock>(i + 1, AccCol);
+					accCell.Foreground = getAccuracyCol(records[i].Accuracy);
+					accCell.Text = records[i].Accuracy.ToString("0.0");
 					var format = "m\\:ss";
 					if (showSecondFractions(records[i].Time))
 						format += "\\.ff";
@@ -212,6 +214,18 @@ namespace TyperUWP
 			else /*if (col == MinWpmCol)*/
 				recElem = RecordElem.MinWpm;
 			return recElem;
+		}
+
+		public static SolidColorBrush getAccuracyCol(float acc)
+		{
+			if (acc < 92)
+				return new SolidColorBrush(Colors.Red);
+			else if (acc < 95)
+				return new SolidColorBrush(Colors.Orange);
+			else if (acc < 97)
+				return new SolidColorBrush(Colors.Yellow);
+			else
+				return new SolidColorBrush(Colors.LightGreen);
 		}
 	}
 

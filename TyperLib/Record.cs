@@ -189,7 +189,5 @@ namespace TyperLib
 		{
 			return rec1.CompareTo(rec2) <= 0 ;
 		}
-
-
 	}
 }
