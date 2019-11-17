@@ -19,7 +19,7 @@ namespace TyperLib
 	{
 		//TextEntries presets = new TextEntries();
 		UserData userData = new UserData();
-		public const int MaxRecordsPerText = 10;
+		public const int MaxRecords = 10;
 		string userDataPath;
 		//string presetsPath;
 		public const int Version = 0;
@@ -204,37 +204,47 @@ namespace TyperLib
 
 		public void addRecord(TypingSession session)
 		{
-			addRecord(new Record(session.Wpm, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count));
+			addRecord(new Record(session.Wpm, session.MaxWpm, session.MinWpm, session.MaxWpmText, session.MinWpmText, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count));
 		}
 
 		public void addRecord(Record rec)
 		{
-			var records = getRecordsOfText(rec.TextTitle);
-			if (records.Length < MaxRecordsPerText || rec > records[records.Length - 1])
+			userData.Records.Add(rec);
+			//Search for a record that is ls not top ten in any category and remove it to keep record array size managable
+			foreach(var record in userData.Records)
 			{
-				//If the maximum number of records afready has been recorded, remove the lowest record.
-				if (records.Length >= MaxRecordsPerText)
-					userData.Records.Remove(records[records.Length - 1]);
-
-				//Add the new record
-				userData.Records.Add(rec);
+				bool removeRecord = true;
+				for (int i = 0; i < Enum.GetValues(typeof(RecordElem)).Length; i++)
+				{
+					var sortedRecords = getRecords(true, (RecordElem)i, false);
+					if (sortedRecords.Length <= MaxRecords || record > sortedRecords.Last())
+					{
+						removeRecord = false;
+						break;
+					}
+				}
+				if (removeRecord)
+				{
+					userData.Records.Remove(record);
+					return;
+				}
 			}
 		}
 
-		public Record[] getRecordsOfText(string title, int count = 0)
-		{
-			var textRecords = userData.Records.Where(p => p.TextTitle == title).ToArray();
-			Array.Sort(textRecords);
-			return textRecords.ToArray();
-		}
+		//public Record[] getRecordsOfText(string title, int count = 0)
+		//{
+		//	var textRecords = userData.Records.Where(p => p.TextTitle == title).ToArray();
+		//	Array.Sort(textRecords, Record.reverseSort);
+		//	return textRecords.ToArray();
+		//}
 
-		public Record[] getRecords(RecordType type, bool reverseSort, int count = 0)
-		{
-			Record[] records = new Record[userData.Records.Count];
+		public Record[] getRecords(bool filterTexts, RecordElem primarySort, bool ascendingSort, int count = 0)
+		{ 
+   	 		Record[] records = new Record[userData.Records.Count];
 			userData.Records.CopyTo(records);
-			Array.Sort(records);
+			Record.sort(records, primarySort, ascendingSort);
 
-			if (type != RecordType.RT_BestSessions)
+			if (filterTexts)
 			{
 				var dict = new Dictionary<string, Record>();
 				foreach (var rec in records)
@@ -247,10 +257,7 @@ namespace TyperLib
 				int i = 0;
 				foreach (var rec in dict)
 					records[i++] = rec.Value;
-				if (type == RecordType.RT_WorstTexts)
-					Array.Sort(records, Record.reverseSort);
-				else
-					Array.Sort(records);
+				Record.sort(records, primarySort, ascendingSort);
 			}
 			var subArray = records;
 			if (count > 0)

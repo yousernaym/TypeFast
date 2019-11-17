@@ -156,6 +156,8 @@ namespace TyperLib
 		int minWpm;
 		public int MaxWpm => ElapsedTime.TotalSeconds > CurrentWpmTimeS ? maxWpm : -1;
 		public int MinWpm => ElapsedTime.TotalSeconds > CurrentWpmTimeS ? minWpm : -1;
+		public string MaxWpmText { get; private set; }
+		public string MinWpmText { get; private set; }
 
 		public int Wpm
 		{
@@ -374,6 +376,7 @@ namespace TyperLib
 			currentCharIndex = 0;
 			minWpm = 1000;
 			maxWpm = 0;
+			MaxWpmText = MinWpmText = "";
 		}
 
 		public void updateMaxMinWpm()
@@ -381,6 +384,7 @@ namespace TyperLib
 			if (ElapsedTime.TotalSeconds < 5)
 				return;
 			int correctChars = 0, incorrectChars = 0;
+			string textSnippet = "";
 			foreach (var writtenChar in WrittenChars)
 			{
 				if (writtenChar.SecondsFromStart > ElapsedTime.TotalSeconds - CurrentWpmTimeS)
@@ -389,7 +393,10 @@ namespace TyperLib
 						correctChars++;
 					else
 						incorrectChars++;
+					textSnippet += writtenChar.Char;
 				}
+				else
+					break;
 			}
 			//If last typed chasactes was incorrect, don't apply WPM penalty for that character. Only apply pehalty if user keeps going without fixing.
 			var adjustedIncorrectChars = incorrectChars;
@@ -398,9 +405,15 @@ namespace TyperLib
 
 			int wpm = (int)(Math.Max((correctChars - adjustedIncorrectChars * 2) / (CurrentWpmTimeS / 60), 0)) / 5;
 			if (wpm > maxWpm)
+			{
 				maxWpm = wpm;
+				MaxWpmText = textSnippet;
+			}
 			if (wpm < minWpm)
+			{
 				minWpm = wpm;
+				MinWpmText = textSnippet;
+			}
 		}
 	}
 }

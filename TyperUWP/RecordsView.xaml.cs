@@ -22,21 +22,22 @@ using Windows.UI.Xaml.Navigation;
 
 namespace TyperUWP
 {
-	public sealed partial class RecordsView : UserControl
+ 	public sealed partial class RecordsView : UserControl
 	{
 		const int
-			NumRecords = Texts.MaxRecordsPerText,
+			NumRecords = Texts.MaxRecords,
 			Rows = NumRecords,
-			Columns = 4,
+			Columns = 6,
 			WpmCol = 0,
-			AccCol = 1,
-			TimeCol = 2,
-			TextCol = 3;
+			MinWpmCol = 1,
+			MaxWpmCol = 2,
+			AccCol = 3,
+			TimeCol = 4,
+			TextCol = 5;
 		
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
-		RecordType currentRecordType = RecordType.RT_BestSessions;
-		int sortCol = WpmCol;
 		bool ascendingSort = false;
+		RecordElem primarySort;
 		Texts texts;
 
 		public delegate void TextTitleClickEH(RecordsView recordsView, TextTitleClickEventArgs e);
@@ -45,7 +46,9 @@ namespace TyperUWP
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			table.init(new string[] { "WPM", "Acc %", "Time", "Text" }, 7, 18);
+			table.init(new string[] { "WPM", "Max WPM", "Min WPM", "Acc %", "Time", "Text" }, 31, 18);
+			table.PrimarySortCol = WpmCol;
+			primarySort = columnToRecordElem(table.PrimarySortCol);
 			table.Sort += Table_Sort;
 			for (int r = 0; r < Rows; r++)
 			{
@@ -66,15 +69,15 @@ namespace TyperUWP
 					{
 						cell.FontWeight = FontWeights.Bold;
 					}
-					else if (c == TextCol)
+					else if (c == TextCol || c == MaxWpmCol || c == MinWpmCol )
 					{
 						var link = new Hyperlink();
 						var run = new Run();
 						link.Inlines.Add(run);
 						cell.Inlines.Add(link);
-						link.Click += TextTitle_Click;
+						link.Click += createSessionLink_Click;
 					}
-
+					
 					table.addCell(cell);
 				}
 			}
@@ -87,19 +90,31 @@ namespace TyperUWP
 		private void Table_Sort(object sender, SortEventArgs e)
 		{
 			ascendingSort = e.Ascend;
-			Record.PrimarySort = (RecordElem)e.Column;
+			primarySort = columnToRecordElem(e.Column);
 			syncGrid();
 		}
 
-		private void TextTitle_Click(Hyperlink sender, HyperlinkClickEventArgs args)
+		private void createSessionLink_Click(Hyperlink sender, HyperlinkClickEventArgs args)
 		{
-			var title = ((Run)sender.Inlines[0]).Text;
-			TextTitleClick?.Invoke(this, new TextTitleClickEventArgs(title));
+			//var title = ((Run)sender.Inlines[0]).Text;
+			bool tempSessionText = sender.NavigateUri.Host == "title" ? false : true;
+			string textOrTitle = sender.NavigateUri.LocalPath.Substring(1);
+			TextTitleClick?.Invoke(this, new TextTitleClickEventArgs(textOrTitle, tempSessionText));
+		}
+
+		private void MaxMinWpm_Click(Hyperlink sender, HyperlinkClickEventArgs args)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void syncGrid(Texts texts)
 		{
 			this.texts = texts;
+			syncGrid();
+		}
+
+		private void filterCb_Click(object sender, RoutedEventArgs e)
+		{
 			syncGrid();
 		}
 
@@ -110,7 +125,7 @@ namespace TyperUWP
 
 		void syncGrid()
 		{ 
-			var records = texts.getRecords(currentRecordType, ascendingSort, NumRecords);
+			var records = texts.getRecords((bool)filterCb.IsChecked, primarySort, ascendingSort, NumRecords);
 
 			for (int i = 0; i < NumRecords; i++)
 			{
@@ -123,6 +138,8 @@ namespace TyperUWP
 						format += "\\.ff";
 					table.getCell<TextBlock>(i + 1, TimeCol).Text = records[i].Time.ToString(format);
 					setLinkText(i + 1, TextCol, records);
+					setLinkText(i + 1, MaxWpmCol, records);
+					setLinkText(i + 1, MinWpmCol, records);
 				}
 				else
 				{
@@ -130,6 +147,8 @@ namespace TyperUWP
 					table.getCell<TextBlock>(i + 1, AccCol).Text = "";
 					table.getCell<TextBlock>(i + 1, TimeCol).Text = "";
 					setLinkText(i + 1, TextCol, null);
+					setLinkText(i + 1, MaxWpmCol, null);
+					setLinkText(i + 1, MinWpmCol, null);
 				}
 			}
 		}
@@ -148,39 +167,53 @@ namespace TyperUWP
 			}
 			else
 			{
-				titleRun.Text = records[recordIndex].TextTitle;
-				var timeText = records[recordIndex].Time.ToSpeechString(showSecondFractions(records[recordIndex].Time));
-				titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].TextTitle}. {records[recordIndex].Wpm} words per minute. {records[recordIndex].Accuracy} percent accuracy. {timeText}.");
-
+				if (col == TextCol)
+				{
+					titleRun.Text = records[recordIndex].TextTitle;
+					titleLink.NavigateUri = new Uri("urn://title/"+titleRun.Text);
+					var timeText = records[recordIndex].Time.ToSpeechString(showSecondFractions(records[recordIndex].Time));
+					titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].TextTitle}. {records[recordIndex].Wpm} words per minute. {records[recordIndex].Accuracy} percent accuracy. {timeText}.");
+				}
+				else if (col == MaxWpmCol)
+				{
+					titleRun.Text = records[recordIndex].MaxWpm.ToString();
+					titleLink.NavigateUri = new Uri("http://maxWpmText/" + records[recordIndex].MaxWpmText);
+					titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MaxWpm} max words per minute.");
+				}
+				else if (col == MinWpmCol)
+				{
+					titleRun.Text = records[recordIndex].MinWpm.ToString();
+					titleLink.NavigateUri = new Uri("http://minWpmText/" + records[recordIndex].MinWpmText);
+					titleLink.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MinWpm} min words per minute.");
+				}
 			}
 		}
 
-		private void AllRBtn_Click(object sender, RoutedEventArgs e)
+		RecordElem columnToRecordElem(int col)
 		{
-			currentRecordType = RecordType.RT_BestSessions;
-			syncGrid();
-		}
-
-		private void BestTextsRBtn_Click(object sender, RoutedEventArgs e)
-		{
-			currentRecordType = RecordType.RT_BestTexts;
-			syncGrid();
-		}
-
-		private void WorstTextsRBtn_Click(object sender, RoutedEventArgs e)
-		{
-			currentRecordType = RecordType.RT_WorstTexts;
-			syncGrid();
+			RecordElem recElem;
+			if (col == WpmCol)
+				recElem = RecordElem.Wpm;
+			else if (col == AccCol)
+				recElem = RecordElem.Acc;
+			else if (col == TimeCol)
+				recElem = RecordElem.Time;
+			else if (col == MaxWpmCol)
+				recElem = RecordElem.MaxWpm;
+			else /*if (col == MinWpmCol)*/
+				recElem = RecordElem.MinWpm;
+			return recElem;
 		}
 	}
 
 	public class TextTitleClickEventArgs : EventArgs
 	{
-		public string Title { get; set; }
-
-		public TextTitleClickEventArgs(string title) 
+		public string TextOrTitle { get; set; }
+		public bool TempSession { get; set; }
+		public TextTitleClickEventArgs(string textOrTitle, bool tempSession) 
 		{
-			Title = title;
+			TextOrTitle = textOrTitle;
+			TempSession = tempSession;
 		}
 	}
 }

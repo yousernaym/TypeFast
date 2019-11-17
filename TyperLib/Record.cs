@@ -8,7 +8,7 @@ namespace TyperLib
 	[Serializable]
 	public class Record : ISerializable, IComparable, IEquatable<Record>
 	{
-		public static RecordElem PrimarySort = RecordElem.Wpm;
+		static RecordElem primarySort = RecordElem.Wpm;
 		public int Wpm { get; set; }
 		public TimeSpan Time { get; set; }
 		float accuracy;
@@ -22,15 +22,21 @@ namespace TyperLib
 		}
 		public int MinWpm { get; set; }
 		public int MaxWpm { get; set; }
+		public string MaxWpmText { get; set; }
+		public string MinWpmText { get; set; }
 
 		public string TextTitle { get; set; }
 		public bool IsTextFinished { get; set; }
 		public int CharCount { get; set; }
 		public int Id { get; private set; }
 
-		public Record(int wpm, float accuracy, TimeSpan time, string textTitle, bool isTextFinished, int charCount)
+		public Record(int wpm, int maxWpm, int minWpm, string maxWpmText, string minWpmText, float accuracy, TimeSpan time, string textTitle, bool isTextFinished, int charCount)
 		{
 			Wpm = wpm;
+			MaxWpm = maxWpm;
+			MaxWpm = maxWpm;
+			MaxWpmText = maxWpmText;
+			MinWpmText = minWpmText;
 			Accuracy = accuracy;
 			Time = time;
 			TextTitle = textTitle;
@@ -45,6 +51,14 @@ namespace TyperLib
 			{
 				if (entry.Name == "wpm")
 					Wpm = (int)entry.Value;
+				else if (entry.Name == "maxWpm")
+					MaxWpm = (int)entry.Value;
+				else if (entry.Name == "minWpm")
+					MinWpm = (int)entry.Value;
+				else if (entry.Name == "maxWpmText")
+					MaxWpmText = (string)entry.Value;
+				else if (entry.Name == "minWpmText")
+					MinWpmText = (string)entry.Value;
 				else if (entry.Name == "accuracy")
 					Accuracy = (float)entry.Value;
 				else if (entry.Name == "time")
@@ -63,6 +77,10 @@ namespace TyperLib
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("wpm", Wpm);
+			info.AddValue("maxWpm", MaxWpm);
+			info.AddValue("minWpm", MinWpm);
+			info.AddValue("maxWpmText", MaxWpmText);
+			info.AddValue("minWpmText", MinWpmText);
 			info.AddValue("time", Time);
 			info.AddValue("accuracy", Accuracy);
 			info.AddValue("textTitle", TextTitle);
@@ -71,7 +89,16 @@ namespace TyperLib
 			info.AddValue("id", Id);
 		}
 
-		public static int reverseSort(Record x, Record y)
+		static public void sort(Record[] records, RecordElem primarySort, bool ascendingSort)
+		{
+			Record.primarySort = primarySort;
+			if (ascendingSort)
+				Array.Sort(records);
+			else
+				Array.Sort(records, reverseSort);
+		}
+
+		static public int reverseSort(Record x, Record y)
 		{
 			return x.CompareTo(y) * -1;
 		}
@@ -82,15 +109,15 @@ namespace TyperLib
 			int compResult = 0;
 			
 			//Start with the primary sort type...	
-			if (PrimarySort == RecordElem.Wpm)
+			if (primarySort == RecordElem.Wpm)
 				compResult = Wpm.CompareTo(rec.Wpm);
-			else if (PrimarySort == RecordElem.Time)
+			else if (primarySort == RecordElem.Time)
 				compResult = Time.CompareTo(rec.Time);
-			else if (PrimarySort == RecordElem.Acc)
+			else if (primarySort == RecordElem.Acc)
 				compResult = Accuracy.CompareTo(rec.Accuracy);
-			else if (PrimarySort == RecordElem.MinWpm)
+			else if (primarySort == RecordElem.MinWpm)
 				compResult = MinWpm.CompareTo(rec.MinWpm);
-			else if (PrimarySort == RecordElem.MaxWpm)
+			else if (primarySort == RecordElem.MaxWpm)
 				compResult = MaxWpm.CompareTo(rec.MaxWpm);
 
 			//...then go through all of them in case of equality

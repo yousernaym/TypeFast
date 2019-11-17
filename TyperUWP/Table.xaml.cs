@@ -85,7 +85,10 @@ namespace TyperUWP
 		Brush rowBackground2 = new SolidColorBrush(Color.FromArgb(255, 25, 25, 25));
 		Brush headerBackground = new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]);
 		Brush verticalLineBrush = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
-		
+
+		Column[] columns;
+		public int PrimarySortCol = 0;
+
 		public Table()
 		{
 			this.InitializeComponent();
@@ -93,10 +96,12 @@ namespace TyperUWP
 
 		public void init(string[] headerStrings, uint sortFlags, int fontSize)
 		{
+			columns = new Column[headerStrings.Length];
 			addRow();
 			int col = 0;
 			foreach (var str in headerStrings)
 			{
+				columns[col] = new Column();
 				bool sort = (sortFlags & 1) == 1;
 				if (sort)
 				{
@@ -125,42 +130,17 @@ namespace TyperUWP
 			}
 		}
 
-		public class CellComparerAsc : IComparer<List<Border>>
-		{
-			public int Compare(List<Border> a, List<Border> b)
-			{
-				return 1;
-			}
-		}
-
-		public class CellComparer : IComparer<List<Border>>
-		{
-			int col;
-			bool ascend;
-			public CellComparer(int col, bool asc)
-			{
-				this.col = col;
-				this.ascend = asc;
-			}
-
-			public int Compare(List<Border> a, List<Border> b)
-			{
-				TextBlock tb1 = (TextBlock)a[col].Child;
-				TextBlock tb2 = (TextBlock)b[col].Child;
-				return tb1.Text.CompareTo(tb2.Text) * (ascend ? 1 : -1);
-			}
-		}
-
 		private void SortBtn_Click(object sender, RoutedEventArgs e)
 		{
 			int col = (int)((Button)sender).Tag;
 			SortEventArgs args = new SortEventArgs();
-			args.Ascend = true;
+			if (PrimarySortCol == col)
+				columns[col].Ascend = !columns[col].Ascend;
+			
+			PrimarySortCol = col;
+			args.Ascend = columns[col].Ascend;
 			args.Column = col;
 			Sort?.Invoke(sender, args);
-			//rows.Sort(1, rows.Count - 1, new CellComparer(col, true));
-			//for (int i = 0; i < rows.Count; i++)
-			//	Grid.SetRow(rows[i][col], i);
 		}
 
 		public void addRow(List<UIElement> row = null)
@@ -250,5 +230,10 @@ namespace TyperUWP
 	{
 		public bool Ascend;
 		public int Column;
+	}
+
+	class Column
+	{
+		public bool Ascend = false;
 	}
 }

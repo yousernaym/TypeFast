@@ -588,7 +588,10 @@ namespace TyperUWP
 		{
 			recordsFlyout.Hide();
 			DialogOpen = false;
-			selectText(e.Title);
+			if (e.TempSession)
+				selectTempText(e.TextOrTitle);
+			else
+				selectText(e.TextOrTitle);
 		}
 
 		private void selectText(string title)
