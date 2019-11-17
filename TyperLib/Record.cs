@@ -34,7 +34,7 @@ namespace TyperLib
 		{
 			Wpm = wpm;
 			MaxWpm = maxWpm;
-			MaxWpm = maxWpm;
+			MinWpm = minWpm;
 			MaxWpmText = maxWpmText;
 			MinWpmText = minWpmText;
 			Accuracy = accuracy;

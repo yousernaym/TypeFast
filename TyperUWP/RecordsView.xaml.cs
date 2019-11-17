@@ -29,8 +29,8 @@ namespace TyperUWP
 			Rows = NumRecords,
 			Columns = 6,
 			WpmCol = 0,
-			MinWpmCol = 1,
-			MaxWpmCol = 2,
+			MaxWpmCol = 1,
+			MinWpmCol = 2,
 			AccCol = 3,
 			TimeCol = 4,
 			TextCol = 5;
