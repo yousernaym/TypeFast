@@ -28,11 +28,11 @@ namespace TyperUWP
 			NumRecords = Texts.MaxRecords,
 			Rows = NumRecords,
 			Columns = 6,
-			TimeCol = 0,
-			WpmCol = 1,
-			MaxWpmCol = 2,
-			MinWpmCol = 3,
-			AccCol = 4,
+			WpmCol = 0,
+			MaxWpmCol = 1,
+			MinWpmCol = 2,
+			AccCol = 3,
+			TimeCol = 4,
 			TextCol = 5;
 				
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
@@ -46,7 +46,7 @@ namespace TyperUWP
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			table.init(new string[] { "Time", "WPM", "Max WPM", "Min WPM", "Acc %", "Text"}, 31, 18);
+			table.init(new string[] { "WPM", "Max WPM", "Min WPM", "Acc %", "Time", "Text" }, 31, 18);
 			table.PrimarySortCol = WpmCol;
 			primarySort = columnToRecordElem(table.PrimarySortCol);
 			table.Sort += Table_Sort;
@@ -76,19 +76,34 @@ namespace TyperUWP
 					else
 					{
 						var cell = new TextBlock();
-						
 						//Duplicate init code---------
-						cell.HorizontalAlignment = c == WpmCol || c == AccCol ? HorizontalAlignment.Right : HorizontalAlignment.Left;
+						cell.HorizontalAlignment = HorizontalAlignment.Right;
+						cell.TextAlignment = TextAlignment.Right;
 						cell.VerticalAlignment = VerticalAlignment.Center;
 						cell.Padding = new Thickness(20, 5, 7, 5);
-						if (c == TextCol)
-							cell.Padding = new Thickness(7, 5, 7, 5);
 						cell.FontSize = 18;
 						//----------------------------
+						setCellWidth(c, cell);
 						cell.Foreground = new SolidColorBrush(Colors.White);
 						table.addCell(cell);
 					}
 				}
+			}
+		}
+
+		void setCellWidth(int c, TextBlock cell)
+		{
+			if (c == TimeCol || c == AccCol || c == WpmCol)
+			{
+				if (c == TimeCol)
+					cell.Text = "0:00.00";
+				else if (c == AccCol)
+					cell.Text = "100.0";
+				else if (c == WpmCol)
+					cell.Text = "000";
+				cell.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+				cell.Width = cell.DesiredSize.Width;
+				cell.Text = "";
 			}
 		}
 

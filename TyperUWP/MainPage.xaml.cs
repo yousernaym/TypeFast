@@ -791,9 +791,13 @@ namespace TyperUWP
             textBkgColorPicker.Color = fore;
         }
 
-    }
+		private void recordsBtn_Click(object sender, RoutedEventArgs e)
+		{
+			recordsFlyout.ShowAt(recordsBtn);
+		}
+	}
 
-    public static class TimeSpanExt
+	public static class TimeSpanExt
 	{
 		public static string ToSpeechString(this TimeSpan time, bool showSecondFractions)
 		{
