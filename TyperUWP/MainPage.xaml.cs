@@ -55,7 +55,7 @@ namespace TyperUWP
 		private bool clipboardChanged = true;
 		AccessibilitySettings accessibilitySettings;
 		Audio audio = new Audio();
-
+		
 		public MainPage()
 		{
 			this.InitializeComponent();
@@ -793,7 +793,8 @@ namespace TyperUWP
 
 		private void recordsBtn_Click(object sender, RoutedEventArgs e)
 		{
-			recordsFlyout.ShowAt(recordsBtn);
+			if (texts != null)		
+				recordsFlyout.ShowAt(recordsBtn);
 		}
 	}
 
