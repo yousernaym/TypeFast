@@ -53,9 +53,9 @@
 					<TextBlock x:Name="correctCharsText" Style="{StaticResource infoTextStyle}" Foreground="LightGray" ToolTipService.ToolTip="Correct characters."/>
 					<TextBlock x:Name="incorrectCharsText" Style="{StaticResource infoTextStyle}" Foreground="LightGray" ToolTipService.ToolTip="Incorrect characters left uncorrected."/>
 					<TextBlock x:Name="fixedCharsText" Style="{StaticResource infoTextStyle}" Foreground="LightGray" ToolTipService.ToolTip="Corrected characters."/>
-					<TextBlock x:Name="wpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="White" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
-					<TextBlock x:Name="maxWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="#0078D7" ToolTipService.ToolTip="Highest WPM measured during 5 seconds."/>
-					<TextBlock x:Name="minWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="#0078D7" ToolTipService.ToolTip="Lowest WPM measured during 5 seconds."/>
+					<TextBlock x:Name="maxWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="#ff00ff00" ToolTipService.ToolTip="Highest WPM measured during 5 seconds."/>
+					<TextBlock x:Name="wpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="Yellow" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
+					<TextBlock x:Name="minWpmText" Style="{StaticResource infoTextStyle}" FontSize="25" Foreground="#ffff3246" ToolTipService.ToolTip="Lowest WPM measured during 5 seconds."/>
 					<TextBlock x:Name="accuracyText" Style="{StaticResource infoTextStyle}" FontSize="25" Margin="0 0 30 0" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters."/>
 					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="25" IsTabStop="True" GotFocus="TimeText_GotFocus">
 						<Button.Flyout>

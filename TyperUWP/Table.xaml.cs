@@ -87,7 +87,7 @@ namespace TyperUWP
 
 		List<List<Border>> rows = new List<List<Border>>();
 		Brush rowBackground1 = new SolidColorBrush(Colors.Black);
-		Brush rowBackground2 = new SolidColorBrush(Color.FromArgb(255, 25, 25, 25));
+		Brush rowBackground2 = new SolidColorBrush(Color.FromArgb(255, 20, 20, 20));
 		Brush headerBackground = new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]);
 		Brush verticalLineBrush = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
 

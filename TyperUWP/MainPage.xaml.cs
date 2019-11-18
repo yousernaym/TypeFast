@@ -267,8 +267,8 @@ namespace TyperUWP
 			{
 				typingSession.updateMaxMinWpm();
 				timeText.Content = "Time\n" + typingSession.RemainingTimeString;
-				maxWpmText.Text = "Max WPM\n" + (typingSession.MaxWpm > -1 ? typingSession.MaxWpm.ToString() : "-");
-				minWpmText.Text = "Min WPM\n" + (typingSession.MinWpm > -1 ? typingSession.MinWpm.ToString() : "-"); ;
+				maxWpmText.Text = "Hi WPM\n" + (typingSession.MaxWpm > -1 ? typingSession.MaxWpm.ToString() : "-");
+				minWpmText.Text = "Lo WPM\n" + (typingSession.MinWpm > -1 ? typingSession.MinWpm.ToString() : "-"); ;
 				wpmText.Text = "WPM\n" + typingSession.Wpm;
 				accuracyText.Foreground = RecordsView.getAccuracyCol(typingSession.Accuracy);
 				accuracyText.Text = "Accuracy\n" + typingSession.Accuracy.ToString("0.0") + " %";

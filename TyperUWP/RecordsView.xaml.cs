@@ -46,7 +46,7 @@ namespace TyperUWP
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			table.init(new string[] { "WPM", "Max WPM", "Min WPM", "Acc %", "Time", "Text" }, 31, 18);
+			table.init(new string[] { "WPM", "HiWPM", "LoWPM", "Acc %", "Time", "Text" }, 31, 18);
 			table.PrimarySortCol = WpmCol;
 			primarySort = columnToRecordElem(table.PrimarySortCol);
 			table.Sort += Table_Sort;
@@ -236,11 +236,13 @@ namespace TyperUWP
 			if (acc < 92)
 				return new SolidColorBrush(Colors.Red);
 			else if (acc < 95)
-				return new SolidColorBrush(Colors.Orange);
-			else if (acc < 97)
+				return new SolidColorBrush(Color.FromArgb(255, 255, 50, 70));
+				//return new SolidColorBrush(Colors.IndianRed);
+				else if (acc < 97)
 				return new SolidColorBrush(Colors.Yellow);
 			else
-				return new SolidColorBrush(Colors.LightGreen);
+				return new SolidColorBrush(Color.FromArgb(255, 0, 255, 0));
+				//return new SolidColorBrush(Colors.LawnGreen);
 		}
 	}
 
