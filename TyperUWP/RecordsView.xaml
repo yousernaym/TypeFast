@@ -12,12 +12,11 @@
 	
 	<Grid Background="Black" BorderThickness="1">
 		<StackPanel>
-			<CheckBox x:Name="filterCb" Content="Filter duplicate texts" Margin="10,0,0,0" Click="filterCb_Click"/>
+			<CheckBox x:Name="filterCb" Content="Filter duplicate texts" Margin="20,10,20,10" Click="filterCb_Click"/>
 			<local:Table x:Name="table" Margin="15 0 15 15" HorizontalAlignment="Center"/>
-			<!--<controls.DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70"
-                          OffsetX="5.0" OffsetY="5.0" Color="Black">
+			<!--<controls.DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70" OffsetX="5.0" OffsetY="5.0" Color="Black">
 			<Grid x:Name="grid" Margin="10" BorderBrush="DarkGray" BorderThickness="1" HorizontalAlignment="Center"/>
-		</controls.DropShadowPanel>-->
+			</controls.DropShadowPanel>-->
 	</StackPanel>
 	</Grid>
 </UserControl>

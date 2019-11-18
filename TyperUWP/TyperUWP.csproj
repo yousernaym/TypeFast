@@ -167,6 +167,7 @@
     <Content Include="..\TyperLib\charmap.txt">
       <Link>Assets\Texts\charmap.txt</Link>
     </Content>
+    <Content Include="todo.txt" />
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Assets\audio\Backspace.wav" />
     <Content Include="Assets\audio\Finished.wav" />

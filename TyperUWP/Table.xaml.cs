@@ -274,6 +274,7 @@ namespace TyperUWP
 			{
 				ascend = value;
 				SortDirIcon.Glyph = ascend ? "\uE70E" : "\uE70D";
+				//SortDirIcon.Glyph = ascend ? "\uE96D" : "\uE96E"; 
 			}
 		}
 		public FontIcon SortDirIcon;

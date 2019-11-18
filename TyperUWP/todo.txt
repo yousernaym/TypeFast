@@ -1,0 +1,3 @@
+﻿- Small infopanel text.
+- Remove record only if not part of either top 10 or bottom 10.
+- Thick lines around primary sort column, and/or bold text in cells.
