@@ -20,7 +20,7 @@ namespace TyperLib
 		public enum KeyPressResult { NotTypable, Incorrect, Correct, DeleteIncorrect, DeleteCorrect };
 		public const uint KeyCode_Backspace = 8;
 		public const uint KeyCode_Space = 32;
-		const float CurrentWpmTimeS = 5;
+		const float MaxMinWpmSpanS = 5;
 
 		string[] rndElements;
 		int minWordLength;
@@ -154,8 +154,8 @@ namespace TyperLib
 
 		int maxWpm;
 		int minWpm;
-		public int MaxWpm => ElapsedTime.TotalSeconds > CurrentWpmTimeS ? maxWpm : -1;
-		public int MinWpm => ElapsedTime.TotalSeconds > CurrentWpmTimeS ? minWpm : -1;
+		public int MaxWpm => ElapsedTime.TotalSeconds > MaxMinWpmSpanS ? maxWpm : -1;
+		public int MinWpm => ElapsedTime.TotalSeconds > MaxMinWpmSpanS ? minWpm : -1;
 		public string MaxWpmText { get; private set; }
 		public string MinWpmText { get; private set; }
 
@@ -375,19 +375,21 @@ namespace TyperLib
 			CorrectChars = IncorrectChars = TotalIncorrectChars = 0;
 			currentCharIndex = 0;
 			minWpm = 1000;
-			maxWpm = 0;
+			maxWpm = -1;
 			MaxWpmText = MinWpmText = "";
 		}
 
 		public void updateMaxMinWpm()
 		{
-			if (ElapsedTime.TotalSeconds < 5)
+			double elapsedTimeS = ElapsedTime.TotalSeconds;
+			if (elapsedTimeS < MaxMinWpmSpanS * 0.95)
 				return;
+			double timeLimitS = elapsedTimeS - MaxMinWpmSpanS;
 			int correctChars = 0, incorrectChars = 0;
 			string textSnippet = "";
 			foreach (var writtenChar in WrittenChars)
 			{
-				if (writtenChar.SecondsFromStart > ElapsedTime.TotalSeconds - CurrentWpmTimeS)
+				if (writtenChar.SecondsFromStart > timeLimitS)
 				{
 					if (writtenChar.Correct)
 						correctChars++;
@@ -403,7 +405,7 @@ namespace TyperLib
 			if (incorrectChars > 0 && !WrittenChars.First.Value.Correct)
 				adjustedIncorrectChars--;
 
-			int wpm = (int)(Math.Max((correctChars - adjustedIncorrectChars * 2) / (CurrentWpmTimeS / 60), 0)) / 5;
+			int wpm = (int)(Math.Max((correctChars - adjustedIncorrectChars * 2) / (MaxMinWpmSpanS / 60), 0)) / 5;
 			if (wpm > maxWpm)
 			{
 				maxWpm = wpm;
