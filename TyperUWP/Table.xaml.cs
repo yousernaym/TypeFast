@@ -91,8 +91,18 @@ namespace TyperUWP
 		Brush headerBackground = new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]);
 		Brush verticalLineBrush = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
 
-		Column[] columns;
-		public int PrimarySortCol = 0;
+		HeaderCell[] headerCells;
+		int primarySortCol = 0;
+		public int PrimarySortCol
+		{
+			get => primarySortCol;
+			set
+			{
+				headerCells[primarySortCol].SortDirIcon.Visibility = Visibility.Collapsed;
+				headerCells[value].SortDirIcon.Visibility = Visibility.Visible;
+				primarySortCol = value;
+			}
+		}
 
 		public Table()
 		{
@@ -101,19 +111,35 @@ namespace TyperUWP
 
 		public void init(string[] headerStrings, uint sortFlags, int fontSize)
 		{
-			columns = new Column[headerStrings.Length];
+			rows = new List<List<Border>>();
+			headerCells = new HeaderCell[headerStrings.Length];
 			addRow();
 			int col = 0;
 			foreach (var str in headerStrings)
 			{
-				columns[col] = new Column();
+				headerCells[col] = new HeaderCell();
 				bool sort = (sortFlags & 1) == 1;
 				if (sort)
 				{
 					var btn = new Button();
-					btn.Content = str;
+					btn.Padding = new Thickness(0);
+					var icon = new FontIcon();
+					icon.FontFamily = new FontFamily("Segoe MDL2 Assets");
+					icon.FontSize = 10;
+					icon.Visibility = Visibility.Collapsed;
+					headerCells[col].SortDirIcon = icon;
+					headerCells[col].Ascend = false;
+					var content = new StackPanel();
+					content.Children.Add(icon);
+					var tb = new TextBlock();
+					tb.Text = str;
+					content.Children.Add(tb);
+					btn.Content = content;
+
+					btn.Padding = new Thickness(3, 0, 3, 0);
+					btn.Background = new SolidColorBrush(Colors.Transparent);
 					btn.HorizontalAlignment = HorizontalAlignment.Stretch;
-					btn.VerticalAlignment = VerticalAlignment.Center;
+					btn.VerticalAlignment = VerticalAlignment.Stretch;
 					btn.FontStyle = FontStyle.Italic;
 					btn.FontSize = fontSize;
 					btn.Tag = col;
@@ -133,6 +159,7 @@ namespace TyperUWP
 				sortFlags >>= 1;
 				col++;
 			}
+			PrimarySortCol = 0;
 		}
 
 		private void SortBtn_Click(object sender, RoutedEventArgs e)
@@ -140,10 +167,10 @@ namespace TyperUWP
 			int col = (int)((Button)sender).Tag;
 			SortEventArgs args = new SortEventArgs();
 			if (PrimarySortCol == col)
-				columns[col].Ascend = !columns[col].Ascend;
+				headerCells[col].Ascend = !headerCells[col].Ascend;
 			
 			PrimarySortCol = col;
-			args.Ascend = columns[col].Ascend;
+			args.Ascend = headerCells[col].Ascend;
 			args.Column = col;
 			Sort?.Invoke(sender, args);
 		}
@@ -237,8 +264,18 @@ namespace TyperUWP
 		public int Column;
 	}
 
-	class Column
+	class HeaderCell
 	{
-		public bool Ascend = false;
+		bool ascend = false;
+		public bool Ascend
+		{
+			get => ascend;
+			set
+			{
+				ascend = value;
+				SortDirIcon.Glyph = ascend ? "\uE70E" : "\uE70D";
+			}
+		}
+		public FontIcon SortDirIcon;
 	}
 }
