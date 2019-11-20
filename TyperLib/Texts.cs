@@ -207,17 +207,36 @@ namespace TyperLib
 			addRecord(new Record(session.Wpm, session.MaxWpm, session.MinWpm, session.MaxWpmText, session.MinWpmText, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count));
 		}
 
-		public void addRecord(Record rec)
+		public void addRecord(Record newRecord)
 		{
-			userData.Records.Add(rec);
-			//Search for a record that is ls not top ten in any category and remove it to keep record array size managable
-			foreach(var record in userData.Records)
+			userData.Records.Add(newRecord);
+			var currentTextRecords = getRecordsOfText(newRecord.TextTitle);
+			if (currentTextRecords.Length <= MaxRecords * 2)
+				return;
+
+			//Create record lists sorted after every record element
+			var sortedRecords = new Record[Enum.GetValues(typeof(RecordElem)).Length][];
+			for (int i = 0; i < sortedRecords.GetLength(0); i++)
+			{
+				sortedRecords[i] = new Record[currentTextRecords.Length];
+				Array.Copy(currentTextRecords, 0, sortedRecords[i], 0, currentTextRecords.Length);
+				Record.sort(sortedRecords[i], (RecordElem)i, false);
+			}
+
+			//Search for a record that is not top or bottom ten in any category and remove it to keep record array size managable
+			foreach (var record in currentTextRecords)
 			{
 				bool removeRecord = true;
 				for (int i = 0; i < Enum.GetValues(typeof(RecordElem)).Length; i++)
 				{
-					var sortedRecords = getRecords(true, (RecordElem)i, false);
-					if (sortedRecords.Length <= MaxRecords || record > sortedRecords.Last())
+					//If record is higher than the MaxRecords first or lower than the MaxRecords last it can stay
+					//eg., if there are 21 records and MaxRecords == 10, check if higher than [9] or lower than [11] (descending sort)
+					//It can also stay if it IS [9] or [11]
+					Record lowestHighRecord = sortedRecords[i][MaxRecords - 1];
+					Record highestLowRecord = sortedRecords[i][currentTextRecords.Length - MaxRecords];
+					Record.PrimarySort = (RecordElem)i;
+					if (record.Id == lowestHighRecord.Id || record.Id == highestLowRecord.Id ||
+						record > lowestHighRecord || record < highestLowRecord)
 					{
 						removeRecord = false;
 						break;
@@ -231,11 +250,16 @@ namespace TyperLib
 			}
 		}
 
-		//public Record[] getRecordsOfText(string title, int count = 0)
+		public Record[] getRecordsOfText(string title)
+		{
+			return userData.Records.Where(p => p.TextTitle == title).ToArray();
+		}
+
+		//public Record[] getRecordsOfText(string title, RecordElem recElem, bool ascendingSort)
 		//{
-		//	var textRecords = userData.Records.Where(p => p.TextTitle == title).ToArray();
-		//	Array.Sort(textRecords, Record.reverseSort);
-		//	return textRecords.ToArray();
+		//	var textRecords = getRecordsOfText(title);
+		//	Record.sort(textRecords, recElem, ascendingSort);
+		//	return textRecords;
 		//}
 
 		public Record[] getRecords(bool filterTexts, RecordElem primarySort, bool ascendingSort, int count = 0)

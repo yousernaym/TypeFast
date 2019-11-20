@@ -8,7 +8,7 @@ namespace TyperLib
 	[Serializable]
 	public class Record : ISerializable, IComparable, IEquatable<Record>
 	{
-		static RecordElem primarySort = RecordElem.Wpm;
+		static public RecordElem PrimarySort = RecordElem.Wpm;
 		public int Wpm { get; set; }
 		public TimeSpan Time { get; set; }
 		float accuracy;
@@ -91,7 +91,7 @@ namespace TyperLib
 
 		static public void sort(Record[] records, RecordElem primarySort, bool ascendingSort)
 		{
-			Record.primarySort = primarySort;
+			Record.PrimarySort = primarySort;
 			if (ascendingSort)
 				Array.Sort(records);
 			else
@@ -109,15 +109,15 @@ namespace TyperLib
 			int compResult = 0;
 			
 			//Start with the primary sort type...	
-			if (primarySort == RecordElem.Wpm)
+			if (PrimarySort == RecordElem.Wpm)
 				compResult = Wpm.CompareTo(rec.Wpm);
-			else if (primarySort == RecordElem.Time)
+			else if (PrimarySort == RecordElem.Time)
 				compResult = Time.CompareTo(rec.Time);
-			else if (primarySort == RecordElem.Acc)
+			else if (PrimarySort == RecordElem.Acc)
 				compResult = Accuracy.CompareTo(rec.Accuracy);
-			else if (primarySort == RecordElem.MinWpm)
+			else if (PrimarySort == RecordElem.MinWpm)
 				compResult = MinWpm.CompareTo(rec.MinWpm);
-			else if (primarySort == RecordElem.MaxWpm)
+			else if (PrimarySort == RecordElem.MaxWpm)
 				compResult = MaxWpm.CompareTo(rec.MaxWpm);
 
 			//...then go through all of them in case of equality
@@ -172,22 +172,22 @@ namespace TyperLib
 
 		static public bool operator<(Record rec1, Record rec2)
 		{
-			return rec1.CompareTo(rec2) == 1;
+			return rec1.CompareTo(rec2) == -1;
 		}
 
 		static public bool operator >(Record rec1, Record rec2)
 		{
-			return rec1.CompareTo(rec2) == -1;
+			return rec1.CompareTo(rec2) == 1;
 		}
 
 		static public bool operator <=(Record rec1, Record rec2)
 		{
-			return rec1.CompareTo(rec2) >= 0;
+			return rec1.CompareTo(rec2) <= 0;
 		}
 
 		static public bool operator >=(Record rec1, Record rec2)
 		{
-			return rec1.CompareTo(rec2) <= 0 ;
+			return rec1.CompareTo(rec2) >= 0 ;
 		}
 	}
 }
