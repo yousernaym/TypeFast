@@ -103,22 +103,38 @@ namespace TyperLib
 			return x.CompareTo(y) * -1;
 		}
 
+		public int compareRecordElem(Record rec, RecordElem recElem)
+		{
+			int compResult = 0;
+			if (recElem == RecordElem.Wpm)
+				compResult = Wpm.CompareTo(rec.Wpm);
+			else if (recElem == RecordElem.Time)
+				compResult = Time.CompareTo(rec.Time);
+			else if (recElem == RecordElem.Acc)
+				compResult = Accuracy.CompareTo(rec.Accuracy);
+			else if (recElem == RecordElem.MinWpm)
+				compResult = MinWpm.CompareTo(rec.MinWpm);
+			else //if (recElem == RecordElem.MaxWpm)
+				compResult = MaxWpm.CompareTo(rec.MaxWpm);
+			return compResult;
+		}
+
+		public bool recordElemIsGreaterThan(Record rec, RecordElem recElem)
+		{
+			return compareRecordElem(rec, recElem) > 0;
+		}
+
+		public bool recordElemIsLessThan(Record rec, RecordElem recElem)
+		{
+			return compareRecordElem(rec, recElem) < 0;
+		}
+
 		public int CompareTo(object obj)
 		{
 			Record rec = (Record)obj;
-			int compResult = 0;
 			
 			//Start with the primary sort type...	
-			if (PrimarySort == RecordElem.Wpm)
-				compResult = Wpm.CompareTo(rec.Wpm);
-			else if (PrimarySort == RecordElem.Time)
-				compResult = Time.CompareTo(rec.Time);
-			else if (PrimarySort == RecordElem.Acc)
-				compResult = Accuracy.CompareTo(rec.Accuracy);
-			else if (PrimarySort == RecordElem.MinWpm)
-				compResult = MinWpm.CompareTo(rec.MinWpm);
-			else if (PrimarySort == RecordElem.MaxWpm)
-				compResult = MaxWpm.CompareTo(rec.MaxWpm);
+			int compResult = compareRecordElem(rec, PrimarySort);
 
 			//...then go through all of them in case of equality
 			if (compResult == 0)

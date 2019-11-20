@@ -234,9 +234,9 @@ namespace TyperLib
 					//It can also stay if it IS [9] or [11]
 					Record lowestHighRecord = sortedRecords[i][MaxRecords - 1];
 					Record highestLowRecord = sortedRecords[i][currentTextRecords.Length - MaxRecords];
-					Record.PrimarySort = (RecordElem)i;
+					RecordElem recElemToCompare = (RecordElem)i;
 					if (record.Id == lowestHighRecord.Id || record.Id == highestLowRecord.Id ||
-						record > lowestHighRecord || record < highestLowRecord)
+						record.recordElemIsGreaterThan(lowestHighRecord, recElemToCompare) || record.recordElemIsLessThan(highestLowRecord, recElemToCompare))
 					{
 						removeRecord = false;
 						break;
