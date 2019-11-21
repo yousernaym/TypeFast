@@ -237,8 +237,8 @@ namespace TyperUWP
 			if (acc < 92)
 				return new SolidColorBrush(Colors.Red);
 			else if (acc < 95)
-				return new SolidColorBrush(Color.FromArgb(255, 255, 50, 70));
-				//return new SolidColorBrush(Colors.IndianRed);
+				//return new SolidColorBrush(Color.FromArgb(255, 255, 50, 70));
+				return new SolidColorBrush(Colors.Orange);
 				else if (acc < 97)
 				return new SolidColorBrush(Colors.Yellow);
 			else
