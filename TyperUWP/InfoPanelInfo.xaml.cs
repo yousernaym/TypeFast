@@ -63,7 +63,20 @@ namespace TyperUWP
 			get => panel.Margin;
 			set => panel.Margin = value;
 		}
-				
+
+		string valueToolTip;
+		public string ValueToolTip
+		{
+			get => valueToolTip;
+			set
+			{
+				valueToolTip = value;
+				var newToolTip = new ToolTip();
+				newToolTip.Content = valueToolTip;
+				ToolTipService.SetToolTip(valueTbl, newToolTip);
+			}
+		}
+
 		public InfoPanelInfo()
 		{
 			this.InitializeComponent();
