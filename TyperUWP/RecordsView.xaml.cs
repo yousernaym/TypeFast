@@ -89,6 +89,7 @@ namespace TyperUWP
 					}
 				}
 			}
+			table.applyStyle();
 		}
 
 		void setCellWidth(int c, TextBlock cell)

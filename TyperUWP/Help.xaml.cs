@@ -47,7 +47,7 @@ namespace TyperUWP
 
 		public void addRow(Table table, params string[] cellTexts)
 		{
-			int rowNumber = table.RowCount;
+			int rowNumber = table.NumRows;
 			table.addRow();
 			for (int colNumber = 0; colNumber < cellTexts.Length; colNumber++)
 			{

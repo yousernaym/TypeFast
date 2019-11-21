@@ -24,8 +24,6 @@ namespace TyperUWP
 	enum TablePart { TP_Header = 1, TP_Body = 2, TP_All = 3}
 	public sealed partial class Table : UserControl
 	{
-		public int RowCount => rows.Count;
-
 		new public Brush BorderBrush
 		{
 			get => grid.BorderBrush;
@@ -90,8 +88,12 @@ namespace TyperUWP
 		Brush rowBackground2 = new SolidColorBrush(Color.FromArgb(255, 20, 20, 20));
 		Brush headerBackground = new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]);
 		Brush verticalLineBrush = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
+		Brush sortColVerticalLineBrush = new SolidColorBrush(Color.FromArgb(150, 255, 255, 255));
 
 		HeaderCell[] headerCells;
+		public int NumCols => headerCells.Length;
+		public int NumRows => rows.Count;
+
 		int primarySortCol = 0;
 		public int PrimarySortCol
 		{
@@ -100,7 +102,10 @@ namespace TyperUWP
 			{
 				headerCells[primarySortCol].SortDirIcon.Visibility = Visibility.Collapsed;
 				headerCells[value].SortDirIcon.Visibility = Visibility.Visible;
+				updateSortCol(primarySortCol, false);
+				updateSortCol(value, true);
 				primarySortCol = value;
+				applyHeaderBackground();
 			}
 		}
 
@@ -122,7 +127,6 @@ namespace TyperUWP
 				if (sort)
 				{
 					var btn = new Button();
-					btn.Padding = new Thickness(0);
 					var icon = new FontIcon();
 					icon.FontFamily = new FontFamily("Segoe MDL2 Assets");
 					icon.FontSize = 10;
@@ -136,7 +140,7 @@ namespace TyperUWP
 					content.Children.Add(tb);
 					btn.Content = content;
 
-					btn.Padding = new Thickness(3, 0, 3, 0);
+					btn.Padding = new Thickness(3, 0, 3, 2);
 					btn.Background = new SolidColorBrush(Colors.Transparent);
 					btn.HorizontalAlignment = HorizontalAlignment.Stretch;
 					btn.VerticalAlignment = VerticalAlignment.Stretch;
@@ -197,8 +201,6 @@ namespace TyperUWP
 			grid.Children.Add(border);
 			Grid.SetRow(border, row);
 			Grid.SetColumn(border, rows[row].Count - 1);
-
-			applyStyle();
 		}
 
 		public void setCell(int row, int col, UIElement element)
@@ -213,15 +215,23 @@ namespace TyperUWP
 
 		void applyHeaderBackground()
 		{
-			foreach (var cell in rows[0])
+			for (int i = 0; i < NumCols; i++)
+			{
+				var cell = rows[0][i];
 				cell.Background = headerBackground;
+				if (i == primarySortCol)
+				{
+					//((Button)cell.Child).Background = ? new SolidColorBrush(Color.FromArgb(150, 0, 0, 0)) : new SolidColorBrush(Colors.Transparent);
+					cell.Background = new SolidColorBrush(Color.FromArgb(255, 5, 10, 60));
+				}
+			}
 		}
 
 		void applyRowBackgrounds()
 		{
 			int mod = rowBackground2 == null ? 1 : 2;
 			int startRow = headerBackground == null ? 0 : 1;
-			for (int r = startRow; r < RowCount; r++)
+			for (int r = startRow; r < NumRows; r++)
 			{
 				var color = (r - startRow) % mod == 0 ? rowBackground1 : rowBackground2;
 				for (int c = 0; c < rows[r].Count; c++)
@@ -234,22 +244,54 @@ namespace TyperUWP
 
 		void applyVerticalLineBrush()
 		{
-			for (int r = 0; r < RowCount; r++)
+			for (int r = 0; r < NumRows; r++)
 			{
 				for (int c = 0; c < rows[r].Count; c++)
 				{
 					var cell = rows[r][c];
 					cell.BorderBrush = verticalLineBrush;
-					cell.BorderThickness = new Thickness(0, 0, c == rows[r].Count - 1 ? 0 : 1, 0);
+					cell.BorderThickness = new Thickness(0, 0, c == NumCols - 1 ? 0 : 1, 0);
 				}
 			}
 		}
 
-		void applyStyle()
+		void updateSortCol(int col, bool isSortCol)
+		{
+			foreach (var row in rows)
+			{
+				var cell = row[col];
+				//const int normalThickness = 1, sortColThikness = 1;
+				//int leftThickness = 0, rightThickness = normalThickness;
+				//if (primarySortCol == col || primarySortCol == col + 1)
+				//{
+				//	rightThickness = sortColThikness;
+				//	cell.BorderBrush = sortColVerticalLineBrush;
+				//}
+
+				//if (primarySortCol == col && col == 0)
+				//	leftThickness = sortColThikness;
+				//if (col == NumCols - 1)
+				//	rightThickness = primarySortCol == col ? sortColThikness : normalThickness;
+
+				if (cell.Child is TextBlock)
+				{
+					var child = (TextBlock)cell.Child;
+					child.FontWeight = isSortCol ? FontWeights.SemiBold : FontWeights.Normal;
+				}
+				else if (cell.Child is HyperlinkButton)
+				{
+					var child = (HyperlinkButton)cell.Child;
+					child.FontWeight = isSortCol ? FontWeights.SemiBold : FontWeights.Normal;
+				}
+			}
+		}
+
+		public void applyStyle()
 		{
 			applyHeaderBackground();
 			applyRowBackgrounds();
 			applyVerticalLineBrush();
+			updateSortCol(primarySortCol, true);
 		}
 
 		bool compareTablePartFlags(TablePart value1, TablePart value2)
