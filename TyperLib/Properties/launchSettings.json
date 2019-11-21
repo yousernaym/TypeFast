@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TyperLib": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

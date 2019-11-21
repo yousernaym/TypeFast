@@ -10,6 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -20,20 +21,41 @@ namespace TyperUWP
 {
 	public sealed partial class InfoPanelInfo : UserControl
 	{
+		Run linkRun = new Run();
+		Run textRun = new Run();
+
 		public Brush ForeGround
 		{
-			get => label.Foreground;
-			set => label.Foreground = this.value.Foreground = value;
+			get => labelTbl.Foreground;
+			set => labelTbl.Foreground = valueTbl.Foreground = value;
 		}
 		public string Label
 		{
-			get => label.Text;
-			set => label.Text = value;
+			get => labelTbl.Text;
+			set => labelTbl.Text = value;
 		}
+		
+		string value = "";
 		public string Value
 		{
-			get => value.Text;
-			set => this.value.Text = value;
+			get => value;
+			set
+			{
+				this.value = value;
+				setText();
+			}
+		}
+		public event EventHandler<HyperlinkClickEventArgs> LinkClick;
+
+		bool isHyper = false;
+		public bool IsHyper
+		{
+			get => isHyper;
+			set
+			{
+				isHyper = value;
+				setText();
+			}
 		}
 
 		new public Thickness Margin
@@ -41,10 +63,34 @@ namespace TyperUWP
 			get => panel.Margin;
 			set => panel.Margin = value;
 		}
-		
+				
 		public InfoPanelInfo()
 		{
 			this.InitializeComponent();
+			var link = new Hyperlink();
+			link.Inlines.Add(linkRun);
+			valueTbl.Inlines.Add(link);
+			valueTbl.Inlines.Add(textRun);
+			link.Click += link_Clkck;
+		}
+
+		private void link_Clkck(Hyperlink sender, HyperlinkClickEventArgs args)
+		{
+			LinkClick?.Invoke(sender, args);
+		}
+
+		void setText()
+		{
+			if (isHyper)
+			{
+				textRun.Text = "";
+				linkRun.Text = this.value;
+			}
+			else
+			{
+				textRun.Text = this.value;
+				linkRun.Text = "";
+			}
 		}
 	}
 }

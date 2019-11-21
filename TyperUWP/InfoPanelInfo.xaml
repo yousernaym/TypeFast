@@ -10,11 +10,7 @@
     d:DesignWidth="400">
 
     <StackPanel x:Name="panel" Orientation="Vertical" Margin="0 0 40 0" VerticalAlignment="Center">
-		<TextBlock x:Name="label" FontSize="20"/>
-		<TextBlock x:Name="value" FontSize="25">
-			<Run>
-				
-			</Run>
-		</TextBlock>
+		<TextBlock x:Name="labelTbl" FontSize="20"/>
+		<TextBlock x:Name="valueTbl" FontSize="25"/>
 	</StackPanel>
 </UserControl>

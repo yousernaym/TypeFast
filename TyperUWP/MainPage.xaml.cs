@@ -267,8 +267,8 @@ namespace TyperUWP
 			{
 				typingSession.updateMaxMinWpm();
 				timeText.Content = "Time\n" + typingSession.RemainingTimeString;
-				maxWpmText.Value = typingSession.MaxWpm > -1 ? typingSession.MaxWpm.ToString() : "-";
-				minWpmText.Value = typingSession.MinWpm > -1 ? typingSession.MinWpm.ToString() : "-";
+				maxWpmText.Value = typingSession.MaxWpm > -1 ? typingSession.MaxWpm.ToString() : "";
+				minWpmText.Value = typingSession.MinWpm > -1 ? typingSession.MinWpm.ToString() : "";
 				wpmText.Value = typingSession.Wpm.ToString();
 				accuracyText.Foreground = RecordsView.getAccuracyCol(typingSession.Accuracy);
 				accuracyText.Value = typingSession.Accuracy.ToString("0.0") + " %";
@@ -281,6 +281,16 @@ namespace TyperUWP
 					timeText.Background = new SolidColorBrush(Color.FromArgb(30, 250, 250, 250));
 
 			});
+		}
+
+		private void MinWpmText_LinkClick(object sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs e)
+		{
+			selectTempText(typingSession.MinWpmText);
+		}
+
+		private void MaxWpmText_LinkClick(object sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs e)
+		{
+			selectTempText(typingSession.MaxWpmText);
 		}
 
 		bool isKeyDown(VirtualKey key)
