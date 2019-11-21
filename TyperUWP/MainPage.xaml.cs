@@ -267,11 +267,11 @@ namespace TyperUWP
 			{
 				typingSession.updateMaxMinWpm();
 				timeText.Content = "Time\n" + typingSession.RemainingTimeString;
-				maxWpmText.Text = "Hi WPM\n" + (typingSession.MaxWpm > -1 ? typingSession.MaxWpm.ToString() : "-");
-				minWpmText.Text = "Lo WPM\n" + (typingSession.MinWpm > -1 ? typingSession.MinWpm.ToString() : "-"); ;
-				wpmText.Text = "WPM\n" + typingSession.Wpm;
+				maxWpmText.Value = typingSession.MaxWpm > -1 ? typingSession.MaxWpm.ToString() : "-";
+				minWpmText.Value = typingSession.MinWpm > -1 ? typingSession.MinWpm.ToString() : "-";
+				wpmText.Value = typingSession.Wpm.ToString();
 				accuracyText.Foreground = RecordsView.getAccuracyCol(typingSession.Accuracy);
-				accuracyText.Text = "Accuracy\n" + typingSession.Accuracy.ToString("0.0") + " %";
+				accuracyText.Value = typingSession.Accuracy.ToString("0.0") + " %";
 
 				if (typingSession.IsRunning)
 					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
@@ -327,9 +327,9 @@ namespace TyperUWP
 
 		private void updateTypingStats()
 		{
-			correctCharsText.Text = "Correct\n" + typingSession.CorrectChars;
-			incorrectCharsText.Text = "Incorrect\n" + typingSession.IncorrectChars;
-			fixedCharsText.Text = "Fixed\n" + typingSession.FixedChars;
+			correctCharsText.Value = typingSession.CorrectChars.ToString();
+			incorrectCharsText.Value = typingSession.IncorrectChars.ToString();
+			fixedCharsText.Value = typingSession.FixedChars.ToString();
 		}
 
 		private void RestartBtn_Click(object sender, RoutedEventArgs e)
