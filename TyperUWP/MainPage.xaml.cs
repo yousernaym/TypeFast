@@ -262,11 +262,11 @@ namespace TyperUWP
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
 		{
-			//if (text.IsFinished) //This hethod may be called a few times after finishing
+			//if (text.IsFinished) //This method may be called a few times after finishing
 			//	return;
+			typingSession.updateMaxMinWpm();
 			await Dispatcher.RunAsync(CoreDispatcherPriority.High, delegate
 			{
-				typingSession.updateMaxMinWpm();
 				timeText.Content = "Time\n" + typingSession.RemainingTimeString;
 				maxWpmText.Value = typingSession.MaxWpm > -1 ? typingSession.MaxWpm.ToString() : "";
 				minWpmText.Value = typingSession.MinWpm > -1 ? typingSession.MinWpm.ToString() : "";
