@@ -14,7 +14,7 @@
 		<StackPanel>
 			<StackPanel Orientation="Horizontal">
 				<CheckBox x:Name="topTextsCb" Content="Top texts" Margin="20,10,0,10" Click="TopTexts_Click"/>
-				<CheckBox x:Name="bottomTextsCb" Content="Bottom texts" Margin="20,10,0,10" Click="BottomTexts_Click"/>
+				<CheckBox x:Name="bottomTextsCb" Content="Bottom texts" Margin="0,10,0,10" Click="BottomTexts_Click"/>
 			</StackPanel>
 			<local:Table x:Name="table" Margin="15 0 15 15" HorizontalAlignment="Center"/>
 			<!--<controls.DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70" OffsetX="5.0" OffsetY="5.0" Color="Black">

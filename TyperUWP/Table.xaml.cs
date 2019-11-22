@@ -62,7 +62,7 @@ namespace TyperUWP
 			set
 			{
 				headerBackground = value;
-				applyHeaderBackground();
+				applyHeaderStyle();
 			}
 		}
 
@@ -100,23 +100,21 @@ namespace TyperUWP
 			get => primarySortCol;
 			set
 			{
-				headerCells[primarySortCol].SortDirIcon.Visibility = Visibility.Collapsed;
-				headerCells[value].SortDirIcon.Visibility = Visibility.Visible;
-				((Button)rows[0][primarySortCol].Child).BorderThickness = new Thickness(2);
-				((Button)rows[0][value].Child).BorderThickness = new Thickness(0);
 				updateSortCol(primarySortCol, false);
 				updateSortCol(value, true);
 				primarySortCol = value;
-				applyHeaderBackground();
+				applyHeaderStyle();
 			}
 		}
 
-		readonly Brush sortHeaderCellBorderBrush;
+		readonly Brush nonPrimarySortBorderBrush;
+		readonly Brush primarySortBorderBrush;
 
 		public Table()
 		{
 			this.InitializeComponent();
-			sortHeaderCellBorderBrush = (Brush)Application.Current.Resources["panelBorderGradientHighContrast"];
+			nonPrimarySortBorderBrush = (Brush)Resources["nonPrimarySortBorderBrush"];
+			primarySortBorderBrush = (Brush)Resources["primarySortBorderBrush"];
 		}
 
 		public void init(string[] headerStrings, uint sortFlags, int fontSize)
@@ -147,8 +145,8 @@ namespace TyperUWP
 
 					btn.Padding = new Thickness(3, 0, 3, 2);
 					btn.Background = new SolidColorBrush(Colors.Transparent);
-					btn.BorderThickness = new Thickness(2);
-					btn.BorderBrush = sortHeaderCellBorderBrush;
+					//btn.BorderThickness = new Thickness(2);
+					//btn.BorderBrush = nonPrimarySortBorderBrush;
 					btn.HorizontalAlignment = HorizontalAlignment.Stretch;
 					btn.VerticalAlignment = VerticalAlignment.Stretch;
 					btn.FontStyle = FontStyle.Italic;
@@ -221,15 +219,28 @@ namespace TyperUWP
 			return (T)rows[row][col].Child;
 		}
 
-		void applyHeaderBackground()
+		void applyHeaderStyle()
 		{
 			for (int i = 0; i < NumCols; i++)
 			{
 				var cell = rows[0][i];
-				cell.Background = headerBackground;
+				var sortBtn = cell.Child as Button;
+				if (sortBtn != null)
+					sortBtn.BorderThickness = new Thickness(2);
 				if (i == primarySortCol)
 				{
 					cell.Background = new SolidColorBrush(Color.FromArgb(255, 5, 10, 60));
+					sortBtn.BorderBrush = primarySortBorderBrush;
+					headerCells[i].SortDirIcon.Visibility = Visibility.Visible;
+				}
+				else
+				{
+					cell.Background = headerBackground;
+					if (sortBtn != null)
+					{
+						headerCells[i].SortDirIcon.Visibility = Visibility.Collapsed;
+						sortBtn.BorderBrush = nonPrimarySortBorderBrush;
+					}
 				}
 			}
 		}
@@ -295,7 +306,7 @@ namespace TyperUWP
 
 		public void applyStyle()
 		{
-			applyHeaderBackground();
+			applyHeaderStyle();
 			applyRowBackgrounds();
 			applyVerticalLineBrush();
 			updateSortCol(primarySortCol, true);
