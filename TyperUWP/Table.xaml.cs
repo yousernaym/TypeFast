@@ -161,6 +161,7 @@ namespace TyperUWP
 				{
 					TextBlock tBlock = new TextBlock();
 					tBlock.Text = str;
+					tBlock.Padding = new Thickness(3, 0, 3, 0);
 					tBlock.HorizontalAlignment = HorizontalAlignment.Center;
 					tBlock.VerticalAlignment = VerticalAlignment.Center;
 					tBlock.FontStyle = FontStyle.Italic;
