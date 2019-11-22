@@ -30,18 +30,6 @@
 			<Setter Property="Background" Value="#50000000" />
 			<Setter Property="IsTabStop" Value="True" />
 		</Style>
-		<LinearGradientBrush x:Key="panelBorderGradient" StartPoint="0.5,0" EndPoint="0.5,1">
-			<GradientStop Color="#051050" Offset="0.0" />
-			<GradientStop Color="DarkBlue" Offset="1.0" />
-		</LinearGradientBrush>
-		<LinearGradientBrush x:Key="panelBorderRevGradient" StartPoint="0.5,0" EndPoint="0.5,1">
-			<GradientStop Color="DarkBlue" Offset="0.0" />
-			<GradientStop Color="#051050" Offset="1.0" />
-		</LinearGradientBrush>
-		<LinearGradientBrush x:Key="panelBorderGradientHighContrast" StartPoint="0,0" EndPoint="1,1">
-			<GradientStop Color="#051030" Offset="0.0" />
-			<GradientStop Color="#406080" Offset="1.0" />
-		</LinearGradientBrush>
 	</Page.Resources>
 
 	<StackPanel x:Name="rootPanel" Orientation="Vertical">

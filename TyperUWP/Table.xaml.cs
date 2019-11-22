@@ -102,6 +102,8 @@ namespace TyperUWP
 			{
 				headerCells[primarySortCol].SortDirIcon.Visibility = Visibility.Collapsed;
 				headerCells[value].SortDirIcon.Visibility = Visibility.Visible;
+				((Button)rows[0][primarySortCol].Child).BorderThickness = new Thickness(2);
+				((Button)rows[0][value].Child).BorderThickness = new Thickness(0);
 				updateSortCol(primarySortCol, false);
 				updateSortCol(value, true);
 				primarySortCol = value;
@@ -109,9 +111,12 @@ namespace TyperUWP
 			}
 		}
 
+		readonly Brush sortHeaderCellBorderBrush;
+
 		public Table()
 		{
 			this.InitializeComponent();
+			sortHeaderCellBorderBrush = (Brush)Application.Current.Resources["panelBorderGradientHighContrast"];
 		}
 
 		public void init(string[] headerStrings, uint sortFlags, int fontSize)
@@ -142,6 +147,8 @@ namespace TyperUWP
 
 					btn.Padding = new Thickness(3, 0, 3, 2);
 					btn.Background = new SolidColorBrush(Colors.Transparent);
+					btn.BorderThickness = new Thickness(2);
+					btn.BorderBrush = sortHeaderCellBorderBrush;
 					btn.HorizontalAlignment = HorizontalAlignment.Stretch;
 					btn.VerticalAlignment = VerticalAlignment.Stretch;
 					btn.FontStyle = FontStyle.Italic;
@@ -221,7 +228,6 @@ namespace TyperUWP
 				cell.Background = headerBackground;
 				if (i == primarySortCol)
 				{
-					//((Button)cell.Child).Background = ? new SolidColorBrush(Color.FromArgb(150, 0, 0, 0)) : new SolidColorBrush(Colors.Transparent);
 					cell.Background = new SolidColorBrush(Color.FromArgb(255, 5, 10, 60));
 				}
 			}
