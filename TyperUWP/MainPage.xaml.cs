@@ -131,6 +131,7 @@ namespace TyperUWP
 		private void Current_Suspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
 		{
 			saveSettings();
+			texts.saveUserData(); //In case file was busy earlier
 			audio.Dispose();
 		}
 

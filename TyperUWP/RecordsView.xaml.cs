@@ -36,7 +36,6 @@ namespace TyperUWP
 			TextCol = 5;
 				
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
-		bool ascendingSort = false;
 		RecordElem primarySort;
 		Texts texts;
 
@@ -46,7 +45,7 @@ namespace TyperUWP
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			table.init(new string[] { "HiWPM", "WPM", "LoWPM", "Acc %", "Time", "Text" }, 31, 18);
+			table.init(new string[] { "HiWPM", "WPM", "LoWPM", "Acc %", "Time", "Text" }, 7, 18);
 			table.PrimarySortCol = WpmCol;
 			primarySort = columnToRecordElem(table.PrimarySortCol);
 			table.Sort += Table_Sort;
@@ -110,7 +109,6 @@ namespace TyperUWP
 
 		private void Table_Sort(object sender, SortEventArgs e)
 		{
-			ascendingSort = e.Ascend;
 			primarySort = columnToRecordElem(e.Column);
 			syncGrid();
 		}
@@ -123,19 +121,21 @@ namespace TyperUWP
 			TextTitleClick?.Invoke(this, new TextTitleClickEventArgs(textOrTitle, tempSessionText));
 		}
 
-		private void MaxMinWpm_Click(Hyperlink sender, HyperlinkClickEventArgs args)
-		{
-			throw new NotImplementedException();
-		}
-
 		public void syncGrid(Texts texts)
 		{
 			this.texts = texts;
 			syncGrid();
 		}
 
-		private void filterCb_Click(object sender, RoutedEventArgs e)
+		private void TopTexts_Click(object sender, RoutedEventArgs e)
 		{
+			bottomTextsCb.IsChecked = false;
+			syncGrid();
+		}
+
+		private void BottomTexts_Click(object sender, RoutedEventArgs e)
+		{
+			topTextsCb.IsChecked = false;
 			syncGrid();
 		}
 
@@ -144,9 +144,21 @@ namespace TyperUWP
 			return time.TotalSeconds < 10;
 		}
 
+		bool? bottomTexts
+		{
+			get
+			{
+				if ((bool)bottomTextsCb.IsChecked)
+					return true;
+				else if ((bool)topTextsCb.IsChecked)
+					return false;
+				else
+					return null;
+			}
+		}
 		void syncGrid()
 		{ 
-			var records = texts.getRecords((bool)filterCb.IsChecked, primarySort, ascendingSort, NumRecords);
+			var records = texts.getRecords(bottomTexts, primarySort, NumRecords);
 
 			for (int i = 0; i < NumRecords; i++)
 			{

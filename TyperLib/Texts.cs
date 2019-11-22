@@ -211,7 +211,7 @@ namespace TyperLib
 		{
 			userData.Records.Add(newRecord);
 			var currentTextRecords = getRecordsOfText(newRecord.TextTitle);
-			if (currentTextRecords.Length <= MaxRecords * 2)
+			if (currentTextRecords.Length <= MaxRecords)
 				return;
 
 			//Create record lists sorted after every record element
@@ -229,14 +229,12 @@ namespace TyperLib
 				bool removeRecord = true;
 				for (int i = 0; i < Enum.GetValues(typeof(RecordElem)).Length; i++)
 				{
-					//If record is higher than the MaxRecords first or lower than the MaxRecords last it can stay
-					//eg., if there are 21 records and MaxRecords == 10, check if higher than [9] or lower than [11] (descending sort)
-					//It can also stay if it IS [9] or [11]
+					//If record is higher than the MaxRecords first it can stay.
+					//eg., if there are 11 records and MaxRecords == 10, check if it's higher than [9] (descending sort)
+					//It can also stay if it IS [9]
 					Record lowestHighRecord = sortedRecords[i][MaxRecords - 1];
-					Record highestLowRecord = sortedRecords[i][currentTextRecords.Length - MaxRecords];
 					RecordElem recElemToCompare = (RecordElem)i;
-					if (record.Id == lowestHighRecord.Id || record.Id == highestLowRecord.Id ||
-						record.recordElemIsGreaterThan(lowestHighRecord, recElemToCompare) || record.recordElemIsLessThan(highestLowRecord, recElemToCompare))
+					if (record.Id == lowestHighRecord.Id || record.recordElemIsGreaterThan(lowestHighRecord, recElemToCompare))
 					{
 						removeRecord = false;
 						break;
@@ -262,13 +260,13 @@ namespace TyperLib
 		//	return textRecords;
 		//}
 
-		public Record[] getRecords(bool filterTexts, RecordElem primarySort, bool ascendingSort, int count = 0)
+		public Record[] getRecords(bool ?ascendingTexts, RecordElem primarySort, int count = 0)
 		{ 
    	 		Record[] records = new Record[userData.Records.Count];
 			userData.Records.CopyTo(records);
-			Record.sort(records, primarySort, ascendingSort);
+			Record.sort(records, primarySort, false);
 
-			if (filterTexts)
+			if (ascendingTexts != null)
 			{
 				var dict = new Dictionary<string, Record>();
 				foreach (var rec in records)
@@ -277,11 +275,11 @@ namespace TyperLib
 					if (!dict.ContainsKey(rec.TextTitle))
 						dict[rec.TextTitle] = rec;
 				}
-				records = new Record[dict.Count];
+				records = new Record[dict.Count].ToArray();
 				int i = 0;
 				foreach (var rec in dict)
 					records[i++] = rec.Value;
-				Record.sort(records, primarySort, ascendingSort);
+				Record.sort(records, primarySort, (bool)ascendingTexts);
 			}
 			var subArray = records;
 			if (count > 0)

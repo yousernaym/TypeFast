@@ -132,7 +132,7 @@ namespace TyperUWP
 					icon.FontSize = 10;
 					icon.Visibility = Visibility.Collapsed;
 					headerCells[col].SortDirIcon = icon;
-					headerCells[col].Ascend = false;
+					headerCells[col].Ascend = null;
 					var content = new StackPanel();
 					content.Children.Add(icon);
 					var tb = new TextBlock();
@@ -302,20 +302,23 @@ namespace TyperUWP
 
 	public class SortEventArgs
 	{
-		public bool Ascend;
+		public bool? Ascend;
 		public int Column;
 	}
 
 	class HeaderCell
 	{
-		bool ascend = false;
-		public bool Ascend
+		bool ?ascend = null;
+		public bool? Ascend
 		{
 			get => ascend;
 			set
 			{
 				ascend = value;
-				SortDirIcon.Glyph = ascend ? "\uE70E" : "\uE70D";
+				if (ascend == null)
+					SortDirIcon.Glyph = "";
+				else
+					SortDirIcon.Glyph = (bool)ascend ? "\uE70E" : "\uE70D";
 				//SortDirIcon.Glyph = ascend ? "\uE96D" : "\uE96E"; 
 			}
 		}
