@@ -20,7 +20,7 @@ namespace TyperLib
 		public enum KeyPressResult { NotTypable, Incorrect, Correct, DeleteIncorrect, DeleteCorrect };
 		public const uint KeyCode_Backspace = 8;
 		public const uint KeyCode_Space = 32;
-		const float MaxMinWpmSpanS = 5;
+		const int MaxMinWpmChars = 20;
 
 		string[] rndElements;
 		int minWordLength;
@@ -152,10 +152,8 @@ namespace TyperLib
 		public int TotalIncorrectChars { get; private set; } = 0;
 		public int FixedChars => TotalIncorrectChars - IncorrectChars;
 
-		int maxWpm;
-		int minWpm;
-		public int MaxWpm => ElapsedTime.TotalSeconds > MaxMinWpmSpanS ? maxWpm : -1;
-		public int MinWpm => ElapsedTime.TotalSeconds > MaxMinWpmSpanS ? minWpm : -1;
+		public int MaxWpm { get; private set; }
+		public int MinWpm { get; private set; }
 		public string MaxWpmText { get; private set; }
 		public string MinWpmText { get; private set; }
 
@@ -306,48 +304,57 @@ namespace TyperLib
 					return KeyPressResult.NotTypable;
 				startTime();
 			}
-
-			//Backspace
-			if (c == KeyCode_Backspace)
+			try
 			{
-				//Aiready at beginning?
-				if (currentCharIndex == 0)
-					return KeyPressResult.NotTypable;
+				//Backspace
+				if (c == KeyCode_Backspace)
+				{
+					//Aiready at beginning?
+					if (currentCharIndex == 0)
+						return KeyPressResult.NotTypable;
 
-				currentCharIndex--;
-				bool isCorrect = WrittenChars.First.Value.Correct;
-				WrittenChars.RemoveFirst();
-				if (isCorrect)
-				{
-					CorrectChars--; //Correct char deleted
-					return KeyPressResult.DeleteCorrect;
+					currentCharIndex--;
+					bool isCorrect = WrittenChars.First.Value.Correct;
+					WrittenChars.RemoveFirst();
+					if (isCorrect)
+					{
+						CorrectChars--; //Correct char deleted
+						return KeyPressResult.DeleteCorrect;
+					}
+					else
+					{
+						IncorrectChars--; //Inorrect char deleted
+						return KeyPressResult.DeleteIncorrect;
+					}
 				}
-				else
+				else //Not backspace
 				{
-					IncorrectChars--; //Inorrect char deleted
-					return KeyPressResult.DeleteIncorrect;
+					char currentChar = text[currentCharIndex++];
+					bool isCorrect = currentChar == c;
+					float charTime = (float)ElapsedTime.TotalSeconds;
+					if (WrittenChars.Count == 0)
+						charTime = 0;
+					WrittenChars.AddFirst(new WrittenChar(isCorrect, currentChar, charTime));
+					KeyPressResult result;
+					if (isCorrect)
+					{
+						CorrectChars++;
+						result = KeyPressResult.Correct;
+					}
+					else
+					{
+						IncorrectChars++;
+						TotalIncorrectChars++;
+						result = KeyPressResult.Incorrect;
+					}
+					if (currentCharIndex >= text.Length)
+						OnFinished();
+					return result;
 				}
 			}
-			else //Not backspace
+			finally
 			{
-				char currentChar = text[currentCharIndex++];
-				bool isCorrect = currentChar == c;
-				WrittenChars.AddFirst(new WrittenChar(isCorrect, currentChar, (float)ElapsedTime.TotalSeconds));
-				KeyPressResult result; 
-				if (isCorrect)
-				{
-					CorrectChars++;
-					result = KeyPressResult.Correct;
-				}
-				else
-				{
-					IncorrectChars++;
-					TotalIncorrectChars++;
-					result = KeyPressResult.Incorrect;
-				}
-				if (currentCharIndex >= text.Length)
-					OnFinished();
-				return result;
+				updateMaxMinWpm();
 			}
 		}
 
@@ -374,30 +381,46 @@ namespace TyperLib
 			WrittenChars = new LinkedList<WrittenChar>();
 			CorrectChars = IncorrectChars = TotalIncorrectChars = 0;
 			currentCharIndex = 0;
-			minWpm = 1000;
-			maxWpm = -1;
+			MinWpm = -1;
+			MaxWpm = -1;
 			MaxWpmText = MinWpmText = "";
 		}
 
+		//Call for every new character and for every time check.
+		//Always check last MaxMinWpmChars chars and check against current max/min Wpm.
 		public void updateMaxMinWpm()
 		{
-			double elapsedTimeS = ElapsedTime.TotalSeconds;
-			if (elapsedTimeS < MaxMinWpmSpanS * 0.95)
+			float elapsedTimeS = (float)ElapsedTime.TotalSeconds;
+			if (WrittenChars.Count < MaxMinWpmChars)
+			{
+				MaxWpm = MinWpm = -1;
+				MaxWpmText = MinWpmText = "";
 				return;
-			double timeLimitS = elapsedTimeS - MaxMinWpmSpanS;
+			}
+			for (int maxNumChars = MaxMinWpmChars; maxNumChars > MaxMinWpmChars / 2; maxNumChars--)
+			{
+				updateMaxMinWpm(maxNumChars, elapsedTimeS);
+				//int avgWpm = Wpm;
+				//if (MaxWpm >= avgWpm && MinWpm <= avgWpm)
+					break;
+			}
+		}
+
+		public void updateMaxMinWpm(int maxNumChars, float elapsedTimeS)
+		{
 			int correctChars = 0, incorrectChars = 0;
 			string textSnippet = "";
+			int numChars = 0;
+			float firstCharTime = elapsedTimeS, lastCharTime = 0;
 			foreach (var writtenChar in WrittenChars)
 			{
-				if (writtenChar.SecondsFromStart > timeLimitS)
-				{
-					if (writtenChar.Correct)
-						correctChars++;
-					else
-						incorrectChars++;
-					textSnippet = writtenChar.Char + textSnippet;
-				}
+				if (writtenChar.Correct)
+					correctChars++;
 				else
+					incorrectChars++;
+				textSnippet = writtenChar.Char + textSnippet;
+				lastCharTime = writtenChar.SecondsFromStart;
+				if (++numChars == maxNumChars)
 					break;
 			}
 			//If last typed chasactes was incorrect, don't apply WPM penalty for that character. Only apply pehalty if user keeps going without fixing.
@@ -405,17 +428,21 @@ namespace TyperLib
 			if (incorrectChars > 0 && !WrittenChars.First.Value.Correct)
 				adjustedIncorrectChars--;
 
-			int wpm = (int)(Math.Max((correctChars - adjustedIncorrectChars * 2) / (MaxMinWpmSpanS / 60), 0)) / 5;
-			if (wpm > maxWpm)
+			int wpm = (int)(Math.Max((correctChars - adjustedIncorrectChars * 2) / ((firstCharTime - lastCharTime) / 60), 0) / 5);
+			int testWpm = (int)(Math.Max((correctChars - adjustedIncorrectChars * 2) / ((firstCharTime - lastCharTime) / 60), 0)) / 5;
+
+			if (wpm > MaxWpm)
 			{
-				maxWpm = wpm;
+				MaxWpm = wpm;
 				MaxWpmText = textSnippet;
 			}
-			if (wpm < minWpm)
+			if (wpm < MinWpm || MinWpm == -1)
 			{
-				minWpm = wpm;
+				MinWpm = wpm;
 				MinWpmText = textSnippet;
 			}
+			int avgWpm = Wpm;
+			//Debug.Assert(avgWpm <= MaxWpm && avgWpm >= MinWpm);
 		}
 	}
 }
