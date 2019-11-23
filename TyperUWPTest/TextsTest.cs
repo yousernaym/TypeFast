@@ -20,15 +20,15 @@ namespace TyperUWPTest
         public void getRecords()
         {
 			var time = TimeSpan.FromSeconds(60);
-			texts.addRecord(new Record(100, 120, 30, "", "", 90, time, "title1", false, 0));
-			texts.addRecord(new Record(50, 120, 30, "", "", 95, time, "title2", false, 0));
-			texts.addRecord(new Record(50, 120, 30, "", "", 100, time, "title4", false, 0));
-			texts.addRecord(new Record(200, 120, 30, "", "", 10, time, "title3", false, 0));
-			texts.addRecord(new Record(250, 120, 30, "", "", 50, time, "title3", false, 0));
-			texts.addRecord(new Record(250, 120, 30, "", "", 50, time + TimeSpan.FromSeconds(1), "title3", false, 0));
+			texts.addRecord(new Record(100, 120, 30, "", "", 90, time, "title1", false, 0), false);
+			texts.addRecord(new Record(50, 120, 30, "", "", 95, time, "title2", false, 0), false);
+			texts.addRecord(new Record(50, 120, 30, "", "", 100, time, "title4", false, 0), false);
+			texts.addRecord(new Record(200, 120, 30, "", "", 10, time, "title3", false, 0), false);
+			texts.addRecord(new Record(250, 120, 30, "", "", 50, time, "title3", false, 0), false);
+			texts.addRecord(new Record(250, 120, 30, "", "", 50, time + TimeSpan.FromSeconds(1), "title3", false, 0), false);
 			
 			//Get 3 records
-			var records = texts.getRecords(null, RecordElem.Wpm, 3);
+			var records = texts.getRecords(null, Record.PrimarySortType.Wpm, 3);
 			//Verify that we got 3 records
 			Assert.IsTrue(records.Length == 3);
 			//Verify that the records are sorted highest to lowest wpm
@@ -36,7 +36,7 @@ namespace TyperUWPTest
 				Assert.IsTrue(records[i].Wpm >= records[i + 1].Wpm);
 
 			//Get 2 records with unique text titles
-			records = texts.getRecords(false, RecordElem.Wpm,  2);
+			records = texts.getRecords(false, Record.PrimarySortType.Wpm,  2);
 			//Check that we got no more than 2 records
 			Assert.IsTrue(records.Length <= 2);
 			//Check that the records are sorted highest to lowest wpm
@@ -52,7 +52,7 @@ namespace TyperUWPTest
 			}
 
 			//Get 4 worst records with unique text titles
-			records = texts.getRecords(true, RecordElem.Wpm, 4);
+			records = texts.getRecords(true, Record.PrimarySortType.Wpm, 4);
 			//Check that we got no more than 4 records
 			Assert.IsTrue(records.Length <= 4);
 			//Check that the records are sorted lowest to highest wpm
@@ -77,7 +77,7 @@ namespace TyperUWPTest
 			Assert.AreEqual(100, records[1].Accuracy);
 
 			//Get all records, highest to lowest
-			records = texts.getRecords(null, RecordElem.Wpm, 0);
+			records = texts.getRecords(null, Record.PrimarySortType.Wpm, 0);
 			//Check that we got all 6
 			Assert.IsTrue(records.Length == 6);
 			//Check that last 2 records are 50

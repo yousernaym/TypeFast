@@ -78,7 +78,7 @@ namespace TyperLib
 				foreach (var rec in data.Records)
 				{
 					if (!userData.Records.Any(r => r.Id == rec.Id))
-						addRecord(rec);
+						addRecord(rec, false);
 				}
 			}
 			userData.SyncedWithVersion = data.SyncedWithVersion;
@@ -204,37 +204,40 @@ namespace TyperLib
 
 		public void addRecord(TypingSession session)
 		{
-			addRecord(new Record(session.Wpm, session.MaxWpm, session.MinWpm, session.MaxWpmText, session.MinWpmText, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count));
+			addRecord(new Record(session.Wpm, session.MaxWpm, session.MinWpm, session.MaxWpmText, session.MinWpmText, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count), true);
 		}
 
-		public void addRecord(Record newRecord)
+		//removeHidden searches for a record that is guaranteed to not be visible regardless of primary sort column.
+		//More Specifically it searches for a record whose max/min/avg wpm are all below top ten for the current text.
+		//Pass false for better performanc if loading records from file.
+		public void addRecord(Record newRecord, bool removeHidden)
 		{
 			userData.Records.Add(newRecord);
 			var currentTextRecords = getRecordsOfText(newRecord.TextTitle);
 			if (currentTextRecords.Length <= MaxRecords)
 				return;
 
-			//Create record lists sorted after every record element
-			var sortedRecords = new Record[Enum.GetValues(typeof(RecordElem)).Length][];
-			for (int i = 0; i < sortedRecords.GetLength(0); i++)
+			//Create record lists sorted after every primary sort type
+			var sortedRecords = new Record[Enum.GetValues(typeof(Record.PrimarySortType)).Length][];
+			for (int i = 0; i < sortedRecords.Length; i++)
 			{
 				sortedRecords[i] = new Record[currentTextRecords.Length];
 				Array.Copy(currentTextRecords, 0, sortedRecords[i], 0, currentTextRecords.Length);
-				Record.sort(sortedRecords[i], (RecordElem)i, false);
+				Record.sort(sortedRecords[i], (Record.PrimarySortType)i, false);
 			}
 
-			//Search for a record that is not top or bottom ten in any category and remove it to keep record array size managable
+			//Search for a record to remove
 			foreach (var record in currentTextRecords)
 			{
 				bool removeRecord = true;
-				for (int i = 0; i < Enum.GetValues(typeof(RecordElem)).Length; i++)
+				for (int i = 0; i < Enum.GetValues(typeof(Record.PrimarySortType)).Length; i++)
 				{
 					//If record is higher than the MaxRecords first it can stay.
 					//eg., if there are 11 records and MaxRecords == 10, check if it's higher than [9] (descending sort)
 					//It can also stay if it IS [9]
 					Record lowestHighRecord = sortedRecords[i][MaxRecords - 1];
-					RecordElem recElemToCompare = (RecordElem)i;
-					if (record.Id == lowestHighRecord.Id || record.recordElemIsGreaterThan(lowestHighRecord, recElemToCompare))
+					Record.PrimarySortType typeToCompare = (Record.PrimarySortType)i;
+					if (record.Id == lowestHighRecord.Id || record.primarySortTypeIsGreaterThan(lowestHighRecord, typeToCompare))
 					{
 						removeRecord = false;
 						break;
@@ -253,14 +256,7 @@ namespace TyperLib
 			return userData.Records.Where(p => p.TextTitle == title).ToArray();
 		}
 
-		//public Record[] getRecordsOfText(string title, RecordElem recElem, bool ascendingSort)
-		//{
-		//	var textRecords = getRecordsOfText(title);
-		//	Record.sort(textRecords, recElem, ascendingSort);
-		//	return textRecords;
-		//}
-
-		public Record[] getRecords(bool ?ascendingTexts, RecordElem primarySort, int count = 0)
+		public Record[] getRecords(bool ?ascendingTexts, Record.PrimarySortType primarySort, int count = 0)
 		{ 
    	 		Record[] records = new Record[userData.Records.Count];
 			userData.Records.CopyTo(records);

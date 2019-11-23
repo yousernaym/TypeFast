@@ -36,7 +36,7 @@ namespace TyperUWP
 			TextCol = 5;
 				
 		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
-		RecordElem primarySort;
+		Record.PrimarySortType primarySort;
 		Texts texts;
 
 		public delegate void TextTitleClickEH(RecordsView recordsView, TextTitleClickEventArgs e);
@@ -47,7 +47,7 @@ namespace TyperUWP
 			this.InitializeComponent();
 			table.init(new string[] { "HiWPM", "WPM", "LoWPM", "Acc %", "Time", "Text" }, 7, 18);
 			table.PrimarySortCol = WpmCol;
-			primarySort = columnToRecordElem(table.PrimarySortCol);
+			primarySort = columnToSortType(table.PrimarySortCol);
 			table.Sort += Table_Sort;
 			for (int r = 0; r < Rows; r++)
 			{
@@ -109,7 +109,7 @@ namespace TyperUWP
 
 		private void Table_Sort(object sender, SortEventArgs e)
 		{
-			primarySort = columnToRecordElem(e.Column);
+			primarySort = columnToSortType(e.Column);
 			syncGrid();
 		}
 
@@ -228,20 +228,18 @@ namespace TyperUWP
 			}
 		}
 
-		RecordElem columnToRecordElem(int col)
+		Record.PrimarySortType columnToSortType(int col)
 		{
-			RecordElem recElem;
+			Record.PrimarySortType primarySortType;
 			if (col == WpmCol)
-				recElem = RecordElem.Wpm;
-			else if (col == AccCol)
-				recElem = RecordElem.Acc;
-			else if (col == TimeCol)
-				recElem = RecordElem.Time;
+				primarySortType = Record.PrimarySortType.Wpm;
 			else if (col == MaxWpmCol)
-				recElem = RecordElem.MaxWpm;
-			else /*if (col == MinWpmCol)*/
-				recElem = RecordElem.MinWpm;
-			return recElem;
+				primarySortType = Record.PrimarySortType.MaxWpm;
+			else if (col == MinWpmCol)
+				primarySortType = Record.PrimarySortType.MinWpm;
+			else
+				throw new ArgumentException("Parameter col must mathc element of Record.PrimarySortType", "col");
+			return primarySortType;
 		}
 
 		public static SolidColorBrush getAccuracyCol(float acc)

@@ -4,11 +4,11 @@ using System.Runtime.Serialization;
 
 namespace TyperLib
 {
-	public enum RecordElem { Wpm, Time, Acc, MinWpm, MaxWpm };
 	[Serializable]
 	public class Record : ISerializable, IComparable, IEquatable<Record>
 	{
-		static public RecordElem PrimarySort = RecordElem.Wpm;
+		public enum PrimarySortType { Wpm, MinWpm, MaxWpm };
+		static public PrimarySortType PrimarySort = PrimarySortType.Wpm;
 		public int Wpm { get; set; }
 		public TimeSpan Time { get; set; }
 		float accuracy;
@@ -89,7 +89,7 @@ namespace TyperLib
 			info.AddValue("id", Id);
 		}
 
-		static public void sort(Record[] records, RecordElem primarySort, bool ascendingSort)
+		static public void sort(Record[] records, PrimarySortType primarySort, bool ascendingSort)
 		{
 			Record.PrimarySort = primarySort;
 			if (ascendingSort)
@@ -103,30 +103,26 @@ namespace TyperLib
 			return x.CompareTo(y) * -1;
 		}
 
-		public int compareRecordElem(Record rec, RecordElem recElem)
+		public int comparePrimarySortType(Record rec, PrimarySortType primarySortType)
 		{
 			int compResult = 0;
-			if (recElem == RecordElem.Wpm)
+			if (primarySortType == PrimarySortType.Wpm)
 				compResult = Wpm.CompareTo(rec.Wpm);
-			else if (recElem == RecordElem.Time)
-				compResult = Time.CompareTo(rec.Time);
-			else if (recElem == RecordElem.Acc)
-				compResult = Accuracy.CompareTo(rec.Accuracy);
-			else if (recElem == RecordElem.MinWpm)
+			else if (primarySortType == PrimarySortType.MinWpm)
 				compResult = MinWpm.CompareTo(rec.MinWpm);
-			else //if (recElem == RecordElem.MaxWpm)
+			else //if (primarySortType == PrimarySortType.MaxWpm)
 				compResult = MaxWpm.CompareTo(rec.MaxWpm);
 			return compResult;
 		}
 
-		public bool recordElemIsGreaterThan(Record rec, RecordElem recElem)
+		public bool primarySortTypeIsGreaterThan(Record rec, PrimarySortType primarySortType)
 		{
-			return compareRecordElem(rec, recElem) > 0;
+			return comparePrimarySortType(rec, primarySortType) > 0;
 		}
 
-		public bool recordElemIsLessThan(Record rec, RecordElem recElem)
+		public bool primarySortTypeIsLessThan(Record rec, PrimarySortType primarySortType)
 		{
-			return compareRecordElem(rec, recElem) < 0;
+			return comparePrimarySortType(rec, primarySortType) < 0;
 		}
 
 		public int CompareTo(object obj)
@@ -134,7 +130,7 @@ namespace TyperLib
 			Record rec = (Record)obj;
 			
 			//Start with the primary sort type...	
-			int compResult = compareRecordElem(rec, PrimarySort);
+			int compResult = comparePrimarySortType(rec, PrimarySort);
 
 			//...then go through all of them in case of equality
 			if (compResult == 0)
