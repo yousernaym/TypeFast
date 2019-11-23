@@ -1,1 +1,1 @@
-﻿- Small infopanel text and hyperlinks for max/min wpm.
+﻿

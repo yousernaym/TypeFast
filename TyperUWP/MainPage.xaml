@@ -49,9 +49,9 @@
 					<local:InfoPanelInfo x:Name="correctCharsText" Label="Correct" Foreground="LightGray" ToolTipService.ToolTip="Correct characters."/>
 					<local:InfoPanelInfo x:Name="incorrectCharsText" Label="Incorrect" Foreground="LightGray" ToolTipService.ToolTip="Incorrect characters left uncorrected."/>
 					<local:InfoPanelInfo x:Name="fixedCharsText" Label="Fixed" Foreground="LightGray" ToolTipService.ToolTip="Corrected characters."/>
-					<local:InfoPanelInfo x:Name="maxWpmText" Label="Hi WPM" IsHyper="True" LinkClick="MaxWpmText_LinkClick" Foreground="#ff00ff00" ToolTipService.ToolTip="Highest WPM measured during 5 seconds."/>
-					<local:InfoPanelInfo x:Name="wpmText" Label="WPM" Foreground="Yellow" ToolTipService.ToolTip="Words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
-					<local:InfoPanelInfo x:Name="minWpmText" Label="Lo WPM" IsHyper="True" LinkClick="MinWpmText_LinkClick" Foreground="Orange" ToolTipService.ToolTip="Lowest WPM measured during 5 seconds."/>
+					<local:InfoPanelInfo x:Name="maxWpmText" Label="Hi WPM" IsHyper="True" LinkClick="MaxWpmText_LinkClick" Foreground="#ff00ff00" ToolTipService.ToolTip="Highest momentary WPM."/>
+					<local:InfoPanelInfo x:Name="wpmText" Label="WPM" Foreground="Yellow" ToolTipService.ToolTip="Average words per minute, assuming 5 characters per word. Uncorrected characters incur a penalty."/>
+					<local:InfoPanelInfo x:Name="minWpmText" Label="Lo WPM" IsHyper="True" LinkClick="MinWpmText_LinkClick" Foreground="Orange" ToolTipService.ToolTip="Lowest momentary WPM."/>
 					<local:InfoPanelInfo x:Name="accuracyText" Label="Accuracy" Margin="0 0 30 0" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters."/>
 					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="25" IsTabStop="True" GotFocus="TimeText_GotFocus">
 						<Button.Flyout>
