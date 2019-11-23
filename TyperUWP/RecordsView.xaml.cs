@@ -205,6 +205,7 @@ namespace TyperUWP
 				cell.IsTabStop = true;
 				if (col == TextCol)
 				{
+					toolTip = null;
 					cell.Content = records[recordIndex].TextTitle;
 					cell.Tag = "0" + cell.Content.ToString();
 					var timeText = records[recordIndex].Time.ToSpeechString(showSecondFractions(records[recordIndex].Time));
