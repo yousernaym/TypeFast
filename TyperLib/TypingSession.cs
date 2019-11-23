@@ -20,7 +20,7 @@ namespace TyperLib
 		public enum KeyPressResult { NotTypable, Incorrect, Correct, DeleteIncorrect, DeleteCorrect };
 		public const uint KeyCode_Backspace = 8;
 		public const uint KeyCode_Space = 32;
-		const int MaxMinWpmChars = 20;
+		const int MaxMinWpmChars = 10;
 
 		string[] rndElements;
 		int minWordLength;
@@ -442,6 +442,11 @@ namespace TyperLib
 				MinWpmText = textSnippet;
 			}
 			int avgWpm = Wpm;
+			if (MinWpm > avgWpm)
+				MinWpm = avgWpm;
+			if (MaxWpm < avgWpm)
+				MaxWpm = avgWpm;
+
 			//Debug.Assert(avgWpm <= MaxWpm && avgWpm >= MinWpm);
 		}
 	}
