@@ -23,6 +23,7 @@ namespace TyperUWP
 	{
 		Run linkRun = new Run();
 		Run textRun = new Run();
+		Hyperlink link = new Hyperlink();
 
 		public Brush ForeGround
 		{
@@ -80,7 +81,6 @@ namespace TyperUWP
 		public InfoPanelInfo()
 		{
 			this.InitializeComponent();
-			var link = new Hyperlink();
 			link.Inlines.Add(linkRun);
 			valueTbl.Inlines.Add(link);
 			valueTbl.Inlines.Add(textRun);
@@ -97,12 +97,14 @@ namespace TyperUWP
 			if (isHyper)
 			{
 				textRun.Text = "";
-				linkRun.Text = this.value;
+				linkRun.Text = value;
+				link.IsTabStop = !string.IsNullOrEmpty(value);
 			}
 			else
 			{
-				textRun.Text = this.value;
+				textRun.Text = value;
 				linkRun.Text = "";
+				link.IsTabStop = false;
 			}
 		}
 	}

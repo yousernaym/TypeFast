@@ -9,6 +9,7 @@ using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
@@ -153,6 +154,7 @@ namespace TyperUWP
 					btn.FontSize = fontSize;
 					btn.Tag = col;
 					btn.Click += SortBtn_Click;
+					btn.SetValue(AutomationProperties.NameProperty, str);
 					addCell(btn);
 				}
 				else

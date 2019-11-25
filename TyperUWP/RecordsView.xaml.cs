@@ -216,14 +216,14 @@ namespace TyperUWP
 					toolTip.Content = records[recordIndex].MaxWpmText;
 					cell.Content = records[recordIndex].MaxWpm < 0 ? "" : records[recordIndex].MaxWpm.ToString();
 					cell.Tag = "1" + records[recordIndex].MaxWpmText;
-					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MaxWpm} max words per minute.");
+					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MaxWpm}");
 				}
 				else if (col == MinWpmCol)
 				{
 					toolTip.Content = records[recordIndex].MinWpmText;
 					cell.Content = records[recordIndex].MinWpm.ToString();
 					cell.Tag = "1" + records[recordIndex].MinWpmText;
-					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MinWpm} min words per minute.");
+					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MinWpm}");
 				}
 				ToolTipService.SetToolTip(cell, toolTip);
 			}
