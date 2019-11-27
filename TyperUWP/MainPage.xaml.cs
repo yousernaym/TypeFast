@@ -264,14 +264,14 @@ namespace TyperUWP
 		{
 			//if (text.IsFinished) //This method may be called a few times after finishing
 			//	return;
-			typingSession.updateMaxMinWpm();
+			typingSession.updateMomentaryWpm();
 			await Dispatcher.RunAsync(CoreDispatcherPriority.High, delegate
 			{
 				timeText.Content = "Time\n" + typingSession.RemainingTimeString;
-				maxWpmText.Value = typingSession.MaxWpm > -1 ? typingSession.MaxWpm.ToString() : "";
-				minWpmText.Value = typingSession.MinWpm > -1 ? typingSession.MinWpm.ToString() : "";
-				maxWpmText.ValueToolTip = typingSession.MaxWpmText;
-				minWpmText.ValueToolTip = typingSession.MinWpmText;
+				highWpmText.Value = typingSession.HighWpm.Wpm > -1 ? typingSession.HighWpm.Wpm.ToString() : "";
+				lowWpmText.Value = typingSession.LowWpm.Wpm > -1 ? typingSession.LowWpm.Wpm.ToString() : "";
+				highWpmText.ValueToolTip = typingSession.HighWpm.TextSnippet;
+				lowWpmText.ValueToolTip = typingSession.LowWpm.TextSnippet;
 				wpmText.Value = typingSession.Wpm.ToString();
 				accuracyText.Foreground = RecordsView.getAccuracyCol(typingSession.Accuracy);
 				accuracyText.Value = typingSession.Accuracy.ToString("0.0") + " %";
@@ -288,12 +288,12 @@ namespace TyperUWP
 
 		private void MinWpmText_LinkClick(object sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs e)
 		{
-			selectTempText(typingSession.MinWpmText);
+			selectTempText(typingSession.LowWpm.TextSnippet);
 		}
 
 		private void MaxWpmText_LinkClick(object sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs e)
 		{
-			selectTempText(typingSession.MaxWpmText);
+			selectTempText(typingSession.HighWpm.TextSnippet);
 		}
 
 		bool isKeyDown(VirtualKey key)

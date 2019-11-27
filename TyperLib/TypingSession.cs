@@ -152,10 +152,11 @@ namespace TyperLib
 		public int TotalIncorrectChars { get; private set; } = 0;
 		public int FixedChars => TotalIncorrectChars - IncorrectChars;
 
-		public int MaxWpm { get; private set; }
-		public int MinWpm { get; private set; }
-		public string MaxWpmText { get; private set; }
-		public string MinWpmText { get; private set; }
+		
+		MomentaryWpm highWpm;
+		public MomentaryWpm HighWpm => highWpm;
+		LinkedList<MomentaryWpm> lowWpm;
+		public MomentaryWpm LowWpm => lowWpm.Last();
 
 		public int Wpm
 		{
@@ -354,7 +355,7 @@ namespace TyperLib
 			}
 			finally
 			{
-				updateMaxMinWpm();
+				updateMomentaryWpm();
 			}
 		}
 
@@ -381,20 +382,21 @@ namespace TyperLib
 			WrittenChars = new LinkedList<WrittenChar>();
 			CorrectChars = IncorrectChars = TotalIncorrectChars = 0;
 			currentCharIndex = 0;
-			MinWpm = -1;
-			MaxWpm = -1;
-			MaxWpmText = MinWpmText = "";
+			highWpm = new MomentaryWpm();
+			lowWpm = new LinkedList<MomentaryWpm>();
+			lowWpm.AddLast(new MomentaryWpm());
 		}
 
 		//Call for every new character and for every time check.
 		//Always check last MaxMinWpmChars chars and check against current max/min Wpm.
-		public void updateMaxMinWpm()
+		public void updateMomentaryWpm()
 		{
 			float elapsedTimeS = (float)ElapsedTime.TotalSeconds;
 			if (WrittenChars.Count < MaxMinWpmChars)
 			{
-				MaxWpm = MinWpm = -1;
-				MaxWpmText = MinWpmText = "";
+				highWpm = new MomentaryWpm();
+				lowWpm = new LinkedList<MomentaryWpm>();
+				lowWpm.AddLast(new MomentaryWpm());
 				return;
 			}
 			for (int maxNumChars = MaxMinWpmChars; maxNumChars > MaxMinWpmChars / 2; maxNumChars--)
@@ -429,26 +431,54 @@ namespace TyperLib
 				adjustedIncorrectChars--;
 
 			int wpm = (int)(Math.Max((correctChars - adjustedIncorrectChars * 2) / ((firstCharTime - lastCharTime) / 60), 0) / 5);
-			int testWpm = (int)(Math.Max((correctChars - adjustedIncorrectChars * 2) / ((firstCharTime - lastCharTime) / 60), 0)) / 5;
-
-			if (wpm > MaxWpm)
+			
+			if (wpm > highWpm.Wpm)
 			{
-				MaxWpm = wpm;
-				MaxWpmText = textSnippet;
+				highWpm.Wpm = wpm;
+				highWpm.TextSnippet = textSnippet;
 			}
-			if (wpm < MinWpm || MinWpm == -1)
-			{
-				MinWpm = wpm;
-				MinWpmText = textSnippet;
-			}
+			updateLowWpm(wpm, textSnippet, WrittenChars.Count);
+			
 			int avgWpm = Wpm;
-			if (MinWpm > avgWpm)
-				MinWpm = avgWpm;
-			if (MaxWpm < avgWpm)
-				MaxWpm = avgWpm;
+			if (lowWpm.Last().Wpm > avgWpm)
+				lowWpm.Last.Value.Wpm = avgWpm;
+			if (highWpm.Wpm < avgWpm)
+				highWpm.Wpm = avgWpm;
 
 			//Debug.Assert(avgWpm <= MaxWpm && avgWpm >= MinWpm);
 		}
+
+		private void updateLowWpm(int wpm, string textSnippet, int totalTextLenght)
+		{
+			var wpmNode = lowWpm.Last;
+			while (wpmNode.Value.TotalTextLenght > totalTextLenght)
+				wpmNode = wpmNode.Previous;
+				
+			if (wpmNode.Next != null)
+				lowWpm.Remove(wpmNode.Next);
+			
+			if (wpm < wpmNode.Value.Wpm || wpmNode.Value.Wpm == -1)
+			{
+				MomentaryWpm newWpm;
+				if (wpmNode.Value.TotalTextLenght == totalTextLenght)
+					newWpm = wpmNode.Value;
+				else
+				{
+					newWpm = new MomentaryWpm();
+					lowWpm.AddLast(newWpm);
+				}
+				newWpm.Wpm = wpm;
+				newWpm.TextSnippet = textSnippet;
+				newWpm.TotalTextLenght = totalTextLenght;
+			}
+		}
+	}
+
+	public class MomentaryWpm
+	{
+		public int Wpm { get; set; } = -1;
+		public string TextSnippet { get; set; } = "";
+		public int TotalTextLenght { get; set; } = 0;
 	}
 }
 

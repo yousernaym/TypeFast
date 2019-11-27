@@ -204,7 +204,7 @@ namespace TyperLib
 
 		public void addRecord(TypingSession session)
 		{
-			addRecord(new Record(session.Wpm, session.MaxWpm, session.MinWpm, session.MaxWpmText, session.MinWpmText, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count), true);
+			addRecord(new Record(session.Wpm, session.HighWpm.Wpm, session.LowWpm.Wpm, session.HighWpm.TextSnippet, session.LowWpm.TextSnippet, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count), true);
 		}
 
 		//removeHidden searches for a record that is guaranteed to not be visible regardless of primary sort column.

@@ -20,23 +20,23 @@ namespace TyperLib
 				accuracy = (float)Math.Round(value, 1);
 			}
 		}
-		public int MinWpm { get; set; } = -1;
-		public int MaxWpm { get; set; } = -1;
-		public string MaxWpmText { get; set; }
-		public string MinWpmText { get; set; }
+		public int LowWpm { get; set; } = -1;
+		public int HighWpm { get; set; } = -1;
+		public string HighWpmText { get; set; }
+		public string LowWpmText { get; set; }
 
 		public string TextTitle { get; set; }
 		public bool IsTextFinished { get; set; }
 		public int CharCount { get; set; }
 		public int Id { get; private set; }
 
-		public Record(int wpm, int maxWpm, int minWpm, string maxWpmText, string minWpmText, float accuracy, TimeSpan time, string textTitle, bool isTextFinished, int charCount)
+		public Record(int wpm, int highWpm, int lowWpm, string highWpmText, string lowWpmText, float accuracy, TimeSpan time, string textTitle, bool isTextFinished, int charCount)
 		{
 			Wpm = wpm;
-			MaxWpm = maxWpm;
-			MinWpm = minWpm;
-			MaxWpmText = maxWpmText;
-			MinWpmText = minWpmText;
+			HighWpm = highWpm;
+			LowWpm = lowWpm;
+			HighWpmText = highWpmText;
+			LowWpmText = lowWpmText;
 			Accuracy = accuracy;
 			Time = time;
 			TextTitle = textTitle;
@@ -51,14 +51,14 @@ namespace TyperLib
 			{
 				if (entry.Name == "wpm")
 					Wpm = (int)entry.Value;
-				else if (entry.Name == "maxWpm")
-					MaxWpm = (int)entry.Value;
-				else if (entry.Name == "minWpm")
-					MinWpm = (int)entry.Value;
-				else if (entry.Name == "maxWpmText")
-					MaxWpmText = (string)entry.Value;
-				else if (entry.Name == "minWpmText")
-					MinWpmText = (string)entry.Value;
+				else if (entry.Name == "highWpm")
+					HighWpm = (int)entry.Value;
+				else if (entry.Name == "lowWpm")
+					LowWpm = (int)entry.Value;
+				else if (entry.Name == "highWpmText")
+					HighWpmText = (string)entry.Value;
+				else if (entry.Name == "lowWpmText")
+					LowWpmText = (string)entry.Value;
 				else if (entry.Name == "accuracy")
 					Accuracy = (float)entry.Value;
 				else if (entry.Name == "time")
@@ -77,10 +77,10 @@ namespace TyperLib
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("wpm", Wpm);
-			info.AddValue("maxWpm", MaxWpm);
-			info.AddValue("minWpm", MinWpm);
-			info.AddValue("maxWpmText", MaxWpmText);
-			info.AddValue("minWpmText", MinWpmText);
+			info.AddValue("highWpm", HighWpm);
+			info.AddValue("lowWpm", LowWpm);
+			info.AddValue("highWpmText", HighWpmText);
+			info.AddValue("lowWpmText", LowWpmText);
 			info.AddValue("time", Time);
 			info.AddValue("accuracy", Accuracy);
 			info.AddValue("textTitle", TextTitle);
@@ -109,9 +109,9 @@ namespace TyperLib
 			if (primarySortType == PrimarySortType.Wpm)
 				compResult = Wpm.CompareTo(rec.Wpm);
 			else if (primarySortType == PrimarySortType.MinWpm)
-				compResult = MinWpm.CompareTo(rec.MinWpm);
+				compResult = LowWpm.CompareTo(rec.LowWpm);
 			else //if (primarySortType == PrimarySortType.MaxWpm)
-				compResult = MaxWpm.CompareTo(rec.MaxWpm);
+				compResult = HighWpm.CompareTo(rec.HighWpm);
 			return compResult;
 		}
 
@@ -148,9 +148,9 @@ namespace TyperLib
 						compResult = Accuracy.CompareTo(rec.Accuracy);
 						if (compResult == 0)
 						{
-							compResult = MinWpm.CompareTo(rec.MinWpm);
+							compResult = LowWpm.CompareTo(rec.LowWpm);
 							if (compResult == 0)
-								return MaxWpm.CompareTo(rec.MaxWpm);
+								return HighWpm.CompareTo(rec.HighWpm);
 							else
 								return compResult;
 						}

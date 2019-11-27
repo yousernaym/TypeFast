@@ -28,7 +28,7 @@ namespace TyperUWP
 			NumRecords = Texts.MaxRecords,
 			Rows = NumRecords,
 			Columns = 6,
-			MaxWpmCol = 0,
+			HighWpmCol = 0,
 			WpmCol = 1,
 			MinWpmCol = 2,
 			AccCol = 3,
@@ -58,7 +58,7 @@ namespace TyperUWP
 					//{
 					//	cell.FontWeight = FontWeights.Bold;
 					//}
-					if (c == TextCol || c == MaxWpmCol || c == MinWpmCol)
+					if (c == TextCol || c == HighWpmCol || c == MinWpmCol)
 					{
 						var cell = new HyperlinkButton();
 						//Duplicate init code---------
@@ -173,7 +173,7 @@ namespace TyperUWP
 						format += "\\.ff";
 					table.getCell<TextBlock>(i + 1, TimeCol).Text = records[i].Time.ToString(format);
 					setLinkText(i + 1, TextCol, records);
-					setLinkText(i + 1, MaxWpmCol, records);
+					setLinkText(i + 1, HighWpmCol, records);
 					setLinkText(i + 1, MinWpmCol, records);
 				}
 				else
@@ -182,7 +182,7 @@ namespace TyperUWP
 					table.getCell<TextBlock>(i + 1, AccCol).Text = "";
 					table.getCell<TextBlock>(i + 1, TimeCol).Text = "";
 					setLinkText(i + 1, TextCol, null);
-					setLinkText(i + 1, MaxWpmCol, null);
+					setLinkText(i + 1, HighWpmCol, null);
 					setLinkText(i + 1, MinWpmCol, null);
 				}
 			}
@@ -192,7 +192,7 @@ namespace TyperUWP
 		{
 			var cell = table.getCell<HyperlinkButton>(row, col);
 			int recordIndex = row - 1;
-			if (records == null || col == MaxWpmCol && records[recordIndex].MaxWpm < 0 || col == MinWpmCol && records[recordIndex].MinWpm < 0)
+			if (records == null || col == HighWpmCol && records[recordIndex].HighWpm < 0 || col == MinWpmCol && records[recordIndex].LowWpm < 0)
 			{
 				ToolTipService.SetToolTip(cell, null);
 				cell.Content = "";
@@ -211,19 +211,19 @@ namespace TyperUWP
 					var timeText = records[recordIndex].Time.ToSpeechString(showSecondFractions(records[recordIndex].Time));
 					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].TextTitle}. {records[recordIndex].Wpm} words per minute. {records[recordIndex].Accuracy} percent accuracy. {timeText}.");
 				}
-				else if (col == MaxWpmCol)
+				else if (col == HighWpmCol)
 				{
-					toolTip.Content = records[recordIndex].MaxWpmText;
-					cell.Content = records[recordIndex].MaxWpm < 0 ? "" : records[recordIndex].MaxWpm.ToString();
-					cell.Tag = "1" + records[recordIndex].MaxWpmText;
-					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MaxWpm}");
+					toolTip.Content = records[recordIndex].HighWpmText;
+					cell.Content = records[recordIndex].HighWpm < 0 ? "" : records[recordIndex].HighWpm.ToString();
+					cell.Tag = "1" + records[recordIndex].HighWpmText;
+					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].HighWpm}");
 				}
 				else if (col == MinWpmCol)
 				{
-					toolTip.Content = records[recordIndex].MinWpmText;
-					cell.Content = records[recordIndex].MinWpm.ToString();
-					cell.Tag = "1" + records[recordIndex].MinWpmText;
-					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].MinWpm}");
+					toolTip.Content = records[recordIndex].LowWpmText;
+					cell.Content = records[recordIndex].LowWpm.ToString();
+					cell.Tag = "1" + records[recordIndex].LowWpmText;
+					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].LowWpm}");
 				}
 				ToolTipService.SetToolTip(cell, toolTip);
 			}
@@ -234,7 +234,7 @@ namespace TyperUWP
 			Record.PrimarySortType primarySortType;
 			if (col == WpmCol)
 				primarySortType = Record.PrimarySortType.Wpm;
-			else if (col == MaxWpmCol)
+			else if (col == HighWpmCol)
 				primarySortType = Record.PrimarySortType.MaxWpm;
 			else if (col == MinWpmCol)
 				primarySortType = Record.PrimarySortType.MinWpm;
