@@ -20,7 +20,7 @@ namespace TyperLib
 		public enum KeyPressResult { NotTypable, Incorrect, Correct, DeleteIncorrect, DeleteCorrect };
 		public const uint KeyCode_Backspace = 8;
 		public const uint KeyCode_Space = 32;
-		const int MaxMinWpmChars = 10;
+		const int MomentaryWpmChars = 10;
 
 		string[] rndElements;
 		int minWordLength;
@@ -392,24 +392,13 @@ namespace TyperLib
 		public void updateMomentaryWpm()
 		{
 			float elapsedTimeS = (float)ElapsedTime.TotalSeconds;
-			if (WrittenChars.Count < MaxMinWpmChars)
+			if (WrittenChars.Count < MomentaryWpmChars)
 			{
 				highWpm = new MomentaryWpm();
 				lowWpm = new LinkedList<MomentaryWpm>();
 				lowWpm.AddLast(new MomentaryWpm());
 				return;
 			}
-			for (int maxNumChars = MaxMinWpmChars; maxNumChars > MaxMinWpmChars / 2; maxNumChars--)
-			{
-				updateMaxMinWpm(maxNumChars, elapsedTimeS);
-				//int avgWpm = Wpm;
-				//if (MaxWpm >= avgWpm && MinWpm <= avgWpm)
-					break;
-			}
-		}
-
-		public void updateMaxMinWpm(int maxNumChars, float elapsedTimeS)
-		{
 			int correctChars = 0, incorrectChars = 0;
 			string textSnippet = "";
 			int numChars = 0;
@@ -422,7 +411,7 @@ namespace TyperLib
 					incorrectChars++;
 				textSnippet = writtenChar.Char + textSnippet;
 				lastCharTime = writtenChar.SecondsFromStart;
-				if (++numChars == maxNumChars)
+				if (++numChars == MomentaryWpmChars)
 					break;
 			}
 			//If last typed chasactes was incorrect, don't apply WPM penalty for that character. Only apply pehalty if user keeps going without fixing.
@@ -431,21 +420,20 @@ namespace TyperLib
 				adjustedIncorrectChars--;
 
 			int wpm = (int)(Math.Max((correctChars - adjustedIncorrectChars * 2) / ((firstCharTime - lastCharTime) / 60), 0) / 5);
-			
+
 			if (wpm > highWpm.Wpm)
 			{
 				highWpm.Wpm = wpm;
 				highWpm.TextSnippet = textSnippet;
 			}
 			updateLowWpm(wpm, textSnippet, WrittenChars.Count);
-			
+
 			int avgWpm = Wpm;
 			if (lowWpm.Last().Wpm > avgWpm)
 				lowWpm.Last.Value.Wpm = avgWpm;
 			if (highWpm.Wpm < avgWpm)
 				highWpm.Wpm = avgWpm;
 
-			//Debug.Assert(avgWpm <= MaxWpm && avgWpm >= MinWpm);
 		}
 
 		private void updateLowWpm(int wpm, string textSnippet, int totalTextLenght)
