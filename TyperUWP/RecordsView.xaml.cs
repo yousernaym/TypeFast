@@ -127,6 +127,17 @@ namespace TyperUWP
 			syncGrid();
 		}
 
+		async private void clearBtn_Click(object sender, RoutedEventArgs e)
+		{
+			var cd = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to delete all records?" };
+			ContentDialogResult result = await cd.ShowAsync();
+			if (result == ContentDialogResult.Primary)
+			{
+				texts.clearRecords();
+				syncGrid();
+			}
+		}
+
 		private void TopTexts_Click(object sender, RoutedEventArgs e)
 		{
 			bottomTextsCb.IsChecked = false;

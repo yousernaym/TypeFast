@@ -258,8 +258,8 @@ namespace TyperUWP
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
 		{
-			if (typingSession.IsFinished) //This method may be called a few times after finishing
-				 return;
+			//if (typingSession.IsFinished) //This method may be called a few times after finishing
+				// return;
 			await Dispatcher.RunAsync(CoreDispatcherPriority.High, updateRealTimeInfo);
 		}
 
@@ -425,7 +425,7 @@ namespace TyperUWP
 		{
 			if (DialogOpen)
 				return;
-			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to permanently delete this text?" };
+			var dlg = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to delete this text?" };
 			DialogOpen = true;
 			ContentDialogResult result = await dlg.ShowAsync();
 			DialogOpen = false;

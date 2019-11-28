@@ -161,6 +161,12 @@ namespace TyperLib
 			saveUserData();
 		}
 
+		public void clearRecords()
+		{
+			userData.Records.Clear();
+			saveUserData();
+		}
+
 		public bool containsTitle(string title)
 		{
 			return userData.TextEntries.containsKey(title);

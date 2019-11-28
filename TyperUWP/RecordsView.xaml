@@ -12,10 +12,13 @@
 	
 	<Grid Background="Black" BorderThickness="1">
 		<StackPanel Orientation="Vertical" Margin="15">
-			<StackPanel Orientation="Horizontal" Margin="1,0,0,10">
-				<CheckBox x:Name="topTextsCb" Content="Top texts" Margin="0, 0, 0, 0" Click="TopTexts_Click"/>
-				<CheckBox x:Name="bottomTextsCb" Content="Bottom texts" Click="BottomTexts_Click"/>
-			</StackPanel>
+			<RelativePanel Margin="1,0,0,10">
+				<StackPanel RelativePanel.AlignLeftWithPanel="True" Orientation="Horizontal">
+					<CheckBox x:Name="topTextsCb" Content="Top texts" Margin="0, 0, 0, 0" Click="TopTexts_Click"/>
+					<CheckBox x:Name="bottomTextsCb" Content="Bottom texts" Click="BottomTexts_Click"/>
+				</StackPanel>
+				<Button x:Name="clearBtn" RelativePanel.AlignRightWithPanel="True" Content="Clear records" CornerRadius="7" Click="clearBtn_Click"/>
+			</RelativePanel>
 			<local:Table x:Name="table" HorizontalAlignment="Center"/>
 			<!--<controls.DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70" OffsetX="5.0" OffsetY="5.0" Color="Black">
 			<Grid x:Name="grid" Margin="10" BorderBrush="DarkGray" BorderThickness="1" HorizontalAlignment="Center"/>
