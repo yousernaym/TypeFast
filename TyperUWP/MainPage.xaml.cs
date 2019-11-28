@@ -260,12 +260,13 @@ namespace TyperUWP
 		{
 			if (typingSession.IsFinished) //This method may be called a few times after finishing
 				 return;
-			typingSession.updateMomentaryWpm();
 			await Dispatcher.RunAsync(CoreDispatcherPriority.High, updateRealTimeInfo);
 		}
 
 		void updateRealTimeInfo()
 		{
+			typingSession.updateMomentaryWpm();
+
 			timeText.Content = "Time\n" + typingSession.RemainingTimeString;
 			lowWpmText.Value = typingSession.LowWpm.Wpm > -1 ? typingSession.LowWpm.Wpm.ToString() : "";
 			lowWpmText.ValueToolTip = typingSession.LowWpm.TextSnippet;

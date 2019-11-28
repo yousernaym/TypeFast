@@ -403,7 +403,7 @@ namespace TyperLib
 			string textSnippet = "";
 			int numChars = 0;
 			float firstCharTime = elapsedTimeS, lastCharTime = 0;
-			foreach (var writtenChar in WrittenChars)
+			foreach (var writtenChar in WrittenChars.ToList())  //ToList() makes it thread-safe because why not, even though it should not matter as long as this function is run on the same thread as typeChar.
 			{
 				if (writtenChar.Correct)
 					correctChars++;

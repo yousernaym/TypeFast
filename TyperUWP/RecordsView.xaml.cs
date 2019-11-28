@@ -28,8 +28,8 @@ namespace TyperUWP
 			NumRecords = Texts.MaxRecords,
 			Rows = NumRecords,
 			Columns = 6,
-			HighWpmCol = 0,
-			WpmCol = 1,
+			WpmCol = 0,
+			HighWpmCol = 1,
 			MinWpmCol = 2,
 			AccCol = 3,
 			TimeCol = 4,
@@ -45,7 +45,7 @@ namespace TyperUWP
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			table.init(new string[] { "HiWPM", "WPM", "LoWPM", "Acc %", "Time", "Text" }, 7, 18);
+			table.init(new string[] { "WPM", "HiWPM", "LoWPM", "Acc %", "Time", "Text" }, 7, 18);
 			table.PrimarySortCol = WpmCol;
 			primarySort = columnToSortType(table.PrimarySortCol);
 			table.Sort += Table_Sort;
