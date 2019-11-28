@@ -213,7 +213,7 @@ namespace TyperLib
 			addRecord(new Record(session.Wpm, session.HighWpm.Wpm, session.LowWpm.Wpm, session.HighWpm.TextSnippet, session.LowWpm.TextSnippet, session.Accuracy, session.ElapsedTime, Current.Title, session.IsTextFinished, session.WrittenChars.Count), true);
 		}
 
-		//removeHidden searches for a record that is guaranteed to not be visible regardless of primary sort column.
+		//removeHidden == true searches for a record that is guaranteed to not be visible regardless of primary sort column.
 		//More Specifically it searches for a record whose max/min/avg wpm are all below top ten for the current text.
 		//Pass false for better performanc if loading records from file.
 		public void addRecord(Record newRecord, bool removeHidden)
