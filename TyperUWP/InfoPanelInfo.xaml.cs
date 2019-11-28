@@ -65,17 +65,11 @@ namespace TyperUWP
 			set => panel.Margin = value;
 		}
 
-		string valueToolTip;
+		ToolTip valueToolTip = new ToolTip();
 		public string ValueToolTip
 		{
-			get => valueToolTip;
-			set
-			{
-				valueToolTip = value;
-				var newToolTip = new ToolTip();
-				newToolTip.Content = valueToolTip;
-				ToolTipService.SetToolTip(valueTbl, newToolTip);
-			}
+			get => (string)valueToolTip.Content;
+			set =>	valueToolTip.Content = value;
 		}
 
 		public InfoPanelInfo()
@@ -85,6 +79,7 @@ namespace TyperUWP
 			valueTbl.Inlines.Add(link);
 			valueTbl.Inlines.Add(textRun);
 			link.Click += link_Clkck;
+			ToolTipService.SetToolTip(valueTbl, valueToolTip);
 		}
 
 		private void link_Clkck(Hyperlink sender, HyperlinkClickEventArgs args)

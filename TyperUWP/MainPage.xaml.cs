@@ -270,7 +270,6 @@ namespace TyperUWP
 			timeText.Content = "Time\n" + typingSession.RemainingTimeString;
 			lowWpmText.Value = typingSession.LowWpm.Wpm > -1 ? typingSession.LowWpm.Wpm.ToString() : "";
 			lowWpmText.ValueToolTip = typingSession.LowWpm.TextSnippet;
-			highWpmText.ValueToolTip = typingSession.HighWpm.TextSnippet; //Even though highWpm doesn't need to be updated in real time, update its tooltip in real time. This will oddly enough prevent it from updating before the sessien has ended. This is just to make it behave the same as lOwWPM.
 			wpmText.Value = typingSession.Wpm.ToString();
 
 			if (typingSession.IsRunning)
@@ -339,6 +338,7 @@ namespace TyperUWP
 			incorrectCharsText.Value = typingSession.IncorrectChars.ToString();
 			fixedCharsText.Value = typingSession.FixedChars.ToString();
 			highWpmText.Value = typingSession.HighWpm.Wpm > -1 ? typingSession.HighWpm.Wpm.ToString() : "";
+			highWpmText.ValueToolTip = typingSession.HighWpm.TextSnippet;
 			accuracyText.Foreground = RecordsView.getAccuracyCol(typingSession.Accuracy);
 			accuracyText.Value = typingSession.Accuracy.ToString("0.0") + " %";
 		}
