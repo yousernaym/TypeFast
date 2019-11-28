@@ -245,6 +245,7 @@ namespace TyperUWP
 
 		public static SolidColorBrush getAccuracyCol(float acc)
 		{
+			acc =(float)Math.Round(acc, 1); //float.ToString rounds to nearest more significant decimal, so do the same rounding here so that the number displayed matches the color
 			if (acc < 92)
 				return new SolidColorBrush(Colors.Red);
 			else if (acc < 95)

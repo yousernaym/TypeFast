@@ -216,17 +216,13 @@ namespace TyperUWP
 
 		private void Current_DataChanged(ApplicationData sender, object args)
 		{
-			//sender
+			
 		}
 
 		private void CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
 		{
 			if (isKeyDown(VirtualKey.Control) && !DialogOpen)
 			{
-				//if (args.VirtualKey == VirtualKey.R)
-				//	clickResetBtn();
-				//if (args.VirtualKey == VirtualKey.T)
-				//	textsCombo.Focus(FocusState.Programmatic);
 			}
 		}
 
@@ -262,28 +258,25 @@ namespace TyperUWP
 
 		private async void Text_TimeChecked(object sender, EventArgs e)
 		{
-			//if (text.IsFinished) //This method may be called a few times after finishing
-			//	return;
+			if (typingSession.IsFinished) //This method may be called a few times after finishing
+				 return;
 			typingSession.updateMomentaryWpm();
-			await Dispatcher.RunAsync(CoreDispatcherPriority.High, delegate
-			{
-				timeText.Content = "Time\n" + typingSession.RemainingTimeString;
-				highWpmText.Value = typingSession.HighWpm.Wpm > -1 ? typingSession.HighWpm.Wpm.ToString() : "";
-				lowWpmText.Value = typingSession.LowWpm.Wpm > -1 ? typingSession.LowWpm.Wpm.ToString() : "";
-				highWpmText.ValueToolTip = typingSession.HighWpm.TextSnippet;
-				lowWpmText.ValueToolTip = typingSession.LowWpm.TextSnippet;
-				wpmText.Value = typingSession.Wpm.ToString();
-				accuracyText.Foreground = RecordsView.getAccuracyCol(typingSession.Accuracy);
-				accuracyText.Value = typingSession.Accuracy.ToString("0.0") + " %";
+			await Dispatcher.RunAsync(CoreDispatcherPriority.High, updateRealTimeInfo);
+		}
 
-				if (typingSession.IsRunning)
-					timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
-				else if (typingSession.IsFinished)
-					timeText.Background = new SolidColorBrush(Colors.DarkRed);
-				else
-					timeText.Background = new SolidColorBrush(Color.FromArgb(30, 250, 250, 250));
+		void updateRealTimeInfo()
+		{
+			timeText.Content = "Time\n" + typingSession.RemainingTimeString;
+			lowWpmText.Value = typingSession.LowWpm.Wpm > -1 ? typingSession.LowWpm.Wpm.ToString() : "";
+			lowWpmText.ValueToolTip = typingSession.LowWpm.TextSnippet;
+			wpmText.Value = typingSession.Wpm.ToString();
 
-			});
+			if (typingSession.IsRunning)
+				timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
+			else if (typingSession.IsFinished)
+				timeText.Background = new SolidColorBrush(Colors.DarkRed);
+			else
+				timeText.Background = new SolidColorBrush(Color.FromArgb(30, 250, 250, 250));
 		}
 
 		private void MinWpmText_LinkClick(object sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs e)
@@ -325,7 +318,7 @@ namespace TyperUWP
 				return;
 			focusOnTyping();
 			typingSessionView.draw();
-			updateTypingStats();
+			updateNonRealTimeInfo();
 			if (result == TypingSession.KeyPressResult.Incorrect && typingSession.ErrorAudio)
 				audio.play(Audio.Type.Error);
 			else if (args.KeyCode == TypingSession.KeyCode_Space && typingSession.TypingAudio)
@@ -338,11 +331,15 @@ namespace TyperUWP
 				audio.play(Audio.Type.Typing);
 		}
 
-		private void updateTypingStats()
+		private void updateNonRealTimeInfo()
 		{
 			correctCharsText.Value = typingSession.CorrectChars.ToString();
 			incorrectCharsText.Value = typingSession.IncorrectChars.ToString();
 			fixedCharsText.Value = typingSession.FixedChars.ToString();
+			highWpmText.Value = typingSession.HighWpm.Wpm > -1 ? typingSession.HighWpm.Wpm.ToString() : "";
+			highWpmText.ValueToolTip = typingSession.HighWpm.TextSnippet;
+			accuracyText.Foreground = RecordsView.getAccuracyCol(typingSession.Accuracy);
+			accuracyText.Value = typingSession.Accuracy.ToString("0.0") + " %";
 		}
 
 		private void RestartBtn_Click(object sender, RoutedEventArgs e)
@@ -366,7 +363,7 @@ namespace TyperUWP
 			textsCombo.resetFilter();
 			textsCombo.SelectedItem = texts.Current?.Title;
 			typingSessionView.reset();
-			updateTypingStats();
+			updateNonRealTimeInfo();
 			//focusOnTyping();
 		}
 
