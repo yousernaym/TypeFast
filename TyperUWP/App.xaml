@@ -7,21 +7,66 @@
 	xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
 	>
 	<Application.Resources>
-		<x:Double x:Key="ContentDialogMaxWidth">1000</x:Double>
-		<x:Double x:Key="ContentDialogMaxHeight">700</x:Double>
-		<Color x:Key="PrimaryColor">#ff112266</Color>
-		<LinearGradientBrush x:Key="panelBorderGradient" StartPoint="0.5,0" EndPoint="0.5,1">
-			<GradientStop Color="#051050" Offset="0.0" />
-			<GradientStop Color="DarkBlue" Offset="1.0" />
-		</LinearGradientBrush>
-		<LinearGradientBrush x:Key="panelBorderRevGradient" StartPoint="0.5,0" EndPoint="0.5,1">
-			<GradientStop Color="DarkBlue" Offset="0.0" />
-			<GradientStop Color="#051050" Offset="1.0" />
-		</LinearGradientBrush>
-		<LinearGradientBrush x:Key="panelBorderGradientHighContrast" StartPoint="0,0" EndPoint="1,1">
-			<GradientStop Color="#051030" Offset="0.0" />
-			<GradientStop Color="#406080" Offset="1.0" />
-		</LinearGradientBrush>
+		<ResourceDictionary>
+			<!--<ResourceDictionary.MergedDictionaries>
+				<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+				 --><!--Other merged dictionaries here--><!-- 
+			</ResourceDictionary.MergedDictionaries>-->
+			<!-- Other app resources here -->
+			<ResourceDictionary.ThemeDictionaries>
+				<ResourceDictionary x:Key="Dark">
+					<!--<SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="Red"/>
+					<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Black"/>-->
+					<!--<SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="Green"/>-->
+				</ResourceDictionary>
+				<ResourceDictionary x:Key="Light">
+					<!--<SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="Red"/>
+					<SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Black"/>-->
+				</ResourceDictionary>
+			</ResourceDictionary.ThemeDictionaries>
+
+			<x:Double x:Key="ContentDialogMaxWidth">1000</x:Double>
+			<x:Double x:Key="ContentDialogMaxHeight">700</x:Double>
+			<Color x:Key="PrimaryColor">#ff112266</Color>
+			<LinearGradientBrush x:Key="panelBorderGradient" StartPoint="0.5,0" EndPoint="0.5,1">
+				<GradientStop Color="#051050" Offset="0.0" />
+				<GradientStop Color="DarkBlue" Offset="1.0" />
+			</LinearGradientBrush>
+			<LinearGradientBrush x:Key="panelBorderRevGradient" StartPoint="0.5,0" EndPoint="0.5,1">
+				<GradientStop Color="DarkBlue" Offset="0.0" />
+				<GradientStop Color="#051050" Offset="1.0" />
+			</LinearGradientBrush>
+			<LinearGradientBrush x:Key="panelBorderGradientHighContrast" StartPoint="0,0" EndPoint="1,1">
+				<GradientStop Color="#051030" Offset="0.0" />
+				<GradientStop Color="#406080" Offset="1.0" />
+			</LinearGradientBrush>
+
+			<!--<ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
+				<Grid>
+					<Border x:Name="Border"  BorderBrush="Orange" BorderThickness="3" CornerRadius="2">
+						<ContentPresenter Content="{TemplateBinding Content}" />
+					</Border>
+					<VisualStateManager.VisualStateGroups>
+						<VisualStateGroup>
+							<VisualState x:Name="PointerOver">
+								<Storyboard>
+									<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="BorderBrush">
+										<DiscreteObjectKeyFrame KeyTime="0" Value="Blue" />
+									</ObjectAnimationUsingKeyFrames>
+								</Storyboard>
+							</VisualState>
+							<VisualState x:Name="Normal">
+								<Storyboard>
+									<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="BorderBrush">
+										<DiscreteObjectKeyFrame KeyTime="0" Value="Black" />
+									</ObjectAnimationUsingKeyFrames>
+								</Storyboard>
+							</VisualState>
+						</VisualStateGroup>
+					</VisualStateManager.VisualStateGroups>
+				</Grid>
+			</ControlTemplate>-->
+		</ResourceDictionary>
 	</Application.Resources>
 	
 </Application>

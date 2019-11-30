@@ -804,8 +804,10 @@ namespace TyperUWP
 
 		private void recordsBtn_Click(object sender, RoutedEventArgs e)
 		{
-			if (texts != null)		
+			if (texts != null)
+			{
 				recordsFlyout.ShowAt(recordsBtn);
+			}
 		}
 	}
 

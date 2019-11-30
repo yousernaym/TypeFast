@@ -273,6 +273,7 @@ namespace TyperUWP
 			//list.UpdateLayout();
 			//listPopup.VerticalOffset = -list.ActualHeight;
 			updatePopup();
+			//textBox.CornerRadius = new CornerRadius(3, 3, 0, 0);
 		}
 
 		public void resetFilter()
@@ -284,6 +285,11 @@ namespace TyperUWP
 		private void UserControl_AccessKeyInvoked(UIElement sender, AccessKeyInvokedEventArgs args)
 		{
 			textBox.Focus(FocusState.Keyboard);
+		}
+
+		private void listPopup_Closed(object sender, object e)
+		{
+			//textBox.CornerRadius = new CornerRadius(3);
 		}
 	}
 }

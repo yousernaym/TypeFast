@@ -1,4 +1,5 @@
 ﻿<Page 
+	xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     x:Class="TyperUWP.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -53,7 +54,7 @@
 					<local:InfoPanelInfo x:Name="highWpmText" Label="HiWPM" IsHyper="True" LinkClick="MaxWpmText_LinkClick" Foreground="#ff00ff00" ToolTipService.ToolTip="Highest momentary WPM"/>
 					<local:InfoPanelInfo x:Name="lowWpmText" Label="LoWPM" IsHyper="True" LinkClick="MinWpmText_LinkClick" Foreground="Orange" ToolTipService.ToolTip="Lowest momentary WPM"/>
 					<local:InfoPanelInfo x:Name="accuracyText" Label="Accuracy" Margin="0 0 30 0" Foreground="Yellow" ToolTipService.ToolTip="Percentage of correct characters"/>
-					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 0 0 5" Padding="7,0,8,0" FontSize="25" IsTabStop="True" GotFocus="TimeText_GotFocus">
+					<Button x:Name="timeText" AccessKey="T" CornerRadius="5 4 4 5" Padding="7,0,8,0" FontSize="25" IsTabStop="True" GotFocus="TimeText_GotFocus">
 						<Button.Flyout>
 							<Flyout x:Name="timeLimitFlyout" Opened="TimeLimitFlyout_Opened" Closing="TimeLimitFlyout_Closed">
 								<StackPanel Orientation="Horizontal">

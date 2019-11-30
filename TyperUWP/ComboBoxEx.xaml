@@ -13,9 +13,9 @@
 	>
 	
     <StackPanel Orientation="Vertical">
-		<Popup x:Name="listPopup" Opened="ListPopup_Opened">
-			<ListView x:Name="list" Background="Black" BorderBrush="DarkGray" BorderThickness="1" SelectionChanged="List_SelectionChanged"/>
+		<Popup x:Name="listPopup" Opened="ListPopup_Opened" Closed="listPopup_Closed">
+			<ListView x:Name="list" Background="Black" BorderBrush="DarkGray" BorderThickness="1" CornerRadius="0 0 3 3" SelectionChanged="List_SelectionChanged"/>
 		</Popup>
-		<TextBox x:Name="textBox" Height="Auto" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown"/>
+		<TextBox x:Name="textBox" CornerRadius="0" Height="Auto" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" TextChanged="TextBox_TextChanged" KeyDown="TextBox_KeyDown"/>
 	</StackPanel>
 </UserControl>
