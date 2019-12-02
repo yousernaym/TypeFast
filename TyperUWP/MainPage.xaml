@@ -18,7 +18,7 @@
 		<local:TimeLimitConverter x:Key="TimeLimitConverter"/>
 		<Style TargetType="FlyoutPresenter" x:Key="flyoutStyle">
 			<Setter Property="MaxWidth" Value="2000" />
-			<Setter Property="Background" Value="DarkGray" />
+			<Setter Property="Background" Value="#ff333333" />
 			<Setter Property="Padding" Value="5" />
 		</Style>
 		<Style TargetType="Button" x:Key="menuButtonStyle">
