@@ -91,16 +91,16 @@ namespace TyperUWP
 				selectedItem = value;
 				if (string.IsNullOrEmpty(value))
 				{
-				//list.SelectedIndex = -1;
-			//}
-						setText("");
-						textBox.PlaceholderText = "";
-						submittedItem = null;
-					}
-
+					list.SelectedIndex = -1;
+					setText("");
+					textBox.PlaceholderText = "";
+					submittedItem = null;
+				}
+				else
+				{
 					list.SelectedItem = value;
-				if (!string.IsNullOrEmpty(value))
 					list.ScrollIntoView(selectedItem, ScrollIntoViewAlignment.Default);
+				}
 			}
 		}
 
