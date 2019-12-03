@@ -1,1 +1,2 @@
-﻿
+﻿- Högre kontrast på knapparna vid infopanel.
+- Ingen settings roaming.
