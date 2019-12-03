@@ -77,7 +77,7 @@ namespace TyperUWP
 			Window.Current.CoreWindow.KeyDown += CoreWindow_KeyDown;
 			Application.Current.Suspending += Current_Suspending;
 			
-			SettingsPath = Path.Combine(RoamingDataDir, "settings");
+			SettingsPath = Path.Combine(LocalDataDir, "settings");
 
 			string[] fonts = CanvasTextFormat.GetSystemFontFamilies();
 			foreach (string font in fonts)
