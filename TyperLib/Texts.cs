@@ -22,7 +22,7 @@ namespace TyperLib
 		public const int MaxRecords = 10;
 		string userDataPath;
 		//string presetsPath;
-		public const int Version = 0;
+		public const int Version = 1;
 
 		public TextEntry Current { get; set; }
 		public int Count => userData.TextEntries.Count;
@@ -40,9 +40,9 @@ namespace TyperLib
 		public Texts(string userDataDir, Stream presetsStream)
 		{
 			if (userDataDir != null)
-				userDataPath = Path.Combine(userDataDir, "texts.ttl");
+				userDataPath = Path.Combine(userDataDir, "texts.tft");
 			//if (presetsDir != null)
-				//presetsPath = Path.Combine(presetsDir, "presets.ttl");
+				//presetsPath = Path.Combine(presetsDir, "presets.tft");
 			//saveUserData();
 
 			bool userDataExists = File.Exists(userDataPath);
@@ -68,17 +68,22 @@ namespace TyperLib
 			var dcs = new DataContractSerializer(typeof(UserData), UserData.SerializeTypes);
 			var data = (UserData)dcs.ReadObject(stream);
 
+			//Specify texts (string) that should not be loaded if version (int) is less than current version
+			//This means that texts removed from an updated version of the app will be removed from the user data, but if the user creates a text with the same name, this text will not be removed since it will have the higher version number.
+			Tuple<string, int>[] removedTexts = { new Tuple<string, int>("Common words", 0) }; 
 			foreach (var text in data.TextEntries)
 			{
-				if (!onlyAddNewTexts || text.Version > userData.SyncedWithVersion && !userData.TextEntries.containsKey(text.Title))
-					userData.TextEntries.add(text);
+				if (removedTexts.Any(t => t.Item1 == text.Title && t.Item2 >= text.Version) || onlyAddNewTexts && (text.Version <= userData.SyncedWithVersion || userData.TextEntries.containsKey(text.Title)))
+					continue;
+				userData.TextEntries.add(text);
 			}
 			if (loadRecords)
 			{
 				foreach (var rec in data.Records)
 				{
-					if (!userData.Records.Any(r => r.Id == rec.Id))
-						addRecord(rec, false);
+					if (!userData.TextEntries.containsKey(rec.TextTitle) || userData.Records.Any(r => r.Id == rec.Id))
+						continue;
+					addRecord(rec, false);
 				}
 			}
 			userData.SyncedWithVersion = data.SyncedWithVersion;
@@ -330,9 +335,9 @@ namespace TyperLib
 				if (entry.Name == "syncedWithVersion")
 					SyncedWithVersion = (int)entry.Value;
 				else if (entry.Name.StartsWith("textEntry_"))
-					TextEntries.add((TextEntry)entry.Value);
+						TextEntries.add((TextEntry)entry.Value);
 				else if (entry.Name.StartsWith("record_"))
-					Records.Add((Record)entry.Value);
+						Records.Add((Record)entry.Value);
 			}
 		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context)

@@ -59,7 +59,7 @@ namespace TyperLib
 		public string Text { get; set; }
 		public bool AsciiLetters { get; set; }
 		public int Version { get; private set; } = Texts.Version;
-
+		
 		public TextEntry(TextEntry source = null)
 		{
 			if (source == null)
