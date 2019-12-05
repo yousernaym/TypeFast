@@ -27,7 +27,7 @@
 			<Setter Property="CornerRadius" Value="5" />
 			<Setter Property="BorderThickness" Value="2" />
 			<Setter Property="BorderBrush" Value="{StaticResource panelBorderGradientHighContrast}" />
-			<Setter Property="Background" Value="#50000000" />
+			<Setter Property="Background" Value="#80000000" />
 			<Setter Property="IsTabStop" Value="True" />
 		</Style>
 	</Page.Resources>

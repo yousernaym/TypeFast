@@ -37,8 +37,8 @@
 				<GradientStop Color="#051050" Offset="1.0" />
 			</LinearGradientBrush>
 			<LinearGradientBrush x:Key="panelBorderGradientHighContrast" StartPoint="0,0" EndPoint="1,1">
-				<GradientStop Color="#000b20" Offset="0.0" />
-				<GradientStop Color="#4070a0" Offset="1.0" />
+				<GradientStop Color="#000000" Offset="0.0" />
+				<GradientStop Color="#60a0d0" Offset="1.0" />
 			</LinearGradientBrush>
 
 			<!--<ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
