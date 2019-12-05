@@ -22,8 +22,8 @@ namespace TyperLib
 		}
 		public int LowWpm { get; set; } = -1;
 		public int HighWpm { get; set; } = -1;
-		public string HighWpmText { get; set; }
-		public string LowWpmText { get; set; }
+		public string HighWpmSnippet { get; set; }
+		public string LowWpmSnippet { get; set; }
 
 		public string TextTitle { get; set; }
 		public bool IsTextFinished { get; set; }
@@ -35,8 +35,8 @@ namespace TyperLib
 			Wpm = wpm;
 			HighWpm = highWpm;
 			LowWpm = lowWpm;
-			HighWpmText = highWpmText;
-			LowWpmText = lowWpmText;
+			HighWpmSnippet = highWpmText;
+			LowWpmSnippet = lowWpmText;
 			Accuracy = accuracy;
 			Time = time;
 			TextTitle = textTitle;
@@ -56,9 +56,9 @@ namespace TyperLib
 				else if (entry.Name == "lowWpm")
 					LowWpm = (int)entry.Value;
 				else if (entry.Name == "highWpmText")
-					HighWpmText = (string)entry.Value;
+					HighWpmSnippet = (string)entry.Value;
 				else if (entry.Name == "lowWpmText")
-					LowWpmText = (string)entry.Value;
+					LowWpmSnippet = (string)entry.Value;
 				else if (entry.Name == "accuracy")
 					Accuracy = (float)entry.Value;
 				else if (entry.Name == "time")
@@ -79,8 +79,8 @@ namespace TyperLib
 			info.AddValue("wpm", Wpm);
 			info.AddValue("highWpm", HighWpm);
 			info.AddValue("lowWpm", LowWpm);
-			info.AddValue("highWpmText", HighWpmText);
-			info.AddValue("lowWpmText", LowWpmText);
+			info.AddValue("highWpmText", HighWpmSnippet);
+			info.AddValue("lowWpmText", LowWpmSnippet);
 			info.AddValue("time", Time);
 			info.AddValue("accuracy", Accuracy);
 			info.AddValue("textTitle", TextTitle);

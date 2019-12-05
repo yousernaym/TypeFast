@@ -135,7 +135,7 @@ namespace TyperUWP
 				typingAudio = value;
 			}
 		}
-		
+
 		public TypingSession()
 		{
 			FontName = "Verdana";

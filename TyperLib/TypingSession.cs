@@ -20,7 +20,7 @@ namespace TyperLib
 		public enum KeyPressResult { NotTypable, Incorrect, Correct, DeleteIncorrect, DeleteCorrect };
 		public const uint KeyCode_Backspace = 8;
 		public const uint KeyCode_Space = 32;
-		const int MomentaryWpmChars = 10;
+		const int MomentaryWpmChars = 15;
 
 		string[] rndElements;
 		int minWordLength;
@@ -152,11 +152,19 @@ namespace TyperLib
 		public int TotalIncorrectChars { get; private set; } = 0;
 		public int FixedChars => TotalIncorrectChars - IncorrectChars;
 
-		
+		public bool MomentaryWpmSession { get; set; } = false; //The current session consists of the momentaryWpm text snippet of a previous session. This means the high/low wpm stats should stay like they were in that session and not be updated in this session.
 		MomentaryWpm highWpm;
 		public MomentaryWpm HighWpm => highWpm;
 		LinkedList<MomentaryWpm> lowWpm;
-		public MomentaryWpm LowWpm => lowWpm.Last();
+		public MomentaryWpm LowWpm
+		{
+			get => lowWpm.Last();
+			private set
+			{
+				lowWpm = new LinkedList<MomentaryWpm>();
+				lowWpm.AddLast(value);
+			}
+		}
 
 		public int Wpm
 		{
@@ -213,7 +221,8 @@ namespace TyperLib
 
 		public TypingSession()
 		{
-
+			highWpm = new MomentaryWpm();
+			LowWpm = new MomentaryWpm();
 		}
 
 		public TypingSession(SerializationInfo info, StreamingContext context)
@@ -382,15 +391,19 @@ namespace TyperLib
 			WrittenChars = new LinkedList<WrittenChar>();
 			CorrectChars = IncorrectChars = TotalIncorrectChars = 0;
 			currentCharIndex = 0;
-			highWpm = new MomentaryWpm();
-			lowWpm = new LinkedList<MomentaryWpm>();
-			lowWpm.AddLast(new MomentaryWpm());
+			if (!MomentaryWpmSession)
+			{
+				highWpm = new MomentaryWpm();
+				LowWpm = new MomentaryWpm();
+			}
 		}
 
 		//Call for every new character and for every time check.
 		//Always check last MaxMinWpmChars chars and check against current max/min Wpm.
 		public void updateMomentaryWpm()
 		{
+			if (MomentaryWpmSession)
+				return;
 			float elapsedTimeS = (float)ElapsedTime.TotalSeconds;
 			if (WrittenChars.Count < MomentaryWpmChars)
 			{
@@ -439,7 +452,7 @@ namespace TyperLib
 		private void updateLowWpm(int wpm, string textSnippet, int totalTextLenght)
 		{
 			var wpmNode = lowWpm.Last;
-			while (wpmNode.Value.TotalTextLenght > totalTextLenght)
+			while (wpmNode.Value.TotalTextLength > totalTextLenght)
 				wpmNode = wpmNode.Previous;
 				
 			if (wpmNode.Next != null)
@@ -448,7 +461,7 @@ namespace TyperLib
 			if (wpm < wpmNode.Value.Wpm || wpmNode.Value.Wpm == -1)
 			{
 				MomentaryWpm newWpm;
-				if (wpmNode.Value.TotalTextLenght == totalTextLenght)
+				if (wpmNode.Value.TotalTextLength == totalTextLenght)
 					newWpm = wpmNode.Value;
 				else
 				{
@@ -457,8 +470,16 @@ namespace TyperLib
 				}
 				newWpm.Wpm = wpm;
 				newWpm.TextSnippet = textSnippet;
-				newWpm.TotalTextLenght = totalTextLenght;
+				newWpm.TotalTextLength = totalTextLenght;
 			}
+		}
+
+		public void setHighLowWpm(int highWpm, string highSnippet, int lowWpm, string lowSnippet)
+		{
+			HighWpm.Wpm = highWpm;
+			HighWpm.TextSnippet = highSnippet;
+			LowWpm.Wpm = lowWpm;
+			LowWpm.TextSnippet = lowSnippet;
 		}
 	}
 
@@ -466,7 +487,7 @@ namespace TyperLib
 	{
 		public int Wpm { get; set; } = -1;
 		public string TextSnippet { get; set; } = "";
-		public int TotalTextLenght { get; set; } = 0;
+		public int TotalTextLength { get; set; } = 0;
 	}
 }
 

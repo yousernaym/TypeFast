@@ -24,6 +24,7 @@ namespace TyperUWP
 {
  	public sealed partial class RecordsView : UserControl
 	{
+		Record[] records;
 		const int
 			NumRecords = Texts.MaxRecords,
 			Rows = NumRecords,
@@ -39,7 +40,7 @@ namespace TyperUWP
 		Record.PrimarySortType primarySort;
 		Texts texts;
 
-		public delegate void TextTitleClickEH(RecordsView recordsView, TextTitleClickEventArgs e);
+		public delegate void TextTitleClickEH(RecordsView recordsView, RecordsLinkClickEventArgs e);
 		public event TextTitleClickEH TextTitleClick;
 		
 		public RecordsView()
@@ -116,9 +117,13 @@ namespace TyperUWP
 		private void createSessionBtn_Click(object sender, RoutedEventArgs e)
 		{
 			string tag = (string)((HyperlinkButton)sender).Tag;
-			bool tempSessionText = int.Parse(tag[0].ToString()) == 1;
-			string textOrTitle = tag.Substring(1);			
-			TextTitleClick?.Invoke(this, new TextTitleClickEventArgs(textOrTitle, tempSessionText));
+			string textOrTitle = tag.Substring(1);
+			int recordsIndex = tag[0] - 1;
+			bool momentaryWpmSession = recordsIndex >= 0;
+			Record record = null;
+			if (momentaryWpmSession)
+				record = records[recordsIndex];
+			TextTitleClick?.Invoke(this, new RecordsLinkClickEventArgs(textOrTitle, momentaryWpmSession, record.HighWpm, record.HighWpmSnippet, record.LowWpm, record.LowWpmSnippet));
 		}
 
 		public void syncGrid(Texts texts)
@@ -169,7 +174,7 @@ namespace TyperUWP
 		}
 		void syncGrid()
 		{ 
-			var records = texts.getRecords(bottomTexts, primarySort, NumRecords);
+			records = texts.getRecords(bottomTexts, primarySort, NumRecords);
 
 			for (int i = 0; i < NumRecords; i++)
 			{
@@ -218,22 +223,25 @@ namespace TyperUWP
 				{
 					toolTip = null;
 					cell.Content = records[recordIndex].TextTitle;
-					cell.Tag = "0" + cell.Content.ToString();
+					char c = (char)0;
+					cell.Tag = c.ToString() + cell.Content.ToString();
 					var timeText = records[recordIndex].Time.ToSpeechString(showSecondFractions(records[recordIndex].Time));
 					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].TextTitle}. {records[recordIndex].Wpm} words per minute. {records[recordIndex].Accuracy} percent accuracy. {timeText}.");
 				}
 				else if (col == HighWpmCol)
 				{
-					toolTip.Content = records[recordIndex].HighWpmText;
+					toolTip.Content = records[recordIndex].HighWpmSnippet;
 					cell.Content = records[recordIndex].HighWpm < 0 ? "" : records[recordIndex].HighWpm.ToString();
-					cell.Tag = "1" + records[recordIndex].HighWpmText;
+					char c = (char)(recordIndex + 1);
+					cell.Tag = c.ToString() + records[recordIndex].HighWpmSnippet;
 					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].HighWpm}");
 				}
 				else if (col == MinWpmCol)
 				{
-					toolTip.Content = records[recordIndex].LowWpmText;
+					toolTip.Content = records[recordIndex].LowWpmSnippet;
 					cell.Content = records[recordIndex].LowWpm.ToString();
-					cell.Tag = "1" + records[recordIndex].LowWpmText;
+					char c = (char)(recordIndex + 1);
+					cell.Tag = c.ToString() + records[recordIndex].LowWpmSnippet;
 					cell.SetValue(AutomationProperties.NameProperty, $"{records[recordIndex].LowWpm}");
 				}
 				ToolTipService.SetToolTip(cell, toolTip);
@@ -270,14 +278,23 @@ namespace TyperUWP
 		}
 	}
 
-	public class TextTitleClickEventArgs : EventArgs
+	public class RecordsLinkClickEventArgs : EventArgs
 	{
 		public string TextOrTitle { get; set; }
-		public bool TempSession { get; set; }
-		public TextTitleClickEventArgs(string textOrTitle, bool tempSession) 
+		public bool MomentaryWpmClicked { get; set; }
+		public int HighWpm;
+		public string HighWpmSnippet;
+		public int LowWpm;
+		public string LowWpmSnippet;
+
+		public RecordsLinkClickEventArgs(string textOrTitle, bool momentaryWpmClicked, int highWpm = 0, string highWpmSnippet = null, int lowWpm = 0, string lowWpmSnippet = null)
 		{
 			TextOrTitle = textOrTitle;
-			TempSession = tempSession;
+			MomentaryWpmClicked = momentaryWpmClicked;
+			HighWpm = highWpm;
+			HighWpmSnippet = highWpmSnippet;
+			LowWpm = lowWpm;
+			LowWpmSnippet = lowWpmSnippet;
 		}
 	}
 }
