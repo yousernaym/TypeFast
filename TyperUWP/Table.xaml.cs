@@ -144,13 +144,13 @@ namespace TyperUWP
 					content.Children.Add(tb);
 					btn.Content = content;
 
-					btn.Padding = new Thickness(3, 0, 3, 2);
+					btn.Padding = new Thickness(4, 0, 4, 2);
 					btn.Background = new SolidColorBrush(Colors.Transparent);
 					//btn.BorderThickness = new Thickness(2);
 					//btn.BorderBrush = nonPrimarySortBorderBrush;
 					btn.HorizontalAlignment = HorizontalAlignment.Stretch;
 					btn.VerticalAlignment = VerticalAlignment.Stretch;
-					btn.FontStyle = FontStyle.Italic;
+					//btn.FontStyle = FontStyle.Italic;
 					btn.FontSize = fontSize;
 					btn.Tag = col;
 					btn.Click += SortBtn_Click;
@@ -161,10 +161,10 @@ namespace TyperUWP
 				{
 					TextBlock tBlock = new TextBlock();
 					tBlock.Text = str;
-					tBlock.Padding = new Thickness(3, 0, 3, 0);
+					tBlock.Padding = new Thickness(2, 0, 2, 0);
 					tBlock.HorizontalAlignment = HorizontalAlignment.Center;
 					tBlock.VerticalAlignment = VerticalAlignment.Center;
-					tBlock.FontStyle = FontStyle.Italic;
+					//tBlock.FontStyle = FontStyle.Italic;
 					tBlock.FontSize = fontSize;
 					addCell(tBlock);
 				}
@@ -231,7 +231,7 @@ namespace TyperUWP
 					sortBtn.BorderThickness = new Thickness(2);
 				if (i == primarySortCol)
 				{
-					cell.Background = new SolidColorBrush(Color.FromArgb(255, 5, 10, 60));
+					cell.Background = new SolidColorBrush(Color.FromArgb(255, 5, 10, 50));
 					sortBtn.BorderBrush = primarySortBorderBrush;
 					headerCells[i].SortDirIcon.Visibility = Visibility.Visible;
 				}

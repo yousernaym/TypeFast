@@ -15,10 +15,10 @@
 			<GradientStop Color="#406080" Offset="1.0" />
 		</LinearGradientBrush>
 		<LinearGradientBrush x:Key="nonPrimarySortBorderBrush" StartPoint="0,0" EndPoint="1,1">
-			<GradientStop Color="#051030" Offset="0.0" />
-			<GradientStop Color="#406080" Offset="1.0" />
+			<GradientStop Color="#030b40" Offset="0.0" />
+			<GradientStop Color="#051050" Offset="1.0" />
 		</LinearGradientBrush>
-		<SolidColorBrush x:Key="primarySortBorderBrush" Color="#051030"/>
+		<SolidColorBrush x:Key="primarySortBorderBrush" Color="#051050"/>
 	</UserControl.Resources>
 		
 	<!--<Grid x:Name="grid" BorderBrush="DarkGray" BorderThickness="1">-->
