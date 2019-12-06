@@ -119,10 +119,13 @@ namespace TyperUWP
 			string tag = (string)((HyperlinkButton)sender).Tag;
 			string textOrTitle = tag.Substring(1);
 			int recordsIndex = tag[0] - 1;
-			bool momentaryWpmSession = recordsIndex >= 0;
-			Record record = null;
-			if (momentaryWpmSession)
-				record = records[recordsIndex];
+			bool momentaryWpmSession = true;
+			if (recordsIndex < 0)
+			{
+				recordsIndex = 0; //Just to avoid out of range exception. The data at the index is irrelevant if momentaryWpmSession is false.
+				momentaryWpmSession = false;
+			}
+			var record = records[recordsIndex];
 			TextTitleClick?.Invoke(this, new RecordsLinkClickEventArgs(textOrTitle, momentaryWpmSession, record.HighWpm, record.HighWpmSnippet, record.LowWpm, record.LowWpmSnippet));
 		}
 
