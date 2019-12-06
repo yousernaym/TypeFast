@@ -45,7 +45,7 @@ namespace TyperUWP
 			addRow(shortcutsTable, "Ctrl + D", "Delete the currently selected text.");
 		}
 
-		public void addRow(Table table, params string[] cellTexts)
+		static public void addRow(Table table, params string[] cellTexts)
 		{
 			int rowNumber = table.NumRows;
 			table.addRow();

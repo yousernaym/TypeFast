@@ -1,0 +1,22 @@
+﻿[*.cs]
+
+# CA1062: In externally visible method 'void App.OnLaunched(LaunchActivatedEventArgs e)', validate parameter 'e' is non-null before using it. If appropriate, throw an ArgumentNullException when the argument is null or add a Code Contract precondition asserting non-null argument.
+dotnet_diagnostic.CA1062.severity = none
+
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = none
+
+# CA2007: Consider calling ConfigureAwait on the awaited task
+dotnet_diagnostic.CA2007.severity = none
+
+# CA1801: Parameter e of method TextBox_LostFocus is never used. Remove the parameter or use it in the method body.
+dotnet_diagnostic.CA1801.severity = none
+
+# CA1305: The behavior of 'string.Format(string, object)' could vary based on the current user's locale settings. Replace this call in 'TextDialog.updateCharCountText()' with a call to 'string.Format(IFormatProvider, string, params object[])'.
+dotnet_diagnostic.CA1305.severity = suggestion
+
+# CA1001: Type 'MainPage' owns disposable field(s) 'audio' but is not disposable
+dotnet_diagnostic.CA1001.severity = none
+
+# CA1063: Modify 'Audio.Dispose' so that it calls Dispose(true), then calls GC.SuppressFinalize on the current object instance ('this' or 'Me' in Visual Basic), and then returns.
+dotnet_diagnostic.CA1063.severity = none

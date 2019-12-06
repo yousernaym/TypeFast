@@ -130,7 +130,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Audio.cs" />
+    <Compile Include="TypingAudio.cs" />
     <Compile Include="ComboBoxEx.xaml.cs">
       <DependentUpon>ComboBoxEx.xaml</DependentUpon>
     </Compile>
@@ -171,6 +171,9 @@
       <Link>Assets\Texts\charmap.txt</Link>
     </Content>
     <Content Include="todo.txt" />
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="Package.StoreAssociation.xml" />
     <Content Include="Assets\audio\Backspace.wav" />
     <Content Include="Assets\audio\Finished.wav" />

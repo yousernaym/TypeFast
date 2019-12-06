@@ -36,7 +36,6 @@ namespace TyperUWP
 			TimeCol = 4,
 			TextCol = 5;
 				
-		TextBlock[,] gridCells = new TextBlock[Columns, Rows];
 		Record.PrimarySortType primarySort;
 		Texts texts;
 
@@ -158,7 +157,7 @@ namespace TyperUWP
 			syncGrid();
 		}
 
-		bool showSecondFractions(TimeSpan time)
+		static bool showSecondFractions(TimeSpan time)
 		{
 			return time.TotalSeconds < 10;
 		}
@@ -251,7 +250,7 @@ namespace TyperUWP
 			}
 		}
 
-		Record.PrimarySortType columnToSortType(int col)
+		static Record.PrimarySortType columnToSortType(int col)
 		{
 			Record.PrimarySortType primarySortType;
 			if (col == WpmCol)
@@ -261,7 +260,7 @@ namespace TyperUWP
 			else if (col == MinWpmCol)
 				primarySortType = Record.PrimarySortType.MinWpm;
 			else
-				throw new ArgumentException("Parameter col must mathc element of Record.PrimarySortType", "col");
+				throw new ArgumentException("Parameter must match element of Record.PrimarySortType", nameof(col));
 			return primarySortType;
 		}
 
@@ -285,10 +284,10 @@ namespace TyperUWP
 	{
 		public string TextOrTitle { get; set; }
 		public bool MomentaryWpmClicked { get; set; }
-		public int HighWpm;
-		public string HighWpmSnippet;
-		public int LowWpm;
-		public string LowWpmSnippet;
+		public int HighWpm { get; set; }
+		public string HighWpmSnippet { get; set; }
+		public int LowWpm { get; set; }
+		public string LowWpmSnippet { get; set; }
 
 		public RecordsLinkClickEventArgs(string textOrTitle, bool momentaryWpmClicked, int highWpm = 0, string highWpmSnippet = null, int lowWpm = 0, string lowWpmSnippet = null)
 		{

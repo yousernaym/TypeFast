@@ -89,7 +89,7 @@ namespace TyperUWP
 		Brush rowBackground2 = new SolidColorBrush(Color.FromArgb(255, 20, 20, 20));
 		Brush headerBackground = new SolidColorBrush((Color)Application.Current.Resources["PrimaryColor"]);
 		Brush verticalLineBrush = new SolidColorBrush(Color.FromArgb(50, 255, 255, 255));
-		Brush sortColVerticalLineBrush = new SolidColorBrush(Color.FromArgb(150, 255, 255, 255));
+		//Brush sortColVerticalLineBrush = new SolidColorBrush(Color.FromArgb(150, 255, 255, 255));
 
 		HeaderCell[] headerCells;
 		public int NumCols => headerCells.Length;
@@ -322,8 +322,8 @@ namespace TyperUWP
 
 	public class SortEventArgs
 	{
-		public bool? Ascend;
-		public int Column;
+		public bool? Ascend { get; set; }
+		public int Column { get; set; }
 	}
 
 	class HeaderCell

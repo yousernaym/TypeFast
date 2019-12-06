@@ -126,7 +126,7 @@ namespace TyperUWP
 
 		private void updateCharCountText()
 		{
-			string remainingChars = String.Format("{0:n0}", textTb.MaxLength - textTb.Text.Length).Replace(NumberFormatInfo.CurrentInfo.NumberGroupSeparator, " ");
+			string remainingChars = String.Format("{0:n0}", textTb.MaxLength - textTb.Text.Length).Replace(NumberFormatInfo.CurrentInfo.NumberGroupSeparator, " ", StringComparison.Ordinal);
 			textCharCount.Text = $"{remainingChars} characters remaining";
 		}
 

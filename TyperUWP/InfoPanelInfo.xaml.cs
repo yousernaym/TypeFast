@@ -36,13 +36,13 @@ namespace TyperUWP
 			set => labelTbl.Text = value;
 		}
 		
-		string value = "";
-		public string Value
+		string info = "";
+		public string Info
 		{
-			get => value;
+			get => info;
 			set
 			{
-				this.value = value;
+				info = value;
 				setText();
 			}
 		}
@@ -92,12 +92,12 @@ namespace TyperUWP
 			if (isHyper)
 			{
 				textRun.Text = "";
-				linkRun.Text = value;
-				link.IsTabStop = !string.IsNullOrEmpty(value);
+				linkRun.Text = info;
+				link.IsTabStop = !string.IsNullOrEmpty(info);
 			}
 			else
 			{
-				textRun.Text = value;
+				textRun.Text = info;
 				linkRun.Text = "";
 				link.IsTabStop = false;
 			}

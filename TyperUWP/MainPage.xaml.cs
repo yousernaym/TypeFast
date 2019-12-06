@@ -40,7 +40,7 @@ namespace TyperUWP
 	public sealed partial class MainPage : Page
 	{
 		enum TextSelection { Title, Temp, MomentaryWpm };
-		readonly string RoamingDataDir = ApplicationData.Current.RoamingFolder.Path;
+		//readonly string RoamingDataDir = ApplicationData.Current.RoamingFolder.Path;
 		readonly string LocalDataDir = ApplicationData.Current.LocalFolder.Path;
 		readonly string SettingsPath;
 		const string TextsAssetsFolder = "texts/";
@@ -52,10 +52,10 @@ namespace TyperUWP
 			set => typingSessionView.Session = value;
 		}
 		Texts texts;
-		public bool DialogOpen = false;
+		public bool DialogOpen { get; set; } = false;
 		private bool clipboardChanged = true;
 		AccessibilitySettings accessibilitySettings;
-		Audio audio = new Audio();
+		TypingAudio audio = new TypingAudio();
 		
 		public MainPage()
 		{
@@ -122,7 +122,7 @@ namespace TyperUWP
 			}
 		}
 
-		async Task<Stream> getResourceStream(string path)
+		static async Task<Stream> getResourceStream(string path)
 		{
 			var uri = new Uri("ms-appx:///Assets/"+path);
 			var sampleFile = await StorageFile.GetFileFromApplicationUriAsync(uri);
@@ -229,7 +229,7 @@ namespace TyperUWP
 
 		private void Text_Finished(object sender, EventArgs e)
 		{
-			audio.play(Audio.Type.Finished);
+			audio.play(TypingAudio.Type.Finished);
 			if (texts.Current != null && !string.IsNullOrEmpty(texts.Current.Title))
 			{
 				texts.addRecord(typingSession);
@@ -269,9 +269,9 @@ namespace TyperUWP
 			typingSession.updateMomentaryWpm();
 
 			timeText.Content = "Time\n" + typingSession.RemainingTimeString;
-			lowWpmText.Value = typingSession.LowWpm.Wpm > -1 ? typingSession.LowWpm.Wpm.ToString() : "";
+			lowWpmText.Info = typingSession.LowWpm.Wpm > -1 ? typingSession.LowWpm.Wpm.ToString() : "";
 			lowWpmText.ValueToolTip = typingSession.LowWpm.TextSnippet;
-			wpmText.Value = typingSession.Wpm.ToString();
+			wpmText.Info = typingSession.Wpm.ToString();
 
 			if (typingSession.IsRunning)
 				timeText.Background = new SolidColorBrush(Color.FromArgb(255, 0, 80, 0));
@@ -291,7 +291,7 @@ namespace TyperUWP
 			selectText(typingSession.HighWpm.TextSnippet, TextSelection.MomentaryWpm);
 		}
 
-		bool isKeyDown(VirtualKey key)
+		static bool isKeyDown(VirtualKey key)
 		{
 			var state = CoreWindow.GetForCurrentThread().GetAsyncKeyState(key);
 			return (state & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
@@ -322,26 +322,26 @@ namespace TyperUWP
 			typingSessionView.draw();
 			updateNonRealTimeInfo();
 			if (result == TypingSession.KeyPressResult.Incorrect && typingSession.ErrorAudio)
-				audio.play(Audio.Type.Error);
+				audio.play(TypingAudio.Type.Error);
 			else if (args.KeyCode == TypingSession.KeyCode_Space && typingSession.TypingAudio)
-				audio.play(Audio.Type.Space);
+				audio.play(TypingAudio.Type.Space);
 			else if (result == TypingSession.KeyPressResult.DeleteIncorrect && typingSession.ErrorAudio)
-				audio.play(Audio.Type.Fix);
+				audio.play(TypingAudio.Type.Fix);
 			else if ((result == TypingSession.KeyPressResult.DeleteCorrect || result == TypingSession.KeyPressResult.DeleteIncorrect) && typingSession.TypingAudio)
-				audio.play(Audio.Type.Backspace);
+				audio.play(TypingAudio.Type.Backspace);
 			else if (typingSession.TypingAudio)
-				audio.play(Audio.Type.Typing);
+				audio.play(TypingAudio.Type.Typing);
 		}
 
 		private void updateNonRealTimeInfo()
 		{
-			correctCharsText.Value = typingSession.CorrectChars.ToString();
-			incorrectCharsText.Value = typingSession.IncorrectChars.ToString();
-			fixedCharsText.Value = typingSession.FixedChars.ToString();
-			highWpmText.Value = typingSession.HighWpm.Wpm > -1 ? typingSession.HighWpm.Wpm.ToString() : "";
+			correctCharsText.Info = typingSession.CorrectChars.ToString();
+			incorrectCharsText.Info = typingSession.IncorrectChars.ToString();
+			fixedCharsText.Info = typingSession.FixedChars.ToString();
+			highWpmText.Info = typingSession.HighWpm.Wpm > -1 ? typingSession.HighWpm.Wpm.ToString() : "";
 			highWpmText.ValueToolTip = typingSession.HighWpm.TextSnippet;
 			accuracyText.Foreground = RecordsView.getAccuracyCol(typingSession.Accuracy);
-			accuracyText.Value = typingSession.Accuracy.ToString("0.0") + " %";
+			accuracyText.Info = typingSession.Accuracy.ToString("0.0") + " %";
 		}
 
 		private void RestartBtn_Click(object sender, RoutedEventArgs e)
@@ -460,12 +460,12 @@ namespace TyperUWP
 			timeLimitTb.SelectionLength = 1;
 		}
 
-		public string timeToString(TimeSpan timeSpan)
+		static public string timeToString(TimeSpan timeSpan)
 		{
 			return timeSpan.Minutes.ToString("d2") + ":" + timeSpan.Seconds.ToString("d2");
 		}
 
-		public TimeSpan stringToTime(string timeStr)
+		static public TimeSpan stringToTime(string timeStr)
 		{
 			var timeSpan = new TimeSpan(0, int.Parse(timeStr.Substring(0, 2)), int.Parse(timeStr.Substring(3, 2)));
 			return timeSpan;
@@ -671,7 +671,7 @@ namespace TyperUWP
 						{
 							texts.importUserData(stream, true);
 						}
-						catch
+						catch (SerializationException)
 						{
 							var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Couldn't load file." }.ShowAsync();
 							return;
@@ -694,7 +694,7 @@ namespace TyperUWP
             restorePresetsFlyout.ShowAt(resetButtonsPanel);
         }
 
-		async Task<Stream> getPresetsStream()
+		static async Task<Stream> getPresetsStream()
 		{
 			return await getResourceStream(TextsAssetsFolder + "presets.tft");
 		}
@@ -711,7 +711,7 @@ namespace TyperUWP
 		private void TextsCombo_SelectionSubmitted(object sender, EventArgs args)
 		{
 			string title = (string)((ComboBoxEx)sender).SelectedItem;
-			if (title == "")
+			if (title.Length == 0)
 			{
 				focusOnTyping();
 				return;

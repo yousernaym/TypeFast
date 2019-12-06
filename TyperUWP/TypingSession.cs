@@ -151,7 +151,7 @@ namespace TyperUWP
 			TypingAudio = true;
 		}
 
-		public TypingSession(SerializationInfo info, StreamingContext context) : base(info, context)
+		protected TypingSession(SerializationInfo info, StreamingContext context) : base(info, context)
 		{
 			foreach (var entry in info)
 			{
@@ -216,18 +216,18 @@ namespace TyperUWP
 			}
 		}
 
-        public TypingSessionView(Panel _textPanel, StackPanel writtenTextPanel, TextBlockEx _currentCharControl, TextBlock _unwrittenTextControl, TypingSession session)
+        public TypingSessionView(Panel textPanel, StackPanel writtenTextPanel, TextBlockEx currentCharControl, TextBlock unwrittenTextControl, TypingSession session)
 		{
 			writtenTextControls = new TextBlockEx[TypingSession.NumCharsFromCenter];
-			textPanel = _textPanel;
+			this.textPanel = textPanel;
 			for (int i = writtenTextControls.Length - 1; i >= 0; i--)
 			{
 				writtenTextControls[i] = new TextBlockEx();
 				writtenTextPanel.Children.Add(writtenTextControls[i]);
 			}
 			
-			currentCharControl = _currentCharControl;
-            unwrittenTextControl = _unwrittenTextControl;
+			this.currentCharControl = currentCharControl;
+            this.unwrittenTextControl = unwrittenTextControl;
 			Session = session;
 		}
 

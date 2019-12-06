@@ -13,7 +13,7 @@ using Windows.Storage;
 
 namespace TyperUWP
 {
-	public class Audio : IDisposable
+	public class TypingAudio : IDisposable
 	{
 		public enum Type { Fix, Error, Typing, Space, Backspace, Finished};
 		AudioGraph audioGraph = null;
@@ -54,6 +54,7 @@ namespace TyperUWP
 				deviceOutputNode.Dispose();
 			if (audioGraph != null)
 				audioGraph.Dispose();
+			GC.SuppressFinalize(this);
 		}
 		public async Task init()
 		{
@@ -145,7 +146,7 @@ namespace TyperUWP
 				playNode(finishedNode);
 		}
 
-		void playNode(AudioFileInputNode node)
+		static void playNode(AudioFileInputNode node)
 		{
 			if (node == null)
 				return;
