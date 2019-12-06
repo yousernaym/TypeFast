@@ -27,7 +27,6 @@ namespace TyperLib
 		int maxWordLength;
 
 		public TextEntry StartText { get; private set; }
-		public bool Shuffle { get; set; } = false;
 		public TimeSpan TimeLimit { get; set; } = new TimeSpan(0, 1, 0);
 
 		public TextEntry TextEntrySource { get; private set; }
@@ -230,17 +229,14 @@ namespace TyperLib
 			foreach (var entry in info)
 			{
 				if (entry.Name == "startText")
-				{
 					StartText = (TextEntry)entry.Value;
-					Shuffle = StartText == null;
-				}
 				else if (entry.Name == "timeLimit")
 					TimeLimit = (TimeSpan)entry.Value;
 			}
 		}
 		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("startText", TextEntrySource);
+			info.AddValue("startText", MomentaryWpmSession ? null : TextEntrySource);
 			info.AddValue("timeLimit", TimeLimit);
 		}
 
