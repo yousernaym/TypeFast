@@ -673,7 +673,7 @@ namespace TyperUWP
 						}
 						catch (SerializationException)
 						{
-							var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Couldn't load file." }.ShowAsync();
+							var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Invalid file format. File could not be loaded." }.ShowAsync();
 							return;
 						}
 					}

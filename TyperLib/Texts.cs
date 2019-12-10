@@ -107,7 +107,7 @@ namespace TyperLib
 				catch (IOException ex)
 				{
 					if (stopwatch.ElapsedMilliseconds > 2000)
-						throw ex;
+						return;
 				}
 			}
 		}
@@ -308,7 +308,6 @@ namespace TyperLib
 		{
 			loadUserData(stream, importRecords);
 			saveUserData();
-
 			//Update text of current selection in case it was altered
 			if (Current != null && containsTitle(Current.Title))
 				select(Current.Title);
