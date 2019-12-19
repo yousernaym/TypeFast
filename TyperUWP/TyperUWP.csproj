@@ -130,7 +130,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Screenshot.cs" />
     <Compile Include="TypingAudio.cs" />
     <Compile Include="ComboBoxEx.xaml.cs">
       <DependentUpon>ComboBoxEx.xaml</DependentUpon>
