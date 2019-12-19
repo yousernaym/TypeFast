@@ -105,12 +105,12 @@
 								</MenuFlyoutItem.KeyboardAccelerators>
 							</MenuFlyoutItem>
 							<MenuFlyoutSeparator />
-							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import texts/records..." Click="TextsOptionsImport_Click">
+							<MenuFlyoutItem x:Name="textsOptionsImport" Text="Import texts/stats..." Click="TextsOptionsImport_Click">
 								<MenuFlyoutItem.KeyboardAccelerators>
 									<KeyboardAccelerator Modifiers="Control" Key="O"/>
 								</MenuFlyoutItem.KeyboardAccelerators>
 							</MenuFlyoutItem>
-							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export texts/records..." Click="TextsOptionsExport_Click">
+							<MenuFlyoutItem x:Name="textsOptionsExport" Text="Export texts/stats..." Click="TextsOptionsExport_Click">
 								<MenuFlyoutItem.KeyboardAccelerators>
 									<KeyboardAccelerator Modifiers="Control" Key="S"/>
 								</MenuFlyoutItem.KeyboardAccelerators>

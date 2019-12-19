@@ -136,7 +136,7 @@ namespace TyperUWP
 
 		async private void clearBtn_Click(object sender, RoutedEventArgs e)
 		{
-			var cd = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to delete all records?" };
+			var cd = new ContentDialog { PrimaryButtonText = "Yes", CloseButtonText = "No", Content = "Are you sure you want to clear all stats?" };
 			ContentDialogResult result = await cd.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{

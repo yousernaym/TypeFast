@@ -104,7 +104,7 @@ namespace TyperLib
 						saveUserData(stream, userData);
 					return;
 				}
-				catch (IOException ex)
+				catch (IOException)
 				{
 					if (stopwatch.ElapsedMilliseconds > 2000)
 						return;

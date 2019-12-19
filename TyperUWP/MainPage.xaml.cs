@@ -29,6 +29,8 @@ using System.Runtime.Serialization;
 using Windows.ApplicationModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Automation;
+using Windows.Graphics.Capture;
+using Windows.UI.WindowManagement;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -60,7 +62,7 @@ namespace TyperUWP
 		public MainPage()
 		{
 			this.InitializeComponent();
-			
+						
 			//var importIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEA52" };
 			//textsOptionsImport.Icon = importIcon;
 			//var exportIcon = new FontIcon() { FontFamily = new FontFamily("Segoe MDL2 Assets"), Glyph = "\uEDE2" };
@@ -102,6 +104,12 @@ namespace TyperUWP
 			accessibilitySettings = new AccessibilitySettings();
 			accessibilitySettings.HighContrastChanged += AccessibilitySettings_HighContrastChanged;
 			updateAccessibilitySettings();
+
+			//if (GraphicsCaptureSession.IsSupported())
+			//{
+			//	var screenShot = new Screenshot();
+			//	await screenShot.StartCaptureAsync();
+			//}
 		}
 
 		private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -637,8 +645,8 @@ namespace TyperUWP
 				return;
 			DialogOpen = true;
 			var fsp = new FileSavePicker();
-			fsp.FileTypeChoices.Add("Type Fast texts", new List<string>() { ".tft" });
-			fsp.SuggestedFileName = "My texts";
+			fsp.FileTypeChoices.Add("Type Fast state", new List<string>() { ".tfs" });
+			fsp.SuggestedFileName = "";
 			StorageFile file = await fsp.PickSaveFileAsync();
 			if (file != null)
 			{
@@ -661,7 +669,7 @@ namespace TyperUWP
 			{
 				var fop = new FileOpenPicker();
 				//fop.FileTypeFilter.Add("*");
-				fop.FileTypeFilter.Add(".tft");
+				fop.FileTypeFilter.Add(".tfs");
 				StorageFile file = await fop.PickSingleFileAsync();
 				if (file != null)
 				{
@@ -696,7 +704,7 @@ namespace TyperUWP
 
 		static async Task<Stream> getPresetsStream()
 		{
-			return await getResourceStream(TextsAssetsFolder + "presets.tft");
+			return await getResourceStream(TextsAssetsFolder + "presets.tfs");
 		}
 
 		async Task loadPresets()
@@ -835,4 +843,5 @@ namespace TyperUWP
 			return timeText;
 		}
 	}
+
 }

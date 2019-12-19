@@ -17,7 +17,7 @@
 					<CheckBox x:Name="topTextsCb" MinWidth="95" Margin="0 0 25 0" Content="Top texts" Click="TopTexts_Click"/>
 					<CheckBox x:Name="bottomTextsCb" Content="Bottom texts" Click="BottomTexts_Click"/>
 				</StackPanel>
-				<Button x:Name="clearBtn" RelativePanel.AlignRightWithPanel="True" Content="Clear records" CornerRadius="0" Click="clearBtn_Click"/>
+				<Button x:Name="clearBtn" RelativePanel.AlignRightWithPanel="True" Content="Clear stats" CornerRadius="0" Click="clearBtn_Click"/>
 			</RelativePanel>
 			<local:Table x:Name="table" HorizontalAlignment="Center"/>
 			<!--<controls.DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70" OffsetX="5.0" OffsetY="5.0" Color="Black">

@@ -130,6 +130,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Screenshot.cs" />
     <Compile Include="TypingAudio.cs" />
     <Compile Include="ComboBoxEx.xaml.cs">
       <DependentUpon>ComboBoxEx.xaml</DependentUpon>
@@ -246,7 +247,7 @@
     <Content Include="Assets\Logo\Wide310x150Logo.scale-200.jpg" />
     <Content Include="Assets\Logo\Wide310x150Logo.scale-400.jpg" />
     <Content Include="Assets\Texts\bible_EN.xml" />
-    <Content Include="Assets\Texts\presets.tft" />
+    <Content Include="Assets\Texts\presets.tfs" />
     <None Include="TyperUWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
