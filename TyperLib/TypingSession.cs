@@ -381,9 +381,19 @@ namespace TyperLib
 			else if (text[currentCharIndex] == ' ')
 			{
 				string word = "";
+				float wordStartTime = -1, wordStopTime = -1;
 				foreach (var c in WrittenChars.TakeWhile((c) => c.Char != ' '))
+				{
+					if (!c.Correct)
+						return;
 					word = c.Char + word;
-				wordStats.addWord(word, (float)currentWordStopWatch.Elapsed.TotalMinutes);
+					wordStartTime = c.SecondsFromStart;
+					if (wordStopTime == -1)
+						wordStopTime = c.SecondsFromStart;
+				}
+				if (word.Length < 2)
+					return;
+				wordStats.addWord(word, (wordStopTime - wordStartTime) / 60);
 			}
 		}
 
