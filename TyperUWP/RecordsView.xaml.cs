@@ -142,7 +142,7 @@ namespace TyperUWP
 			ContentDialogResult result = await cd.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{
-				texts.clearRecords();
+				texts.clearStats();
 				syncData();
 			}
 		}

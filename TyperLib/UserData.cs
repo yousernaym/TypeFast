@@ -12,8 +12,8 @@ namespace TyperLib
 		internal int SyncedWithVersion { get; set; }
 		internal TextEntries TextEntries { get; set; } = new TextEntries();
 		internal Records Records { get; set; } = new Records();
-		internal GlobalStats GlobalStats;
-		static readonly public Type[] SerializeTypes = new Type[] { typeof(TextEntry), typeof(Record) };
+		internal GlobalStats GlobalStats = new GlobalStats();
+		static readonly public Type[] SerializeTypes = new Type[] { typeof(TextEntry), typeof(Record), typeof(TyperLib.GlobalStats.WordStats), typeof(TyperLib.GlobalStats) };
 
 		internal UserData()
 		{
@@ -29,6 +29,8 @@ namespace TyperLib
 						TextEntries.add((TextEntry)entry.Value);
 				else if (entry.Name.StartsWith("record_"))
 						Records.Add((Record)entry.Value);
+				else if (entry.Name == "globalStats")
+					GlobalStats = (GlobalStats)entry.Value;
 			}
 		}
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -39,6 +41,7 @@ namespace TyperLib
 				info.AddValue("textEntry_"+textEntry.Title, textEntry);
 			for (int i = 0; i < Records.Count; i++)
 				info.AddValue("record_"+i, Records[i]);
+			info.AddValue("globalStats", GlobalStats);
 		}
 	}
 }

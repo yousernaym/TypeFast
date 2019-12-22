@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using TyperLib;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.ViewManagement;
@@ -19,7 +20,7 @@ namespace TyperUWP
 	[Serializable]
 	public class TypingSession : TyperLib.TypingSession, ISerializable
 	{
-		public static readonly Type[] SerializeTypes = new Type[] { typeof(Color), typeof(TyperLib.TextEntry), typeof(TyperLib.GlobalStats.WordStats), typeof(TyperLib.GlobalStats) };
+		public static readonly Type[] SerializeTypes = new Type[] { typeof(Color), typeof(TyperLib.TextEntry) };
 		public TypingSessionView View { get; set; }
 		public SolidColorBrush BackgroundBrush { get; private set; }
 		public Color Background

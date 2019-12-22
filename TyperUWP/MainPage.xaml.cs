@@ -101,7 +101,7 @@ namespace TyperUWP
 				texts = new Texts(LocalDataDir, presetsStream);
 			textsCombo.ItemSource = texts.Titles;
 			await initTypingSession();
-
+			
 			accessibilitySettings = new AccessibilitySettings();
 			accessibilitySettings.HighContrastChanged += AccessibilitySettings_HighContrastChanged;
 			updateAccessibilitySettings();
@@ -185,6 +185,8 @@ namespace TyperUWP
 
 		async private Task initTypingSession()
 		{
+			typingSession.Texts = texts;
+
 			//Invoke the ColorChanged events explicitly, because they won't be invoked if a session color is set to white since that's the default picker color.
 			TextColorPicker_ColorChanged(null, null);
 			TextBkgColorPicker_ColorChanged(null, null);
@@ -202,12 +204,16 @@ namespace TyperUWP
 			//Load char mapping file
 			using (var charMapStream = await getResourceStream(TextsAssetsFolder + "charmap.txt"))
 				typingSession.loadCharMap(charMapStream);
-			
+						
 			//Restore text from last session 
 			if (typingSession.StartText == null)
 			{
-				//No info saved about text from last session, so pick random text. Should only happen first time app starts.
-				selectText(null, TextSelection.Title);
+				//No info saved about text from last session, so pick first text in list if it exists, otherwise pick random (but it should always exist). Should only happen first time app starts.
+				string startText = "100 most common words";
+				if (texts.containsTitle(startText))
+					selectText(startText, TextSelection.Title);
+				else
+					selectText(null, TextSelection.Title);
 			}
 			else
 			{
@@ -218,6 +224,7 @@ namespace TyperUWP
 				else
 					selectText(null, TextSelection.Title); //Text list no longer contains the text from last session for some reason, so select random text.
 			}
+			
 		}			
 
 		private void DataChangeHandler(ApplicationData sender, object args)

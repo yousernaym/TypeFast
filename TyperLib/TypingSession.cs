@@ -78,6 +78,12 @@ namespace TyperLib
 				{
 					int count = int.Parse(match.Value);
 					rndElements = GlobalStats.getSlowestWords(count);
+					if (rndElements.Length == 0)
+					{
+						//No words have been typed yet
+						rndElements = null;
+						text = "";
+					}
 				}
 				if (rndElements != null)
 				{
@@ -217,7 +223,8 @@ namespace TyperLib
 		Dictionary<string, string[]> symbolMap = new Dictionary<string, string[]>();
 		Dictionary<string, string[]> letterMap = new Dictionary<string, string[]>();
 		Stopwatch currentWordStopWatch = new Stopwatch();
-		public GlobalStats GlobalStats;
+		public GlobalStats GlobalStats => Texts.GlobalStats;
+		public Texts Texts;
 		bool bUpdateWordStats;
 
 		public Bible Bible { get; set; }
@@ -242,15 +249,12 @@ namespace TyperLib
 					StartText = (TextEntry)entry.Value;
 				else if (entry.Name == "timeLimit")
 					TimeLimit = (TimeSpan)entry.Value;
-				else if (entry.Name == "wordStats")
-					GlobalStats = (GlobalStats)entry.Value;
 			}
 		}
 		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("startText", MomentaryWpmSession ? null : TextEntrySource);
 			info.AddValue("timeLimit", TimeLimit);
-			info.AddValue("wordStats", GlobalStats);
 		}
 
 		public void loadCharMap(Stream stream)

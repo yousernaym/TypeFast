@@ -99,5 +99,11 @@ namespace TyperLib
 			});
 			return slowSorted.Select((x) => x.Key).Take(count).ToArray();
 		}
+
+		public void clear()
+		{
+			words.Clear();
+			TotalWords = 0;
+		}
 	}
 }

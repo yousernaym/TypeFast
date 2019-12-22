@@ -37,6 +37,8 @@ namespace TyperLib
 			}
 		}
 
+		public GlobalStats GlobalStats => userData.GlobalStats;
+
 		public Texts(string userDataDir, Stream presetsStream)
 		{
 			if (userDataDir != null)
@@ -54,6 +56,7 @@ namespace TyperLib
 			catch (Exception ex) when(ex is SerializationException || ex is XmlException)
 			{
 				//Ignore corrupt file. A new will be created.
+				userDataExists = false;
 			}
 			loadUserData(presetsStream, false, userDataExists);
 		}
@@ -68,7 +71,7 @@ namespace TyperLib
 			}
 		}
 
-		void loadUserData(Stream stream, bool loadRecords, bool onlyAddNewTexts = false)
+		void loadUserData(Stream stream, bool loadStats, bool onlyAddNewTexts = false)
 		{
 			if (stream == null)
 				return;
@@ -84,7 +87,7 @@ namespace TyperLib
 					continue;
 				userData.TextEntries.add(text);
 			}
-			if (loadRecords)
+			if (loadStats)
 			{
 				foreach (var rec in data.Records)
 				{
@@ -92,6 +95,7 @@ namespace TyperLib
 						continue;
 					addRecord(rec, false);
 				}
+				userData.GlobalStats = data.GlobalStats;
 			}
 			userData.SyncedWithVersion = data.SyncedWithVersion;
 		}
@@ -173,9 +177,10 @@ namespace TyperLib
 			saveUserData();
 		}
 
-		public void clearRecords()
+		public void clearStats()
 		{
 			userData.Records.Clear();
+			userData.GlobalStats.clear();
 			saveUserData();
 		}
 
