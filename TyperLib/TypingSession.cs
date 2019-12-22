@@ -44,6 +44,7 @@ namespace TyperLib
 				rndElements = null;
 				minWordLength = maxWordLength = 1;
 				Match match;
+				bUpdateWordStats = true;
 				if ((match = Regex.Match(text, "__rnd [0-9]-?[0-9]?__")).Success)
 				{
 					if (int.TryParse(text[6].ToString(), out minWordLength))
@@ -55,11 +56,12 @@ namespace TyperLib
 						text = text.Replace("\n", "");
 						text = text.Replace("\r", "");
 						rndElements = text.Select(x => x.ToString()).ToArray(); //Create array with all characters in the string
+						bUpdateWordStats = false;
 					}
 				}
 				else if (text.StartsWith("__rnd ws__"))
 					rndElements = text.Substring(10).Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
-				else if (text.StartsWith("__rnd br__"))
+				else if (text.StartsWith("__rnd line__"))
 					rndElements = text.Substring(10).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 				else if (text.StartsWith("__bible__"))
 				{
@@ -71,6 +73,11 @@ namespace TyperLib
 					string delim = text.Substring(7, match.Length - 3 - 7);
 					text = text.Substring(match.Length);
 					rndElements = text.Split(new string[] { delim }, StringSplitOptions.None);
+				}
+				else if ((match = Regex.Match(text, "(?<=__slowest words )([0-9])+(?=__)")).Success)
+				{
+					int count = int.Parse(match.Value);
+					rndElements = GlobalStats.getSlowestWords(count);
 				}
 				if (rndElements != null)
 				{
@@ -209,8 +216,9 @@ namespace TyperLib
 		Timer checkTimeTimer;
 		Dictionary<string, string[]> symbolMap = new Dictionary<string, string[]>();
 		Dictionary<string, string[]> letterMap = new Dictionary<string, string[]>();
-		private Stopwatch currentWordStopWatch = new Stopwatch();
-		public GlobalStats GlobalStats = new GlobalStats();
+		Stopwatch currentWordStopWatch = new Stopwatch();
+		public GlobalStats GlobalStats;
+		bool bUpdateWordStats;
 
 		public Bible Bible { get; set; }
 
@@ -373,12 +381,14 @@ namespace TyperLib
 
 		void updateWordStats()
 		{
+			if (!bUpdateWordStats)
+				return;
 			if (WrittenChars.First().Char == ' ')
 			{
 				currentWordStopWatch.Reset();
 				currentWordStopWatch.Start();
 			}
-			else if (text[currentCharIndex] == ' ')
+			else if (text.Length == currentCharIndex || text[currentCharIndex] == ' ') //Next character is space or text is finished
 			{
 				string word = "";
 				float wordStartTime = -1, wordStopTime = -1;
@@ -519,87 +529,6 @@ namespace TyperLib
 		public int Wpm { get; set; } = -1;
 		public string TextSnippet { get; set; } = "";
 		public int TotalTextLength { get; set; } = 0;
-	}
-
-	[Serializable]
-	public class GlobalStats
-	{
-		[Serializable]
-		public class WordStats
-		{
-			public int TopWpm { private set; get; }
-			public int Count { private set; get; }
-			public WordStats(int wpm)
-			{
-				TopWpm = wpm;
-				Count = 1;
-			}
-			public WordStats(SerializationInfo info, StreamingContext context)
-			{
-				foreach (var entry in info)
-				{
-					if (entry.Name == "bestWpm")
-						TopWpm = (int)entry.Value;
-					if (entry.Name == "count")
-						Count = (int)entry.Value;
-				}
-			}
-
-			virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
-			{
-				info.AddValue("bestWpm", TopWpm);
-				info.AddValue("count", Count);
-			}
-
-			public void addResult(int wpm)
-			{
-				if (TopWpm < wpm)
-					TopWpm = wpm;
-				Count++;
-			}
-		}
-		public GlobalStats()
-		{
-
-		}
-		Dictionary<string, WordStats> words = new Dictionary<string, WordStats>();
-		public int TotalWords;
-		public int UniqueWords => words.Count();
-		public int AvgTopWpm
-		{
-			get
-			{
-				int count = words.Count();
-				return count == 0 ? 0 : words.Sum((w) => w.Value.TopWpm) / words.Count();
-			}
-		}
-
-		public GlobalStats(SerializationInfo info, StreamingContext context)
-		{
-			foreach (var entry in info)
-			{
-				if (entry.Name == "words")
-					words = (Dictionary<string, WordStats>)entry.Value;
-				if (entry.Name == "totalWords")
-					TotalWords = (int)entry.Value;
-			}
-		}
-
-		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue("words", words);
-			info.AddValue("totalWords", words);
-		}
-		
-		public void addWord(string word, float minutes)
-		{
-			int wpm = (int)(word.Length / (5.0f * minutes));
-			 if (!words.ContainsKey(word))
-				words.Add(word, new WordStats(wpm));
-			else
-				words[word].addResult(wpm);
-			TotalWords++;
-		}
 	}
 }
 
