@@ -23,6 +23,7 @@
 			<!--<controls.DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70" OffsetX="5.0" OffsetY="5.0" Color="Black">
 			<Grid x:Name="grid" Margin="10" BorderBrush="DarkGray" BorderThickness="1" HorizontalAlignment="Center"/>
 			</controls.DropShadowPanel>-->
+			
 	</StackPanel>
 	</Grid>
 </UserControl>

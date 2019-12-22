@@ -517,23 +517,35 @@ namespace TyperLib
 		[Serializable]
 		public class WordStats
 		{
-			public int BestWpm;
-			public WordStats(int bestWpm)
+			int bestWpm;
+			int count;
+			public WordStats(int wpm)
 			{
-				BestWpm = bestWpm;
+				bestWpm = wpm;
+				count = 1;
 			}
 			public WordStats(SerializationInfo info, StreamingContext context)
 			{
 				foreach (var entry in info)
 				{
 					if (entry.Name == "bestWpm")
-						BestWpm = (int)entry.Value;
+						bestWpm = (int)entry.Value;
+					if (entry.Name == "count")
+						count = (int)entry.Value;
 				}
 			}
 
 			virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 			{
-				info.AddValue("bestWpm", BestWpm);
+				info.AddValue("bestWpm", bestWpm);
+				info.AddValue("count", count);
+			}
+
+			public void addResult(int wpm)
+			{
+				if (bestWpm < wpm)
+					bestWpm = wpm;
+				count++;
 			}
 		}
 		public GlobalStats()
@@ -562,10 +574,10 @@ namespace TyperLib
 		public void addWord(string word, float minutes)
 		{
 			int wpm = (int)(word.Length / (5.0f * minutes));
-			if (!words.ContainsKey(word)) 
+			if (!words.ContainsKey(word))
 				words.Add(word, new WordStats(wpm));
-			else if (words[word].BestWpm < wpm)
-				words[word].BestWpm = wpm;
+			else
+				words[word].addResult(wpm);
 			totalWords++;
 		}
 	}
