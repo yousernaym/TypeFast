@@ -210,7 +210,7 @@ namespace TyperLib
 		Dictionary<string, string[]> symbolMap = new Dictionary<string, string[]>();
 		Dictionary<string, string[]> letterMap = new Dictionary<string, string[]>();
 		private Stopwatch currentWordStopWatch = new Stopwatch();
-		GlobalStats wordStats = new GlobalStats();
+		public GlobalStats GlobalStats = new GlobalStats();
 
 		public Bible Bible { get; set; }
 
@@ -235,14 +235,14 @@ namespace TyperLib
 				else if (entry.Name == "timeLimit")
 					TimeLimit = (TimeSpan)entry.Value;
 				else if (entry.Name == "wordStats")
-					wordStats = (GlobalStats)entry.Value;
+					GlobalStats = (GlobalStats)entry.Value;
 			}
 		}
 		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("startText", MomentaryWpmSession ? null : TextEntrySource);
 			info.AddValue("timeLimit", TimeLimit);
-			info.AddValue("wordStats", wordStats);
+			info.AddValue("wordStats", GlobalStats);
 		}
 
 		public void loadCharMap(Stream stream)
@@ -393,7 +393,7 @@ namespace TyperLib
 				}
 				if (word.Length < 2)
 					return;
-				wordStats.addWord(word, (wordStopTime - wordStartTime) / 60);
+				GlobalStats.addWord(word, (wordStopTime - wordStartTime) / 60);
 			}
 		}
 
@@ -527,35 +527,35 @@ namespace TyperLib
 		[Serializable]
 		public class WordStats
 		{
-			int bestWpm;
-			int count;
+			public int TopWpm { private set; get; }
+			public int Count { private set; get; }
 			public WordStats(int wpm)
 			{
-				bestWpm = wpm;
-				count = 1;
+				TopWpm = wpm;
+				Count = 1;
 			}
 			public WordStats(SerializationInfo info, StreamingContext context)
 			{
 				foreach (var entry in info)
 				{
 					if (entry.Name == "bestWpm")
-						bestWpm = (int)entry.Value;
+						TopWpm = (int)entry.Value;
 					if (entry.Name == "count")
-						count = (int)entry.Value;
+						Count = (int)entry.Value;
 				}
 			}
 
 			virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 			{
-				info.AddValue("bestWpm", bestWpm);
-				info.AddValue("count", count);
+				info.AddValue("bestWpm", TopWpm);
+				info.AddValue("count", Count);
 			}
 
 			public void addResult(int wpm)
 			{
-				if (bestWpm < wpm)
-					bestWpm = wpm;
-				count++;
+				if (TopWpm < wpm)
+					TopWpm = wpm;
+				Count++;
 			}
 		}
 		public GlobalStats()
@@ -563,7 +563,17 @@ namespace TyperLib
 
 		}
 		Dictionary<string, WordStats> words = new Dictionary<string, WordStats>();
-		int totalWords;
+		public int TotalWords;
+		public int UniqueWords => words.Count();
+		public int AvgTopWpm
+		{
+			get
+			{
+				int count = words.Count();
+				return count == 0 ? 0 : words.Sum((w) => w.Value.TopWpm) / words.Count();
+			}
+		}
+
 		public GlobalStats(SerializationInfo info, StreamingContext context)
 		{
 			foreach (var entry in info)
@@ -571,7 +581,7 @@ namespace TyperLib
 				if (entry.Name == "words")
 					words = (Dictionary<string, WordStats>)entry.Value;
 				if (entry.Name == "totalWords")
-					totalWords = (int)entry.Value;
+					TotalWords = (int)entry.Value;
 			}
 		}
 
@@ -588,7 +598,7 @@ namespace TyperLib
 				words.Add(word, new WordStats(wpm));
 			else
 				words[word].addResult(wpm);
-			totalWords++;
+			TotalWords++;
 		}
 	}
 }

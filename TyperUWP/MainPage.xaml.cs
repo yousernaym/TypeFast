@@ -595,7 +595,7 @@ namespace TyperUWP
 
 		private void RecordsFlyout_Opened(object sender, object e)
 		{
-			recordsView.syncGrid(texts);
+			recordsView.syncData(texts, typingSession);
 			DialogOpen = true;
 		}
 

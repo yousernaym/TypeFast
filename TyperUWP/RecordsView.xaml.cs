@@ -38,6 +38,7 @@ namespace TyperUWP
 				
 		Record.PrimarySortType primarySort;
 		Texts texts;
+		TypingSession typingSession;
 
 		public delegate void TextTitleClickEH(RecordsView recordsView, RecordsLinkClickEventArgs e);
 		public event TextTitleClickEH TextTitleClick;
@@ -110,7 +111,7 @@ namespace TyperUWP
 		private void Table_Sort(object sender, SortEventArgs e)
 		{
 			primarySort = columnToSortType(e.Column);
-			syncGrid();
+			syncData();
 		}
 
 		private void createSessionBtn_Click(object sender, RoutedEventArgs e)
@@ -128,10 +129,11 @@ namespace TyperUWP
 			TextTitleClick?.Invoke(this, new RecordsLinkClickEventArgs(textOrTitle, momentaryWpmSession, record.HighWpm, record.HighWpmSnippet, record.LowWpm, record.LowWpmSnippet));
 		}
 
-		public void syncGrid(Texts texts)
+		public void syncData(Texts texts, TypingSession typingSession)
 		{
 			this.texts = texts;
-			syncGrid();
+			this.typingSession = typingSession;
+			syncData();
 		}
 
 		async private void clearBtn_Click(object sender, RoutedEventArgs e)
@@ -141,20 +143,20 @@ namespace TyperUWP
 			if (result == ContentDialogResult.Primary)
 			{
 				texts.clearRecords();
-				syncGrid();
+				syncData();
 			}
 		}
 
 		private void TopTexts_Click(object sender, RoutedEventArgs e)
 		{
 			bottomTextsCb.IsChecked = false;
-			syncGrid();
+			syncData();
 		}
 
 		private void BottomTexts_Click(object sender, RoutedEventArgs e)
 		{
 			topTextsCb.IsChecked = false;
-			syncGrid();
+			syncData();
 		}
 
 		static bool showSecondFractions(TimeSpan time)
@@ -174,7 +176,7 @@ namespace TyperUWP
 					return null;
 			}
 		}
-		void syncGrid()
+		void syncData()
 		{ 
 			records = texts.getRecords(bottomTexts, primarySort, NumRecords);
 
@@ -204,6 +206,9 @@ namespace TyperUWP
 					setLinkText(i + 1, MinWpmCol, null);
 				}
 			}
+			totalWordsTbk.Text = "Words: " + typingSession.GlobalStats.TotalWords;
+			uniqueWordsTbk.Text = "Unique words: " + typingSession.GlobalStats.UniqueWords;
+			avgWordWpm.Text = "Avg top wpm: " + typingSession.GlobalStats.AvgTopWpm;
 		}
 
 		private void setLinkText(int row, int col, Record[] records)
