@@ -209,7 +209,9 @@ namespace TyperLib
 		Timer checkTimeTimer;
 		Dictionary<string, string[]> symbolMap = new Dictionary<string, string[]>();
 		Dictionary<string, string[]> letterMap = new Dictionary<string, string[]>();
-		
+		private Stopwatch currentWordStopWatch = new Stopwatch();
+		GlobalStats wordStats = new GlobalStats();
+
 		public Bible Bible { get; set; }
 
 		public event EventHandler TimeChecked;
@@ -232,12 +234,15 @@ namespace TyperLib
 					StartText = (TextEntry)entry.Value;
 				else if (entry.Name == "timeLimit")
 					TimeLimit = (TimeSpan)entry.Value;
+				else if (entry.Name == "wordStats")
+					wordStats = (GlobalStats)entry.Value;
 			}
 		}
 		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("startText", MomentaryWpmSession ? null : TextEntrySource);
 			info.AddValue("timeLimit", TimeLimit);
+			info.AddValue("wordStats", wordStats);
 		}
 
 		public void loadCharMap(Stream stream)
@@ -355,6 +360,8 @@ namespace TyperLib
 					}
 					if (currentCharIndex >= text.Length)
 						OnFinished();
+
+					updateWordStats();
 					return result;
 				}
 			}
@@ -364,10 +371,28 @@ namespace TyperLib
 			}
 		}
 
+		void updateWordStats()
+		{
+			if (WrittenChars.First().Char == ' ')
+			{
+				currentWordStopWatch.Reset();
+				currentWordStopWatch.Start();
+			}
+			else if (text[currentCharIndex] == ' ')
+			{
+				string word = "";
+				foreach (var c in WrittenChars.TakeWhile((c) => c.Char != ' '))
+					word = c.Char + word;
+				wordStats.addWord(word, (float)currentWordStopWatch.Elapsed.TotalMinutes);
+			}
+		}
+
 		void startTime()
 		{
 			stopTime(true);
 			stopwatch.Start();
+			currentWordStopWatch.Reset();
+			currentWordStopWatch.Start();
 			checkTimeTimer = new Timer(checkTime, null, 0, 100);
 		}
 
@@ -395,7 +420,7 @@ namespace TyperLib
 		}
 
 		//Call for every new character and for every time check.
-		//Always check last MaxMinWpmChars chars and check against current max/min Wpm.
+		//Always check last <MomentaryWpmChars> chars and check against current max/min Wpm.
 		public void updateMomentaryWpm()
 		{
 			if (MomentaryWpmSession)
@@ -484,6 +509,65 @@ namespace TyperLib
 		public int Wpm { get; set; } = -1;
 		public string TextSnippet { get; set; } = "";
 		public int TotalTextLength { get; set; } = 0;
+	}
+
+	[Serializable]
+	public class GlobalStats
+	{
+		[Serializable]
+		public class WordStats
+		{
+			public int BestWpm;
+			public WordStats(int bestWpm)
+			{
+				BestWpm = bestWpm;
+			}
+			public WordStats(SerializationInfo info, StreamingContext context)
+			{
+				foreach (var entry in info)
+				{
+					if (entry.Name == "bestWpm")
+						BestWpm = (int)entry.Value;
+				}
+			}
+
+			virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
+			{
+				info.AddValue("bestWpm", BestWpm);
+			}
+		}
+		public GlobalStats()
+		{
+
+		}
+		Dictionary<string, WordStats> words = new Dictionary<string, WordStats>();
+		int totalWords;
+		public GlobalStats(SerializationInfo info, StreamingContext context)
+		{
+			foreach (var entry in info)
+			{
+				if (entry.Name == "words")
+					words = (Dictionary<string, WordStats>)entry.Value;
+				if (entry.Name == "totalWords")
+					totalWords = (int)entry.Value;
+			}
+		}
+
+		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue("words", words);
+			info.AddValue("totalWords", words);
+		}
+		
+		public void addWord(string word, float minutes)
+		{
+			int wpm = (int)(word.Length / (5.0f * minutes));
+			if (!words.ContainsKey(word)) 
+				words.Add(word, new WordStats(wpm));
+			else if (words[word].BestWpm < wpm)
+				words[word].BestWpm = wpm;
+			totalWords++;
+		}
 	}
 }
 

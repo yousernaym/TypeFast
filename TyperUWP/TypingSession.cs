@@ -19,7 +19,7 @@ namespace TyperUWP
 	[Serializable]
 	public class TypingSession : TyperLib.TypingSession, ISerializable
 	{
-		public static readonly Type[] SerializeTypes = new Type[] { typeof(Color), typeof(TyperLib.TextEntry) };
+		public static readonly Type[] SerializeTypes = new Type[] { typeof(Color), typeof(TyperLib.TextEntry), typeof(TyperLib.GlobalStats.WordStats), typeof(TyperLib.GlobalStats) };
 		public TypingSessionView View { get; set; }
 		public SolidColorBrush BackgroundBrush { get; private set; }
 		public Color Background
