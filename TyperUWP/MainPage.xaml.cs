@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Automation;
 //using Windows.Graphics.Capture;
 using Windows.UI.WindowManagement;
+using System.Xml;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -172,9 +173,10 @@ namespace TyperUWP
 					session = (TypingSession)dcs.ReadObject(stream);
 				}
 			}
-			catch (FileNotFoundException)
+			catch (Exception ex) when(ex is FileNotFoundException ||ex is XmlException || ex is SerializationException)
 			{
 				//It''s probably the first time the app is opened, meaning no settings file has been created yet.
+				//Or the file is corrupt
 				//Use default settings from session construtor
 				session = new TypingSession();
 			}
@@ -679,7 +681,7 @@ namespace TyperUWP
 						{
 							texts.importUserData(stream, true);
 						}
-						catch (SerializationException)
+						catch (Exception ex) when (ex is XmlException || ex is SerializationException)
 						{
 							var dlg = await new ContentDialog { PrimaryButtonText = "Ok", Content = "Invalid file format. File could not be loaded." }.ShowAsync();
 							return;
@@ -698,7 +700,7 @@ namespace TyperUWP
 		async private void TextsOptionsRestore_Click(object sender, RoutedEventArgs e)
 		{
 			await loadPresets();
-            restorePresetsFlyout.Placement = FlyoutPlacementMode.Bottom;
+			restorePresetsFlyout.Placement = FlyoutPlacementMode.Bottom;
             restorePresetsFlyout.ShowAt(resetButtonsPanel);
         }
 

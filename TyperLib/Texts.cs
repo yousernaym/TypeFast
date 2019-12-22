@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Xml;
 
 namespace TyperLib
 {
@@ -46,8 +47,15 @@ namespace TyperLib
 			//saveUserData();
 
 			bool userDataExists = File.Exists(userDataPath);
-			if (userDataExists)
-				loadUserData(userDataPath, true);
+			try
+			{
+				if (userDataExists)
+					loadUserData(userDataPath, true);
+			}
+			catch (Exception ex) when(ex is SerializationException || ex is XmlException)
+			{
+				//Ignore corrupt file. A new will be created.
+			}
 			loadUserData(presetsStream, false, userDataExists);
 		}
 

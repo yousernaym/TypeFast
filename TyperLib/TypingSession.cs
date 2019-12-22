@@ -584,7 +584,7 @@ namespace TyperLib
 		public void addWord(string word, float minutes)
 		{
 			int wpm = (int)(word.Length / (5.0f * minutes));
-			if (!words.ContainsKey(word))
+			 if (!words.ContainsKey(word))
 				words.Add(word, new WordStats(wpm));
 			else
 				words[word].addResult(wpm);
