@@ -70,7 +70,7 @@ namespace TyperUWP
 			else
 			{
 				Title = "Add new text";
-				if (texts.Current != null && texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase))
+				if (texts.Current != null && (texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase) || texts.Current.Text.Trim().StartsWith("__slowest words", StringComparison.OrdinalIgnoreCase)))
 				{
 					TitleField = typingSession.TextEntry.Title;
 					TextField = typingSession.TextEntry.Text;

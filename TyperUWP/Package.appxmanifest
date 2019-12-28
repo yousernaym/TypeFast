@@ -10,7 +10,7 @@
   <Identity
     Name="33243Mickeh.TypeFast"
     Publisher="CN=E17E350E-EDCA-4EAB-A31F-4710F4C5515E"
-    Version="1.1.0.0" />
+    Version="1.2.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="5c0cab6b-3434-4c7f-8da0-1a9d3c0e28fc" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
