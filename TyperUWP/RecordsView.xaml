@@ -14,12 +14,14 @@
 		<StackPanel Orientation="Vertical" Margin="15">
 			<RelativePanel Margin="1,0,0,10">
 				<StackPanel RelativePanel.AlignLeftWithPanel="True" Orientation="Horizontal">
-					<CheckBox x:Name="topTextsCb" MinWidth="95" Margin="0 0 25 0" Content="Top texts" Click="TopTexts_Click"/>
-					<CheckBox x:Name="bottomTextsCb" Content="Bottom texts" Click="BottomTexts_Click"/>
+					<CheckBox x:Name="fstestTextsCb" MinWidth="95" Margin="0 0 25 0" Content="Fastest texts" Click="fastestTextsCb_Click"/>
+					<CheckBox x:Name="slowestTextsCb" Content="Slowest texts" Click="slowestTextsCb_Click"/>
+					<CheckBox x:Name="slowestWordsCb" Content="Slowest words" Click="slowestWordsCb_Click"/>
 				</StackPanel>
 				<Button x:Name="clearBtn" RelativePanel.AlignRightWithPanel="True" Content="Clear stats" CornerRadius="0" Click="clearBtn_Click"/>
 			</RelativePanel>
-			<local:Table x:Name="table" HorizontalAlignment="Center"/>
+			<local:Table x:Name="textsTable" HorizontalAlignment="Center"/>
+			<local:Table x:Name="wordsTable" HorizontalAlignment="Center" Visibility="Collapsed"/>
 			<!--<controls.DropShadowPanel BlurRadius="4.0" ShadowOpacity="0.70" OffsetX="5.0" OffsetY="5.0" Color="Black">
 			<Grid x:Name="grid" Margin="10" BorderBrush="DarkGray" BorderThickness="1" HorizontalAlignment="Center"/>
 			</controls.DropShadowPanel>-->

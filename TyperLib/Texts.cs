@@ -12,11 +12,11 @@ using System.Xml;
 
 namespace TyperLib
 {
-	public enum RecordType { RT_BestSessions, RT_BestTexts, RT_WorstTexts, RT_BestOfText};
-
+	//public enum RecordType { RT_BestSessions, RT_BestTexts, RT_WorstTexts, RT_BestOfText};
 	[Serializable]
 	public class Texts : IEnumerable<TextEntry>
 	{
+		public enum RecordSortMethod { FastestSessions, FastestTexts, SlowestTexts };
 		//TextEntries presets = new TextEntries();
 		UserData userData = new UserData();
 		public const int MaxRecords = 10;
@@ -279,13 +279,13 @@ namespace TyperLib
 			return userData.Records.Where(p => p.TextTitle == title).ToArray();
 		}
 
-		public Record[] getRecords(bool ?ascendingTexts, Record.PrimarySortType primarySort, int count = 0)
+		public Record[] getRecords(RecordSortMethod sortMethod, Record.PrimarySortType primarySort, int count = 0)
 		{ 
    	 		Record[] records = new Record[userData.Records.Count];
 			userData.Records.CopyTo(records);
 			Record.sort(records, primarySort, false);
 
-			if (ascendingTexts != null)
+			if (sortMethod != RecordSortMethod.FastestSessions)
 			{
 				var dict = new Dictionary<string, Record>();
 				foreach (var rec in records)
@@ -298,7 +298,7 @@ namespace TyperLib
 				int i = 0;
 				foreach (var rec in dict)
 					records[i++] = rec.Value;
-				Record.sort(records, primarySort, (bool)ascendingTexts);
+				Record.sort(records, primarySort, sortMethod == RecordSortMethod.SlowestTexts);
 			}
 			var subArray = records;
 			if (count > 0)

@@ -13,7 +13,7 @@ namespace TyperLib
 		internal TextEntries TextEntries { get; set; } = new TextEntries();
 		internal Records Records { get; set; } = new Records();
 		internal GlobalStats GlobalStats = new GlobalStats();
-		static readonly public Type[] SerializeTypes = new Type[] { typeof(TextEntry), typeof(Record), typeof(TyperLib.GlobalStats.WordStats), typeof(TyperLib.GlobalStats) };
+		static readonly public Type[] SerializeTypes = new Type[] { typeof(TextEntry), typeof(Record), typeof(TyperLib.WordStats), typeof(TyperLib.GlobalStats) };
 
 		internal UserData()
 		{

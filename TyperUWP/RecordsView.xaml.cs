@@ -21,10 +21,11 @@ using Windows.UI.Xaml.Navigation;
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace TyperUWP
-{
+{ 
  	public sealed partial class RecordsView : UserControl
 	{
-		Record[] records;
+		Record[] textRecords;
+		WordStats[] wordRecords;
 		const int
 			NumRecords = Texts.MaxRecords,
 			Rows = NumRecords,
@@ -36,23 +37,29 @@ namespace TyperUWP
 			TimeCol = 4,
 			TextCol = 5;
 				
-		Record.PrimarySortType primarySort;
+		Record.PrimarySortType primaryTextSort;
 		Texts texts;
 		TypingSession typingSession;
-
-		public delegate void TextTitleClickEH(RecordsView recordsView, RecordsLinkClickEventArgs e);
-		public event TextTitleClickEH TextTitleClick;
+		
+		public delegate void TextTitleClickEH(RecordsView recordsView, CreateSessionLinkClickEventArgs e);
+		public event TextTitleClickEH CreateSessionLinkClick;
 		
 		public RecordsView()
 		{
 			this.InitializeComponent();
-			table.init(new string[] { "WPM", "HiWPM", "LoWPM", "Acc %", "Time", "Text" }, 7, 18);
-			table.PrimarySortCol = WpmCol;
-			primarySort = columnToSortType(table.PrimarySortCol);
-			table.Sort += Table_Sort;
+			initTextsTable();
+			initWordsTable();
+		}
+
+		void initTextsTable()
+		{
+			textsTable.init(new string[] { "WPM", "HiWPM", "LoWPM", "Acc %", "Time", "Text" }, 7, 18);
+			textsTable.PrimarySortCol = WpmCol;
+			primaryTextSort = columnToSortType(textsTable.PrimarySortCol);
+			textsTable.Sort += Table_Sort;
 			for (int r = 0; r < Rows; r++)
 			{
-				table.addRow();
+				textsTable.addRow();
 				for (int c = 0; c < Columns; c++)
 				{
 					//if (c == WpmCol)
@@ -70,8 +77,8 @@ namespace TyperUWP
 							cell.Padding = new Thickness(7, 5, 7, 5);
 						cell.FontSize = 18;
 						//----------------------------
-						cell.Click += createSessionBtn_Click;
-						table.addCell(cell);
+						cell.Click += textRecordsBtn_Click;
+						textsTable.addCell(cell);
 					}
 					else
 					{
@@ -85,14 +92,54 @@ namespace TyperUWP
 						//----------------------------
 						setCellWidth(c, cell);
 						cell.Foreground = new SolidColorBrush(Colors.White);
-						table.addCell(cell);
+						textsTable.addCell(cell);
 					}
 				}
 			}
-			table.applyStyle();
+			textsTable.applyStyle();
 		}
 
-		void setCellWidth(int c, TextBlock cell)
+		void initWordsTable()
+		{
+			wordsTable.init(new string[] { "WPM", "Word" }, 1, 18);
+			wordsTable.PrimarySortCol = WpmCol;
+			for (int r = 0; r < Rows; r++)
+			{
+				wordsTable.addRow();
+				for (int c = 0; c < 2; c++)
+				{
+					if (c == 1)
+					{
+						var cell = new HyperlinkButton();
+						//Duplicated init code---------
+						cell.HorizontalAlignment = HorizontalAlignment.Left;
+						cell.VerticalAlignment = VerticalAlignment.Center;
+						cell.Padding = new Thickness(7, 5, 7, 5);
+						cell.FontSize = 18;
+						//----------------------------
+						cell.Click += wordRecordsBtn_Click;
+						wordsTable.addCell(cell);
+					}
+					else
+					{
+						var cell = new TextBlock();
+						//Duplicated init code---------
+						cell.HorizontalAlignment = HorizontalAlignment.Right;
+						cell.TextAlignment = TextAlignment.Right;
+						cell.VerticalAlignment = VerticalAlignment.Center;
+						cell.Padding = new Thickness(20, 5, 7, 5);
+						cell.FontSize = 18;
+						//----------------------------
+						setCellWidth(c, cell);
+						cell.Foreground = new SolidColorBrush(Colors.White);
+						wordsTable.addCell(cell);
+					}
+				}
+			}
+			wordsTable.applyStyle();
+		}
+
+		static void setCellWidth(int c, TextBlock cell) 
 		{
 			if (c == TimeCol || c == AccCol || c == WpmCol)
 			{
@@ -110,23 +157,29 @@ namespace TyperUWP
 
 		private void Table_Sort(object sender, SortEventArgs e)
 		{
-			primarySort = columnToSortType(e.Column);
+			primaryTextSort = columnToSortType(e.Column);
 			syncData();
 		}
 
-		private void createSessionBtn_Click(object sender, RoutedEventArgs e)
+		private void textRecordsBtn_Click(object sender, RoutedEventArgs e)
 		{
 			string tag = (string)((HyperlinkButton)sender).Tag;
 			string textOrTitle = tag.Substring(1);
 			int recordsIndex = tag[0] - 1;
-			bool momentaryWpmSession = true;
+			SessionType sessionType = SessionType.MomentaryWpm;
 			if (recordsIndex < 0)
 			{
-				recordsIndex = 0; //Just to avoid out of range exception. The data at the index is irrelevant if momentaryWpmSession is false.
-				momentaryWpmSession = false;
+				recordsIndex = 0; //Just to avoid out of range exception. The data at the index is irrelevant if not a momentaryWpmSession.
+				sessionType = SessionType.Title;
 			}
-			var record = records[recordsIndex];
-			TextTitleClick?.Invoke(this, new RecordsLinkClickEventArgs(textOrTitle, momentaryWpmSession, record.HighWpm, record.HighWpmSnippet, record.LowWpm, record.LowWpmSnippet));
+			var record = textRecords[recordsIndex];
+			CreateSessionLinkClick?.Invoke(this, new CreateSessionLinkClickEventArgs(textOrTitle, sessionType, record.HighWpm, record.HighWpmSnippet, record.LowWpm, record.LowWpmSnippet));
+		}
+
+		private void wordRecordsBtn_Click(object sender, RoutedEventArgs e)
+		{
+			string word = (string)((HyperlinkButton)sender).Content;
+			CreateSessionLinkClick?.Invoke(this, new CreateSessionLinkClickEventArgs(word, SessionType.Temp, 0, null, 0, null));
 		}
 
 		public void syncData(Texts texts, TypingSession typingSession)
@@ -146,16 +199,25 @@ namespace TyperUWP
 				syncData();
 			}
 		}
-
-		private void TopTexts_Click(object sender, RoutedEventArgs e)
+		
+		private void fastestTextsCb_Click(object sender, RoutedEventArgs e)
 		{
-			bottomTextsCb.IsChecked = false;
+			slowestTextsCb.IsChecked = false;
+			slowestWordsCb.IsChecked = false;
 			syncData();
 		}
 
-		private void BottomTexts_Click(object sender, RoutedEventArgs e)
+		private void slowestTextsCb_Click(object sender, RoutedEventArgs e)
 		{
-			topTextsCb.IsChecked = false;
+			fstestTextsCb.IsChecked = false;
+			slowestWordsCb.IsChecked = false;
+			syncData();
+		}
+
+		private void slowestWordsCb_Click(object sender, RoutedEventArgs e)
+		{
+			fstestTextsCb.IsChecked = false;
+			slowestTextsCb.IsChecked = false;
 			syncData();
 		}
 
@@ -164,56 +226,93 @@ namespace TyperUWP
 			return time.TotalSeconds < 10;
 		}
 
-		bool? bottomTexts
+		Texts.RecordSortMethod textRecordSortMethod
 		{
 			get
 			{
-				if ((bool)bottomTextsCb.IsChecked)
-					return true;
-				else if ((bool)topTextsCb.IsChecked)
-					return false;
+				if ((bool)slowestTextsCb.IsChecked)
+					return Texts.RecordSortMethod.SlowestTexts;
+				else if ((bool)fstestTextsCb.IsChecked)
+					return Texts.RecordSortMethod.FastestTexts;
 				else
-					return null;
+					return Texts.RecordSortMethod.FastestSessions;
 			}
 		}
-		void syncData()
-		{ 
-			records = texts.getRecords(bottomTexts, primarySort, NumRecords);
 
-			for (int i = 0; i < NumRecords; i++)
-			{
-				if (i < records.Length)
-				{
-					table.getCell<TextBlock>(i + 1, WpmCol).Text = records[i].Wpm.ToString();
-					var accCell = table.getCell<TextBlock>(i + 1, AccCol);
-					accCell.Foreground = getAccuracyCol(records[i].Accuracy);
-					accCell.Text = records[i].Accuracy.ToString("0.0");
-					var format = "m\\:ss";
-					if (showSecondFractions(records[i].Time))
-						format += "\\.ff";
-					table.getCell<TextBlock>(i + 1, TimeCol).Text = records[i].Time.ToString(format);
-					setLinkText(i + 1, TextCol, records);
-					setLinkText(i + 1, HighWpmCol, records);
-					setLinkText(i + 1, MinWpmCol, records);
-				}
-				else
-				{
-					table.getCell<TextBlock>(i + 1, WpmCol).Text = "";
-					table.getCell<TextBlock>(i + 1, AccCol).Text = "";
-					table.getCell<TextBlock>(i + 1, TimeCol).Text = "";
-					setLinkText(i + 1, TextCol, null);
-					setLinkText(i + 1, HighWpmCol, null);
-					setLinkText(i + 1, MinWpmCol, null);
-				}
-			}
+		void syncData()
+		{
+			if ((bool)slowestWordsCb.IsChecked)
+				syncWordRecords();
+			else
+				syncTextRecords();
 			totalWordsTbk.Text = "Words: " + typingSession.GlobalStats.TotalWords;
 			uniqueWordsTbk.Text = "Unique words: " + typingSession.GlobalStats.UniqueWords;
 			//avgWordWpm.Text = "Avg top wpm: " + typingSession.GlobalStats.AvgTopWpm;
 		}
 
+		void syncTextRecords()
+		{
+			textsTable.Visibility = Visibility.Visible;
+			wordsTable.Visibility = Visibility.Collapsed;
+			textRecords = texts.getRecords(textRecordSortMethod, primaryTextSort, NumRecords);
+
+			for (int i = 0; i < NumRecords; i++)
+			{
+				if (i < textRecords.Length)
+				{
+					textsTable.getCell<TextBlock>(i + 1, WpmCol).Text = textRecords[i].Wpm.ToString();
+					var accCell = textsTable.getCell<TextBlock>(i + 1, AccCol);
+					accCell.Foreground = getAccuracyCol(textRecords[i].Accuracy);
+					accCell.Text = textRecords[i].Accuracy.ToString("0.0");
+					var format = "m\\:ss";
+					if (showSecondFractions(textRecords[i].Time))
+						format += "\\.ff";
+					textsTable.getCell<TextBlock>(i + 1, TimeCol).Text = textRecords[i].Time.ToString(format);
+					setLinkText(i + 1, TextCol, textRecords);
+					setLinkText(i + 1, HighWpmCol, textRecords);
+					setLinkText(i + 1, MinWpmCol, textRecords);
+				}
+				else
+				{
+					textsTable.getCell<TextBlock>(i + 1, WpmCol).Text = "";
+					textsTable.getCell<TextBlock>(i + 1, AccCol).Text = "";
+					textsTable.getCell<TextBlock>(i + 1, TimeCol).Text = "";
+					setLinkText(i + 1, TextCol, null);
+					setLinkText(i + 1, HighWpmCol, null);
+					setLinkText(i + 1, MinWpmCol, null);
+				}
+			}
+		}
+
+		void syncWordRecords()
+		{
+			textsTable.Visibility = Visibility.Collapsed;
+			wordsTable.Visibility = Visibility.Visible;
+			wordRecords = texts.GlobalStats.getSlowestWords(NumRecords);
+			for (int i = 0; i < NumRecords; i++)
+			{
+				var wpmCell = wordsTable.getCell<TextBlock>(i + 1, WpmCol);
+				var wordCell = wordsTable.getCell<HyperlinkButton>(i + 1, 1);
+				if (i < wordRecords.Length)
+				{
+					wpmCell.Text = wordRecords[i].TopWpm.ToString();
+					wordCell.Content = wordRecords[i].Word;
+					wordCell.SetValue(AutomationProperties.NameProperty, wordCell.Content);
+				}
+				else
+				{
+					wpmCell.Text = "";
+					ToolTipService.SetToolTip(wordCell, null);
+					wordCell.Content = "";
+					wordCell.SetValue(AutomationProperties.NameProperty, "");
+					wordCell.IsTabStop = false;
+				}
+			}
+	}
+
 		private void setLinkText(int row, int col, Record[] records)
 		{
-			var cell = table.getCell<HyperlinkButton>(row, col);
+			var cell = textsTable.getCell<HyperlinkButton>(row, col);
 			int recordIndex = row - 1;
 			if (records == null || col == HighWpmCol && records[recordIndex].HighWpm < 0 || col == MinWpmCol && records[recordIndex].LowWpm < 0)
 			{
@@ -285,19 +384,19 @@ namespace TyperUWP
 		}
 	}
 
-	public class RecordsLinkClickEventArgs : EventArgs
+	public class CreateSessionLinkClickEventArgs : EventArgs
 	{
 		public string TextOrTitle { get; set; }
-		public bool MomentaryWpmClicked { get; set; }
+		public SessionType SessionType { get; set; }
 		public int HighWpm { get; set; }
 		public string HighWpmSnippet { get; set; }
 		public int LowWpm { get; set; }
 		public string LowWpmSnippet { get; set; }
 
-		public RecordsLinkClickEventArgs(string textOrTitle, bool momentaryWpmClicked, int highWpm = 0, string highWpmSnippet = null, int lowWpm = 0, string lowWpmSnippet = null)
+		public CreateSessionLinkClickEventArgs(string textOrTitle, SessionType sessionType, int highWpm = 0, string highWpmSnippet = null, int lowWpm = 0, string lowWpmSnippet = null)
 		{
 			TextOrTitle = textOrTitle;
-			MomentaryWpmClicked = momentaryWpmClicked;
+			SessionType = sessionType;
 			HighWpm = highWpm;
 			HighWpmSnippet = highWpmSnippet;
 			LowWpm = lowWpm;

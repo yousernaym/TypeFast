@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 
 namespace TyperLib
 {
+	public enum SessionType { Title, Temp, MomentaryWpm };
 	[Serializable]
 	public class TypingSession : ISerializable
 	{
@@ -22,7 +23,7 @@ namespace TyperLib
 		public const uint KeyCode_Space = 32;
 		const int MomentaryWpmChars = 15;
 
-		string[] rndElements;
+		public string[] RndElements;
 		int minWordLength;
 		int maxWordLength;
 
@@ -41,7 +42,7 @@ namespace TyperLib
 				textEntry = new TextEntry(value);
 				//char bla = text[0];
 
-				rndElements = null;
+				RndElements = null;
 				minWordLength = maxWordLength = 1;
 				Match match;
 				bUpdateWordStats = true;
@@ -55,14 +56,14 @@ namespace TyperLib
 						text = text.Replace(" ", "");
 						text = text.Replace("\n", "");
 						text = text.Replace("\r", "");
-						rndElements = text.Select(x => x.ToString()).ToArray(); //Create array with all characters in the string
+						RndElements = text.Select(x => x.ToString()).ToArray(); //Create array with all characters in the string
 						bUpdateWordStats = false;
 					}
 				}
 				else if (text.StartsWith("__rnd ws__"))
-					rndElements = text.Substring(10).Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
+					RndElements = text.Substring(10).Split(new char[] { }, StringSplitOptions.RemoveEmptyEntries);
 				else if (text.StartsWith("__rnd line__"))
-					rndElements = text.Substring(10).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+					RndElements = text.Substring(10).Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 				else if (text.StartsWith("__bible__"))
 				{
 					text = Bible.getRandomText(10000);
@@ -72,20 +73,20 @@ namespace TyperLib
 				{
 					string delim = text.Substring(7, match.Length - 3 - 7);
 					text = text.Substring(match.Length);
-					rndElements = text.Split(new string[] { delim }, StringSplitOptions.None);
+					RndElements = text.Split(new string[] { delim }, StringSplitOptions.None);
 				}
 				else if ((match = Regex.Match(text, "(?<=__slowest words )([0-9])+(?=__)")).Success)
 				{
 					int count = int.Parse(match.Value);
-					rndElements = GlobalStats.getSlowestWords(count);
-					if (rndElements.Length == 0)
+					RndElements = GlobalStats.getSlowestWordStrings(count);
+					if (RndElements.Length == 0)
 					{
 						//No words have been typed yet
-						rndElements = null;
+						RndElements = null;
 						text = "";
 					}
 				}
-				if (rndElements != null)
+				if (RndElements != null)
 				{
 					var rnd = new Random();
 					var sb = new StringBuilder();
@@ -94,7 +95,7 @@ namespace TyperLib
 					{
 						if (remainingCharsInWord == 0)
 							remainingCharsInWord = rnd.Next(minWordLength, maxWordLength + 1);
-						sb.Append(rndElements[rnd.Next(rndElements.Length)]);
+						sb.Append(RndElements[rnd.Next(RndElements.Length)]);
 						if (--remainingCharsInWord <= 0)
 							sb.Append(' ');
 					}

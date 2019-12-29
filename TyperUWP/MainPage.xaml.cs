@@ -42,7 +42,6 @@ namespace TyperUWP
 	/// </summary>
 	public sealed partial class MainPage : Page
 	{
-		enum TextSelection { Title, Temp, MomentaryWpm };
 		//readonly string RoamingDataDir = ApplicationData.Current.RoamingFolder.Path;
 		readonly string LocalDataDir = ApplicationData.Current.LocalFolder.Path;
 		readonly string SettingsPath;
@@ -211,18 +210,18 @@ namespace TyperUWP
 				//No info saved about text from last session, so pick first text in list if it exists, otherwise pick random (but it should always exist). Should only happen first time app starts.
 				string startText = "100 most common words";
 				if (texts.containsTitle(startText))
-					selectText(startText, TextSelection.Title);
+					selectText(startText, SessionType.Title);
 				else
-					selectText(null, TextSelection.Title);
+					selectText(null, SessionType.Title);
 			}
 			else
 			{
 				if (string.IsNullOrWhiteSpace(typingSession.StartText.Title))
-					selectText(typingSession.StartText.Text, TextSelection.Temp); //Text without title = temporary text (practice session or from clipboard).
+					selectText(typingSession.StartText.Text, SessionType.Temp); //Text without title = temporary text (practice session or from clipboard).
 				else if (texts.containsTitle(typingSession.StartText.Title))
-					selectText(typingSession.StartText.Title, TextSelection.Title); //Use title to select text from list.
+					selectText(typingSession.StartText.Title, SessionType.Title); //Use title to select text from list.
 				else
-					selectText(null, TextSelection.Title); //Text list no longer contains the text from last session for some reason, so select random text.
+					selectText(null, SessionType.Title); //Text list no longer contains the text from last session for some reason, so select random text.
 			}
 			
 		}			
@@ -300,12 +299,12 @@ namespace TyperUWP
 
 		private void MinWpmText_LinkClick(object sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs e)
 		{
-			selectText(typingSession.LowWpm.TextSnippet, TextSelection.MomentaryWpm);
+			selectText(typingSession.LowWpm.TextSnippet, SessionType.MomentaryWpm);
 		}
 
 		private void MaxWpmText_LinkClick(object sender, Windows.UI.Xaml.Documents.HyperlinkClickEventArgs e)
 		{
-			selectText(typingSession.HighWpm.TextSnippet, TextSelection.MomentaryWpm);
+			selectText(typingSession.HighWpm.TextSnippet, SessionType.MomentaryWpm);
 		}
 
 		static bool isKeyDown(VirtualKey key)
@@ -405,7 +404,7 @@ namespace TyperUWP
 			DialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
-				selectText(newTextDialog.TitleField, TextSelection.Title);
+				selectText(newTextDialog.TitleField, SessionType.Title);
 		}
 
 		async private void TextsOptionsClone_Click(object sender, RoutedEventArgs e)
@@ -419,7 +418,7 @@ namespace TyperUWP
 			DialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
-				selectText(newTextDialog.TitleField, TextSelection.Title);
+				selectText(newTextDialog.TitleField, SessionType.Title);
 		}
 
 		async private void TextsOptionsEdit_Click(object sender, RoutedEventArgs e)
@@ -433,7 +432,7 @@ namespace TyperUWP
 			DialogOpen = false;
 
 			if (result == ContentDialogResult.Primary)
-				selectText(newTextDialog.TitleField, TextSelection.Title);
+				selectText(newTextDialog.TitleField, SessionType.Title);
 		}
 
 		async private void TextsOptionsDelete_Click(object sender, RoutedEventArgs e)
@@ -448,7 +447,7 @@ namespace TyperUWP
 			{
 				texts.removeCurrent();
 				textsCombo.ItemSource = texts.Titles;
-				selectText(texts.Current?.Title, TextSelection.Title);
+				selectText(texts.Current?.Title, SessionType.Title);
 			}
 		}
 
@@ -458,7 +457,7 @@ namespace TyperUWP
 				return;
 			DataPackageView dataPackageView = Clipboard.GetContent();
 			if (dataPackageView.Contains(StandardDataFormats.Text))
-				selectText(await dataPackageView.GetTextAsync(), TextSelection.Temp);
+				selectText(await dataPackageView.GetTextAsync(), SessionType.Temp);
 		}
 
 		private void TimeLimitTb_KeyDown(object sender, KeyRoutedEventArgs e)
@@ -611,22 +610,18 @@ namespace TyperUWP
 			DialogOpen = false;
 		}
 
-		private void RecordsView_TextTitleClick(RecordsView recordsView, RecordsLinkClickEventArgs e)
+		private void RecordsView_CreateSessionLinkClick(RecordsView recordsView, CreateSessionLinkClickEventArgs e)
 		{
 			recordsFlyout.Hide();
 			DialogOpen = false;
-			if (e.MomentaryWpmClicked)
-			{
+			if (e.SessionType == SessionType.MomentaryWpm)
 				typingSession.setHighLowWpm(e.HighWpm, e.HighWpmSnippet, e.LowWpm, e.LowWpmSnippet);
-				selectText(e.TextOrTitle, TextSelection.MomentaryWpm);
-			}
-			else
-				selectText(e.TextOrTitle, TextSelection.Title);
+			selectText(e.TextOrTitle, e.SessionType);
 		}
 
-		private void selectText(string textOrTitle, TextSelection textSelection)
+		private void selectText(string textOrTitle, SessionType sessionType)
 		{
-			if (textSelection == TextSelection.Title)
+			if (sessionType == SessionType.Title)
 			{
 				if (textOrTitle == null)
 					texts.selectRandom();
@@ -637,8 +632,8 @@ namespace TyperUWP
 			{
 				texts.Current = new TextEntry("", textOrTitle, false); ;
 			}
-			textsOptionsEdit.IsEnabled = textsOptionsDelete.IsEnabled = textSelection == TextSelection.Title;
-			typingSession.MomentaryWpmSession = textSelection != TextSelection.Title;
+			textsOptionsEdit.IsEnabled = textsOptionsDelete.IsEnabled = sessionType == SessionType.Title;
+			typingSession.MomentaryWpmSession = sessionType != SessionType.Title;
 			reset();
 		}
 
@@ -736,7 +731,7 @@ namespace TyperUWP
 			if (texts.containsTitle(title))
 			{
 				focusOnTyping();
-				selectText(title, TextSelection.Title);
+				selectText(title, SessionType.Title);
 			}
 		}
 
@@ -759,7 +754,7 @@ namespace TyperUWP
 			var result = await dlg.ShowAsync();
 			DialogOpen = false;
 			if (result == ContentDialogResult.Primary)
-				selectText("__rnd 1-7__ " + dlg.Chars, TextSelection.Temp);
+				selectText("__rnd 1-7__ " + dlg.Chars, SessionType.Temp);
 			}
 
 		private void selectTempText(string text)
@@ -778,7 +773,7 @@ namespace TyperUWP
 
 		private void ShuffleBtn_Click(object sender, RoutedEventArgs e)
 		{
-			selectText(null, TextSelection.Title);
+			selectText(null, SessionType.Title);
 		}
 
 		//The RecordsBtn is used to disable typing in the typing session when Alt is pressed to display the acces keys.

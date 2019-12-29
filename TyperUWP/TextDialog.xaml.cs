@@ -61,7 +61,7 @@ namespace TyperUWP
 			{
 				Title = "Edit text";
 				var notes = new TextBlock();
-				notes.Text = "Editing a text will erase all associated high scores.";
+				notes.Text = "Editing a text will erase all associated records.";
 				notes.Margin = new Thickness(0, 10, 0, 0);
 				notes.Foreground = new SolidColorBrush(Colors.Yellow);
 				stackPanel.Children.Add(notes);
@@ -73,7 +73,13 @@ namespace TyperUWP
 				if (texts.Current != null && (texts.Current.Text.Trim().StartsWith("__bible__", StringComparison.OrdinalIgnoreCase) || texts.Current.Text.Trim().StartsWith("__slowest words", StringComparison.OrdinalIgnoreCase)))
 				{
 					TitleField = typingSession.TextEntry.Title;
-					TextField = typingSession.TextEntry.Text;
+					if (texts.Current.Text.Trim().StartsWith("__slowest words", StringComparison.OrdinalIgnoreCase))
+					{
+						foreach (var word in typingSession.RndElements)
+							TextField += word + "\n";
+					}
+					else
+						TextField = typingSession.TextEntry.Text;
 					AsciiLetters = texts.Current.AsciiLetters;
 				}
 			}

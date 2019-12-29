@@ -39,7 +39,7 @@
 					<FontIcon FontFamily="Webdings" FontSize="35" Glyph="&#38;"/>
 					<FlyoutBase.AttachedFlyout>
 						<Flyout x:Name="recordsFlyout" Opened="RecordsFlyout_Opened" Closed="RecordsFlyout_Closed" FlyoutPresenterStyle="{StaticResource flyoutStyle}">
-							<local:RecordsView x:Name="recordsView" TextTitleClick="RecordsView_TextTitleClick"/>
+							<local:RecordsView x:Name="recordsView" CreateSessionLinkClick="RecordsView_CreateSessionLinkClick"/>
 						</Flyout>
 					</FlyoutBase.AttachedFlyout>
 				</Button>
