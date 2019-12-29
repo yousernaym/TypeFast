@@ -27,7 +27,7 @@
 				<!--<TextBlock Text="Word stats:" FontSize="18" Margin="0 0 25 0"/>-->
 				<TextBlock x:Name="totalWordsTbk" Margin="0 0 25 0" FontSize="16" ToolTipService.ToolTip="Total number of words typed"/>
 				<TextBlock x:Name="uniqueWordsTbk" Margin="0 0 25 0" FontSize="16" ToolTipService.ToolTip="Unique words typed"/>
-				<TextBlock x:Name="avgWordWpm" Margin="0 0 25 0" FontSize="16" ToolTipService.ToolTip="Average of top wpm results for all words"/>
+				<!--<TextBlock x:Name="avgWordWpm" Margin="0 0 25 0" FontSize="16" ToolTipService.ToolTip="Average of top wpm results for all words"/>-->
 			</StackPanel>
 		</StackPanel>
 	</Grid>

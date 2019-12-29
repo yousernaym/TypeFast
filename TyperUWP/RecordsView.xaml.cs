@@ -208,7 +208,7 @@ namespace TyperUWP
 			}
 			totalWordsTbk.Text = "Words: " + typingSession.GlobalStats.TotalWords;
 			uniqueWordsTbk.Text = "Unique words: " + typingSession.GlobalStats.UniqueWords;
-			avgWordWpm.Text = "Avg top wpm: " + typingSession.GlobalStats.AvgTopWpm;
+			//avgWordWpm.Text = "Avg top wpm: " + typingSession.GlobalStats.AvgTopWpm;
 		}
 
 		private void setLinkText(int row, int col, Record[] records)
