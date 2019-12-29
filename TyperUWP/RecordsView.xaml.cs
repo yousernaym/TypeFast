@@ -295,7 +295,7 @@ namespace TyperUWP
 				var wordCell = wordsTable.getCell<HyperlinkButton>(i + 1, 1);
 				if (i < wordRecords.Length)
 				{
-					wpmCell.Text = wordRecords[i].TopWpm.ToString();
+					wpmCell.Text = wordRecords[i].BestWpm.ToString();
 					wordCell.Content = wordRecords[i].Word;
 					wordCell.SetValue(AutomationProperties.NameProperty, wordCell.Content);
 				}

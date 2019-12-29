@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 namespace TyperLib
 {
 	[Serializable]
-	public class GlobalStats
+	public class GlobalStats : ISerializable
 	{
 		public GlobalStats()
 		{
@@ -20,7 +20,7 @@ namespace TyperLib
 			get
 			{
 				int count = words.Count();
-				return count == 0 ? 0 : words.Sum((w) => w.Value.TopWpm) / words.Count();
+				return count == 0 ? 0 : words.Sum((w) => w.Value.BestWpm) / words.Count();
 			}
 		}
 
@@ -30,7 +30,7 @@ namespace TyperLib
 			{
 				if (entry.Name == "words")
 					words = (Dictionary<string, WordStats>)entry.Value;
-				if (entry.Name == "totalWords")
+				else if (entry.Name == "totalWords")
 					TotalWords = (int)entry.Value;
 			}
 		}
@@ -38,7 +38,7 @@ namespace TyperLib
 		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("words", words);
-			info.AddValue("totalWords", words);
+			info.AddValue("totalWords", TotalWords);
 		}
 		
 		public void addWord(string word, float minutes)
@@ -61,9 +61,9 @@ namespace TyperLib
 			var slowSorted = words.ToArray();
 			Array.Sort(slowSorted, (a, b) =>
 			{
-				if (a.Value.TopWpm < b.Value.TopWpm)
+				if (a.Value.BestWpm < b.Value.BestWpm)
 					return -1;
-				else if (a.Value.TopWpm > b.Value.TopWpm)
+				else if (a.Value.BestWpm > b.Value.BestWpm)
 					return 1;
 				else
 					return 0;
@@ -79,14 +79,14 @@ namespace TyperLib
 	}
 
 	[Serializable]
-	public class WordStats
+	public class WordStats : ISerializable
 	{
-		public int TopWpm { private set; get; }
+		public int BestWpm { private set; get; }
 		public int Count { private set; get; }
 		public string Word { private set; get; }
 		public WordStats(int wpm, string word)
 		{
-			TopWpm = wpm;
+			BestWpm = wpm;
 			Word = word;
 			Count = 1;
 		}
@@ -94,24 +94,27 @@ namespace TyperLib
 		{
 			foreach (var entry in info)
 			{
-				if (entry.Name == "topWpm")
-					TopWpm = (int)entry.Value;
-				if (entry.Name == "count")
+				if (entry.Name == "bestWpm")
+					BestWpm = (int)entry.Value;
+				else if (entry.Name == "count")
 					Count = (int)entry.Value;
+				else if (entry.Name == "word")
+					Word = (string)entry.Value;
 
 			}
 		}
 
 		virtual public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("topWpm", TopWpm);
+			info.AddValue("bestWpm", BestWpm);
 			info.AddValue("count", Count);
+			info.AddValue("word", Word);
 		}
 
 		public void addResult(int wpm)
 		{
-			if (TopWpm < wpm)
-				TopWpm = wpm;
+			if (BestWpm < wpm)
+				BestWpm = wpm;
 			Count++;
 		}
 	}
