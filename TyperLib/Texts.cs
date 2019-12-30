@@ -42,7 +42,7 @@ namespace TyperLib
 		public Texts(string userDataDir, Stream presetsStream)
 		{
 			if (userDataDir != null)
-				userDataPath = Path.Combine(userDataDir, "texts.tft");
+				userDataPath = Path.Combine(userDataDir, "state.tfs");
 			//if (presetsDir != null)
 				//presetsPath = Path.Combine(presetsDir, "presets.tft");
 			//saveUserData();
