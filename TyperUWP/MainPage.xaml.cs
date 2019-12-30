@@ -824,7 +824,9 @@ namespace TyperUWP
 		{
 			if (texts != null)
 			{
-				recordsFlyout.ShowAt(recordsBtn);
+				//recordsFlyout.ShowAt(recordsBtn);
+				recordsFlyout.Placement = FlyoutPlacementMode.Top;
+				recordsFlyout.ShowAt(infoPanel);
 			}
 		}
 	}

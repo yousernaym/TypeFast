@@ -40,12 +40,12 @@ namespace TyperLib
 			{
 				TextEntrySource = value;
 				textEntry = new TextEntry(value);
-				//char bla = text[0];
-
 				RndElements = null;
 				minWordLength = maxWordLength = 1;
 				Match match;
 				bUpdateWordStats = true;
+				if (value.Title == "A-Z" || value.Title == "Z-A")
+					bUpdateWordStats = false;
 				if ((match = Regex.Match(text, "__rnd [0-9]-?[0-9]?__")).Success)
 				{
 					if (int.TryParse(text[6].ToString(), out minWordLength))

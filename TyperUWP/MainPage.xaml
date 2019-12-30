@@ -44,6 +44,7 @@
 					</FlyoutBase.AttachedFlyout>
 				</Button>
 			</StackPanel>
+			<!--<Button x:Name="ipBtn" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="0" Click="ipBtn_Click">-->
 			<StackPanel x:Name="infoPanel" BorderBrush="{StaticResource panelBorderRevGradient}" BorderThickness="1" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" CornerRadius="5" Padding="10,0,0,0" Background="#ff000000">
 				<StackPanel Orientation="Horizontal">
 					<local:InfoPanelInfo x:Name="correctCharsText" Label="Correct" Foreground="LightGray" ToolTipService.ToolTip="Correct characters"/>
@@ -69,6 +70,7 @@
 					
 				</StackPanel>
 			</StackPanel>
+			<!--</Button>-->
 			<StackPanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Orientation="Horizontal">
 				<Button x:Name="optionsBtn" Style="{StaticResource menuButtonStyle}" AccessKey="O" AutomationProperties.Name="Options">
 					<SymbolIcon Symbol="More"/>
