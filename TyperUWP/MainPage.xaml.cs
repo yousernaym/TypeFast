@@ -690,6 +690,7 @@ namespace TyperUWP
 						}
 					}
 					textsCombo.ItemSource = texts.Titles;
+					DialogOpen = false;
 					reset();
 				}
 			}
