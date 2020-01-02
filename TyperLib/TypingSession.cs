@@ -406,7 +406,8 @@ namespace TyperLib
 					if (wordStopTime == -1)
 						wordStopTime = c.SecondsFromStart;
 				}
-				if (word.Length < 2)
+				string lowerCaseWord = word.ToLower();
+				if (word.Length < 2 || lowerCaseWord.StartsWith("abcdefg") || lowerCaseWord.EndsWith("gfedcba"))
 					return;
 				GlobalStats.addWord(word, (wordStopTime - wordStartTime) / 60);
 			}
