@@ -33,3 +33,12 @@ BundleArtifacts/
 
 #Nuget packages folder
 packages/
+
+gfx/
+TyperLib/texts/
+Audio/
+Logo/
+**/Texts/*.xml
+*.png
+*.xcf
+*.svg
